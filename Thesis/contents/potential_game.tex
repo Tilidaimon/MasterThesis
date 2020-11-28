@@ -1,0 +1,499 @@
+% !TEX root = ../main.tex
+
+\chapter{基于势博弈模型的分布式任务分配}
+\label{chap:pg}
+
+
+
+\section{引言}
+\label{pg:intro}
+
+本章使用第\ref{chap:model}章中建立的空空导弹任务分配模型，设计了面向任务分配问题的势博弈模型（Potential Game, PG）框架。本章首先介绍了势博弈模型概念，并选择合适的函数作为智能体效用，初步建立了势博弈模型；接着针对任务分配中的约束问题，使用Lagrange乘子法对原始势博弈模型进行改进，并证明了模型的可行性与性能下界；然后，针对改进的势博弈模型，使用多种均衡求解算法进行模型求解；最后，通过仿真与对比实验验证了模型与算法的有效性。
+
+%--------------------------------
+%--------------------------------
+\section{势博弈模型}
+\label{pg:model}
+在任务分配问题框架下，当所有导弹依据最大化自身效用的原则选择的目标不再发生变化时，则称所有导弹达到了均衡状态。博弈论中一个经典的均衡状态是纯纳什均衡，它表示一个任务分配解$a^*=(a_1^*,\dots,a_{n_m}^*)$，满足任意一个导弹不能通过独自改变任务提高自身效用。在具体阐述纳什均衡和势博弈概念前，除第\ref{chap:model}章使用的概念外，仍需要引入以下概念和符号。设$a_{-i}$表示除了导弹$\mathcal{M}_i$以外的其他导弹的分配集合，即
+\[
+a_{-i}=(a_1,\dots,a_{i-1},a_{i+1},\dots,a_{n_m}),
+\]
+利用该符号可将一组分配解表示为$(a_i,a_{-i})$。此外，可类似地定义$\mathcal{A}_{-i}$为
+\[
+\mathcal{A}_i:=\mathcal{A}_1 \times \dots \times \mathcal{A}_{i-1} \times \mathcal{A}_{i+1} \times \dots \times \mathcal{A}_{n_m} .
+\]
+设$U_{\mathcal{M}_i}(a)$或$U_{\mathcal{M}_i}(a_i,a_{-i})$表示导弹$\mathcal{M}_i$在分配$a$下的智能体效用，由此可得到纯纳什均衡的定义：
+\begin{definition}[纯纳什均衡]
+\label{pg:def:pureNash}
+	若一个分配解$a^*$满足
+	\begin{equation}
+\label{pg:eq:pure_Nash}
+	U_{\mathcal{M}_i}(a_i^*,a_{-i}^*)=\max_{a_i\in \mathcal{A}_i}U_{\mathcal{M}_i}(a_i,a_{-i}^*),\quad \forall \mathcal{M}_i \in \mathcal{M}.
+\end{equation}
+则称$a^*$是一个纯纳什均衡解。
+\end{definition}
+
+当所有导弹达到纯纳什均衡时，全局效用未必实现最大化；另一方面，在一些博弈场景下纯纳什均衡未必存在。因此，引入势博弈概念
+
+\begin{definition}[有序势博弈与势博弈]
+\label{pg:def:potentialGame}
+	设一个博弈模型中的智能体效用函数为$U_{\mathcal{M}_i}(a),\mathcal{M}_i\in \mathcal{M}$，如果存在一个全局势函数$\phi(a):\mathcal{A} \mapsto \mathbb{R}$，满足对任意智能体$\mathcal{M}_i \in \mathcal{M}$，任意$a_{-i}\in \mathcal{A}_{-i}$，智能体$\mathcal{M}_i$的任意两个分配$a_i',a_i''\in \mathcal{A}_i$，有
+	\begin{equation}
+	\label{pg:eq:ordpg}
+		U_{\mathcal{M}_i}(a_i',a_{-i})-U_{\mathcal{M}_i}(a_i'',a_{-i})>0 \Leftrightarrow \phi(a_i',a_{-i})-\phi(a_i'',a_{-i})>0,
+	\end{equation}
+	则该博弈模型是一个有序势博弈模型。在此基础上，若该全局势函数进一步满足：
+	
+	\begin{equation}
+	\label{pg:eq:pgdef}
+		U_{\mathcal{M}_i}(a_i',a_{-i})-U_{\mathcal{M}_i}(a_i'',a_{-i})=\phi(a_i',a_{-i})-\phi(a_i'',a_{-i}).
+	\end{equation}
+	则称该博弈模型为势博弈模型。若策略集$\mathcal{A}$是有限的，则称该势博弈为有限势博弈。
+\end{definition}
+
+由势博弈的定义可知，势博弈模型中的智能体效用变化会等同地反映在全局效用上，而在有序势博弈上，智能体效用与全局效用总是同向变化。易知势博弈是一种特殊的有序势博弈。有限势博弈模型有两点性质：
+
+（1）有限势博弈至少存在一个纯纳什均衡；
+
+（2）有限势博弈具有有限优化性质（finite improvement property, FIP）。
+
+性质（1）保证了纯纳什均衡的存在性，因此对于任务分配问题，至少可以得到一个确定的解；性质（2）保证了任意智能体单方面提高自己效用的行为可以在有限时间内收敛到纯纳什均衡，从而保证了优化算法可在有限时间内收敛。
+
+
+
+
+%--------------------------------
+%--------------------------------
+%-------------------------------------------------
+%-----------------------------------------------
+
+%--------------------------------
+\section{智能体效用函数}
+\label{pg:wlu}
+
+
+使用势博弈模型解决任务分配问题对导弹的智能体效用函数提出的要求是，满足
+
+\begin{equation}
+\label{pg:eq:pgU}
+	U_{\mathcal{M}_i}(a_i',a_{-i})-U_{\mathcal{M}_i}(a_i'',a_{-i})=U_g(a_i',a_{-i})-U_g(a_i'',a_{-i}),
+\end{equation}
+使得所有导弹形成一个势博弈模型，其中$U_g(a)$即为式（\ref{model:eq:globalU}）中定义的全局效用函数，因此在求解分配时所有导弹只需考虑最大化智能体效用便可实现全局效用最大化的目标。
+
+一个显然而直接的思路是使用一致利益效用（Identical Interest Utility, IIU），其直接将全局效用作为智能体效用，但IIU的缺点在于需要计算所有任务效用后得到全局效用，因此本质上仍是集中式的方法。对IIU进行改进可以得到更分布化的有限区域效用（Range-Restricted Utility, RRU），RRU将智能体效用定义为所有该智能体参与的任务的效用之和，RRU可以使得智能体组成势博弈模型，但该模型的纳什均衡未必是最优的。此外，IIU和RRU有一个共同的问题在于如果存在大量的智能体同时参与大量的任务，由于IIU和RRU都是对一定数量的任务效用求和，此时一个智能体对任务的贡献微乎其微，即使它单方面改变决策，对该任务的效用改变可能很小，从而反映在智能体效用函数上的变化也很小。这对智能体的寻优和学习带来了很大难度。对此问题作出的改进是等份额效用（Equally Shared Utility, ESU），ESU用智能体参与的任务效用除以参与该任务的智能体总数，可以有效消除智能体数量带来的效用稀释作用，但ESU的局限在于只有当智能体之间不存在区别时才可以组成势博弈模型。
+
+为了克服IIU和RRU的缺陷，且不局限于ESU的应用场景，本节采用的是美好生活效用函数（Wonderful Life Utility, WLU），WLU将智能体效用函数定义为每个智能体对全局效用的边际贡献程度，其具体定义为：
+
+\begin{equation}
+\label{pg:eq:WLU1}
+	U_{\mathcal{M}_i}(a_i,a_{-i}) = U_g(a_i,a_{-i}) - U_g(a_0,a_{-i}).
+\end{equation}
+
+由全局效用函数的定义式（\ref{model:eq:globalU}）可将式（\ref{pg:eq:WLU1}）改写为
+
+\begin{equation}
+\label{pg:eq:WLU2}
+	U_{\mathcal{M}_i}(a_i,a_{-i}) = U_{\mathcal{T}_j}(a_i,a_{-i}) - U_{\mathcal{T}_j}(a_0,a_{-i}),\quad \text{if}\ a_i=\mathcal{T}_j.
+\end{equation}
+
+由式（\ref{pg:eq:WLU2}）可知，WLU假设其他智能体不改变目标，智能体效用只与智能体自身的决策有关，因此WLU排除了冗余信息，比IIU和RRU优化能力更强。另外，下面的命题表明，使用WLU的博弈模型一定是势博弈模型。
+
+\begin{proposition}[WLU可行性]
+\label{pg:pro:mwlu}
+	智能体效用函数为式（\ref{pg:eq:WLU2}）的智能体集合组成的博弈模型是一个势博弈模型，且其势函数就是全局效用函数$U_g(a)$。
+	
+	\begin{proof}
+	只需证明WLU满足式（\ref{pg:eq:pgU}）即可。设$a_i,a_i' \in \mathcal{A}_i$，则有
+	\begin{align}
+		&\ U_{\mathcal{M}_i}(a_i,a_{-i}) - U_{\mathcal{M}_i}(a_i',a_{-i})\notag\\
+		=&\ U_g(a_i,a_{-i}) - U_g(a_0,a_{-i}) - [U_g(a_i',a_{-i}) - U_g(a_0,a_{-i})]\notag\\
+		=&\ U_g(a_i,a_{-i}) - U_g(a_i',a_{-i}) \notag
+	\end{align}
+	\end{proof}
+\end{proposition}
+
+
+
+\section{约束条件处理方法}
+\label{pg:mwlu}
+
+上述势博弈框架和智能体效用函数设计下，对于智能体选择任务并没有做出任何限制和约束，因此需要利用约束条件式（\ref{model:eq:simbmax}）将势博弈的纳什均衡限制在可行解中。本节提出了基于Lagrange乘子法将有约束问题转化为无约束问题，并证明了在满足一定的条件下，新的无约束问题下获得的纳什均衡解均为原问题的可行解。
+
+Lagrange乘子法是一种典型的处理含约束优化问题的方法，其将含约束问题转化为无约束问题，且可证明生成的新的无约束问题的最优解就是原问题的最优解。在势博弈模型下，结合全局效用函数的定义式（\ref{model:eq:simUg})以及约束条件式（\ref{model:eq:bmax}），将式（\ref{model:eq:taskU}）任务效用函数$U_{\mathcal{T}_i}(a)$修正为：
+
+\begin{equation}
+\label{pg:eq:newTaskU}
+	\widetilde U_{\mathcal{T}_j}(a) = U_{\mathcal{T}_j}(a) + \lambda [b_{\text{max}}^{(j)} - s_j]^+,
+\end{equation}
+其中$[x]^+=\max\{x,0\}$，$s_j$是第二章中定义的目标同为$\mathcal{T}_j$的导弹数量。由式（\ref{model:eq:globalU}）得到修正后的全局效用函数为
+
+\begin{equation}
+\label{pg:eq:newglobalU}
+		\widetilde U_g(a) = U_g(a) +  \lambda \sum_{j=1}^{n_t}[b_{\text{max}}^{(j)} - s_j]^+
+	\end{equation}
+
+再利用式（\ref{pg:eq:WLU2}）提出的WLU效用函数计算修正后的智能体效用函数（Modified WLU, MWLU）为
+
+\begin{align}
+\label{pg:eq:newAgentU}
+	\widetilde U_{\mathcal{M}_i}(a_i,a_{-i}) &= \widetilde U_g(a_i,a_{-i}) - \widetilde U_g(a_0,a_{-i})\notag\\
+	&= \widetilde U_{\mathcal{T}_j}(a_i,a_{-i}) - \widetilde U_{\mathcal{T}_j}(a_0,a_{-i}),\quad \text{if}\ a_i=\mathcal{T}_j.
+\end{align}
+
+下面需要验证MWLU的有效性，主要分为三部分：（1）满足MWLU效用的智能体能否组成势博弈模型；（2）该势博弈模型下得到的纳什均衡是否都满足原问题的约束；（3）该势博弈模型下得到的纳什均衡解的最优性。
+
+%----------------------------
+\subsection{势博弈成立条件}
+\label{pg:mwlu:pgcondition}
+为了验证MWLU函数的有效性，首先需要验证式（\ref{pg:eq:newAgentU}）定义的智能体效用函数是否可以组成一个势博弈模型。设智能体效用函数为MWLU的智能体组成的组成的博弈模型为$\mathcal{G}=\{\mathcal{M},\mathcal{A},U_{\mathcal{M}}(a)\}$，实际上，可以得到以下结论：
+
+\begin{proposition}[势博弈成立条件]
+	$\mathcal{G}$是一个势博弈模型，其势函数为式（\ref{pg:eq:newglobalU}）定义的全局效用函数。
+	
+	\begin{proof}
+		只需证明全局效用函数$\widetilde U_g(a)$与式（\ref{pg:eq:newAgentU}）定义的智能体效用函数$\widetilde U_{\mathcal{M}_i}(a_i,a_{-i})$满足式（\ref{pg:eq:pgU}）即可。对任意$a_i',a_i'' \in \mathcal{A}_i$，$a'=(a_i',a_{-i}),a''=(a_i'',a_{-i})$，且$S',S''$分别为$a'$和$a''$对应的智能体分配集合，$s_j'$和$s_j''$分别为$S'$和$S''$中目标为$\mathcal{T}_j$的智能体数量。假设$a_i'=\mathcal{T}_j,\ a_i''=\mathcal{T}_k,\ j\neq k$，则有
+		\begin{align}
+			&\widetilde U_{\mathcal{M}_i}(a_i',a_{-i}) - \widetilde U_{\mathcal{M}_i}(a_i'',a_{-i})\notag\\
+			= &\ [\widetilde U_g(a_i',a_{-i}) - \widetilde U_g(a_0,a_{-i})] - [\widetilde U_g(a_i'',a_{-i}) - \widetilde U_g(a_0,a_{-i})]\notag\\
+			\label{pg:pf:eq:pg} = &\ \widetilde U_g(a_i',a_{-i}) - \widetilde U_g(a_i'',a_{-i})
+		\end{align}
+		所以满足MWLU效用的智能体可以组成一个势博弈模型，且势函数为全局效用函数$\widetilde U_g(a)$。
+	\end{proof}
+\end{proposition}
+
+%--------------------------------
+\subsection{纯纳什均衡可行性分析}
+\label{pg:mwlu:pgexist}
+在验证势博弈模型成立之后，下一步需要验证该势博弈模型所得到的纯纳什均衡是否是原问题的可行解，此处有以下结论：
+
+\begin{proposition}[纳什均衡可行性]
+\label{pg:pro:feasibility}
+	当$\lambda$满足$\lambda > \lambda_0$时，若分配策略$a$是$\mathcal{G}$的一个纯纳什均衡，则$a$一定满足约束条件（\ref{model:eq:bmax}）。其中
+	\begin{equation}
+		\lambda_0 = \max_{\substack{\mathcal{M}_i \in \mathcal{M}, \mathcal{T}_j \in \mathcal{T} \\ s_j < b_{\text{max}}^{(j)}}} \Bigg\{ \frac{U_{\mathcal{T}_j}(a_i,a_{-i}) - U_{\mathcal{T}_j}(a_0,a_{-i})}{[b_{\text{max}}^{(j)} - s_j]^+} \Bigg\}
+	\end{equation}
+	
+	\begin{proof}
+		设$a^*=(a_i^*,a_{-i}^*)$是势博弈模型$\mathcal{G}$的一个纯纳什均衡，但不满足约束条件（\ref{model:eq:bmax}），即存在$1\leq j \leq n_t, s_j^* > b_{\text{max}}^{(j)}$。对于参与任务$\mathcal{T}_j$的智能体之一$\mathcal{M}_k$，设$a_k^*=\mathcal{T}_j,a_k'=\mathcal{T}_l,\forall l \neq j$，则有
+		\begin{align}
+			&\widetilde U_{\mathcal{M}_k}(a_k^*,a_{-k}^*) - \widetilde U_{\mathcal{M}_k}(a_k',a_{-k}^*)\notag\\
+		    =&\ \widetilde U_{\mathcal{T}_j}(a_k^*,a_{-k}^*) - \widetilde U_{\mathcal{T}_l}(a_k',a_{-k}^*)\notag\\
+		    =&\ U_{\mathcal{T}_j}(a_k^*,a_{-k}^*) - [U_{\mathcal{T}_l}(a_k',a_{-k}^*) + \lambda[b_{\text{max}}^{(j)} - s_l']^+]\notag\\
+		    \leq &\ U_{\mathcal{T}_j}(a_k^*,a_{-k}^*) - U_{\mathcal{T}_l}(a_k',a_{-k}^*) - \lambda_0[b_{\text{max}}^{(j)} - s_l']^+ \notag \\
+		    \leq &\ \max_{\mathcal{T}_j \in \mathcal{T}} \{U_{\mathcal{T}_j}(a_i^*,a_{-i}^*) - U_{\mathcal{T}_j}(a_0,a_{-i}^*)\} - \lambda_0[b_{\text{max}}^{(j)} - s_l']^+
+		\end{align}
+		由$\lambda_0$的定义，易知至少存在一个$k_0$满足$b_{\text{max}}^{(j)} - s_{k_0}>0$，使得$\widetilde U_{\mathcal{M}_{k_0}}(a_{k_0}^*,a_{-{k_0}}^*) - \widetilde U_{\mathcal{M}_{k_0}}(a_{k_0}',a_{-{k_0}}^*) \leq 0$，这与$a^*$是纯纳什均衡的条件（\ref{pg:eq:pure_Nash}）矛盾，因此$a^*$必然满足约束条件。
+	\end{proof}
+	
+\end{proposition}
+
+%---------------------
+\subsection{纳什均衡最优性}
+\label{pg:mwlu:pgoptimal}
+
+在命题\ref{pg:pro:feasibility}下，势博弈模型$\mathcal{G}$的纳什均衡均为原问题的可行解，因此最后需要考察这些纳什均衡解的最优性。本节选择使用无秩序代价（Price of Anarchy, PoA）作为衡量纳什均衡性能的指标。设纯纳什均衡分配解为$a^*$，全局最优分配解为$a^{\text{opt}}$，则PoA的定义为全局最优效用和纳什均衡效用的最小值之比：
+\begin{equation}
+\label{pg:eq:PoA}
+	\mathrm{PoA}(\mathcal{G}) = \frac{U_g(a^{\text{opt}})}{\min_{a^*} U_g(a^*)}
+\end{equation}
+
+由PoA的定义可知，PoA越大，代表最差情况下纯纳什均衡效用越小，即意味着该势博弈模型的性能越差。关于本节建立的势博弈模型$\mathcal{G}$的PoA，我们可以用以下命题得到PoA的上界，从而保证了势博弈模型性能的下界。
+
+\begin{proposition}
+\label{pg:pro:PoA}
+	势博弈模型$\mathcal{G}$的PoA上界为
+	\begin{equation}
+	\label{pg:pro:eq:High_Bound_PoA}
+		\mathrm{PoA}(\mathcal{G}) \leq 1 + \lambda
+	\end{equation}
+	其中
+	\begin{equation}
+	\label{pg:pro:eq:lambda_PoA}
+		\lambda = \max_{\substack{\forall a,a' \in \mathcal{A}\\ \forall \mathcal{M}_i \in \mathcal{M}}} \Bigg\{ \frac{\widetilde U_g(a') - \widetilde U_g(a_i',a_{-i})}{\widetilde U_g(a)} \Bigg\}
+	\end{equation}
+	
+	\begin{proof}
+		设$a^{\text{opt}}$是全局最优分配解，$a^*$是一纯纳什均衡分配解。由纯纳什均衡的定义式（\ref{pg:eq:pure_Nash}）可得
+		\begin{equation}
+		\label{pg:pro:eq:inequality_Um}
+			\widetilde U_{\mathcal{M}_i}(a_i^*,a_{-i}^*) \geq \widetilde U_{\mathcal{M}_i}(a_i^{\text{opt}},a_{-i}^*),\ \forall \mathcal{M}_i \in \mathcal{M}.
+		\end{equation}
+		将式（\ref{pg:eq:pgU}）代入可得
+		\begin{equation}
+		\label{pg:pro:eq:inequality_Ug}
+			\widetilde U_g(a_i^*,a_{-i}^*) \geq \widetilde U_g(a_i^{\text{opt}},a_{-i}^*).
+		\end{equation}
+		
+		不等式右侧可以写为
+		\begin{equation}
+		\label{pg:pro:eq:rewrite}
+			\widetilde U_g(a_i^{\text{opt}},a_{-i}^*) = \widetilde U_g(a_i^{\text{opt}},a_{-i}^{\text{opt}}) - [\widetilde U_g(a_i^{\text{opt}},a_{-i}^{\text{opt}}) - \widetilde U_g(a_i^{\text{opt}},a_{-i}^*)],
+		\end{equation}
+		所以有
+		\begin{equation}
+		\label{pg:pro:eq:relation_opt_nash}
+			\widetilde U_g(a^*) \geq \widetilde U_g(a^{\text{opt}}) - [\widetilde U_g(a^{\text{opt}}) - \widetilde U_g(a_i^{\text{opt}},a_{-i}^*)],
+		\end{equation}
+		两边同时除以$\widetilde U_g(a^*)$，
+		\begin{align}
+		\label{pg:pro:eq:cal_PoA}
+			\frac{U_g(a^{\text{opt}})}{U_g(a^*)} &\leq 1 + \frac{\widetilde U_g(a^{\text{opt}}) - \widetilde U_g(a_i^{\text{opt}},a_{-i}^*)}{\widetilde U_g(a^*)}\notag\\
+			&\leq 1 + \max_{\substack{\forall a,a' \in \mathcal{A}\\ \forall \mathcal{M}_i \in \mathcal{M}}} \Bigg\{ \frac{\widetilde U_g(a') - \widetilde U_g(a_i',a_{-i})}{\widetilde U_g(a)} \Bigg\}\notag\\
+			&\triangleq 1 +\lambda
+		\end{align}
+		
+		因此
+		\begin{equation}
+		\label{pg:pro:eq:comclusion_PoA}
+			\mathrm{PoA}(\mathcal{G}) \leq 1 + \lambda
+		\end{equation}
+	\end{proof}
+\end{proposition}
+
+
+%----------------------------------------
+\section{均衡求解}
+\label{pg:upgta:protocal}
+
+\subsection{虚拟博弈算法}
+\label{upgta:protocal:FP}
+虚拟博弈算法（Fictitious Play, FP）是一种经典的学习算法，最初被用来求解零和博弈中的纳什均衡，但也被提出可以用于多智能体系统的学习算法。在本节，虚拟博弈算法被视为智能体选择目标的机制。在每个时刻$k$，智能体$i$计算自身的经验频率分布$q_i(k)$，并根据该分布选择下一步最优决策。智能体经验频率分布定义为
+
+\begin{equation}
+\label{pg:eq:frequency}
+	q_i^j(k) = \frac{1}{k} \sum_{t=0}^{k-1} I\{a_i = A_i^j\},\ A_i^j \in \mathcal{A}_i, j = 1,\dots,|\mathcal{A}_i|,
+\end{equation}
+其中$I\{\cdot\}$为指示函数，$|\mathcal{A}_i|$表示目标集$\mathcal{A}_i$的势。
+
+智能体$i$在FP下选择目标的策略是假设其他智能体会独立地根据各自的经验频率分布随机选择一个目标。在此假设下，可计算出智能体$i$选择目标$A_i^j$的期望效用为
+
+\begin{align}
+\label{pg:eq:expectU}
+	U_i(A_i^j, q_{-i}(k)) &= \mathbb{E}_{a_{-i}}[U_{\mathcal{M}_i}(A_i^j,a_{-i})]\notag\\
+	&= \sum_{a_{-i}\in \mathcal{A}_{-i}} U_{\mathcal{M}_i}(A_i^j, a_{-i}) \prod_{a_j \in \mathcal{A}_{-i}} q_j^{a_j}(k),
+\end{align}
+其中$q_{-i}(k):=\{q_1(k),\dots,q_{i-1}(k),q_{i+1}(k),\dots,q_{n_m}(k)\}$。因此，智能体$i$在$k$时刻选择的最优目标$a_i(k)$为
+\begin{equation}
+\label{pg:eq:bestResponse}
+	a_i(k) \in \arg \max_{\alpha \in \mathcal{A}_i} U_i(a, q_{-i}(k)),
+\end{equation}
+若同时存在多个最优目标，则在多个最优目标中任选一个。
+
+FP的优点在于除了极少数特殊情况，根据经验频率分布选出的目标分配解几乎都会收敛到纳什均衡。但FP的缺点也是显然的，每个智能体在作出决策时需要知道所有智能体的经验频率分布，且计算出所有组合情况下的效用的期望，因此FP的计算时间和计算复杂度会随着智能体数量的增加而急剧增加。
+
+为了提高FP的可行性，联合策略虚拟博弈（Joint Strategy Fictitious Play, JSFP）在FP的基础上做出了改进。JSFP最主要的改进在于在计算不同目标选择的效用时，取消了其他智能体选择目标的独立性条件，从而在计算经验频率分布时，计算的是一个分配组合$a$的经验频率而不是某个特定目标的频率。在JSFP下，联合经验频率$z(\overline a,k)$的计算公式为
+
+\begin{equation}
+\label{pg:eq:jsef}
+	z(\overline a,k) = \frac{1}{k} \sum_{t=0}^{k-1} I\{a(k) = \overline a\},\quad \overline a \in \mathcal{A},
+\end{equation}
+类似地可定义出$z_{-i}(\overline a,k)$的定义为
+
+\begin{equation}
+\label{pg:eq:jsefForMinusi}
+	z_{-i}(\overline a_{-i},k) = \frac{1}{k} \sum_{t=0}^{k-1} I\{a_{-i}(k) = \overline a_{-i}\},\quad \overline a \in \mathcal{A}.
+\end{equation}
+
+因此此时智能体$i$选择目标$\overline a_i$的期望效用是
+
+\begin{equation}
+\label{pg:eq:jsfpExpectU}
+	U_i(\overline a_i,k) = \sum_{a_{-i} \in \mathcal{A}_{-i}} U_{\mathcal{M}_i}(\overline a_i,a_{-i}) z_{-i}(\overline a_{-i},k)
+\end{equation}
+
+JSFP第二个改进的地方在于，虽然式（\ref{pg:eq:jsfpExpectU}）似乎仍需要计算所有组合策略情况下的期望，但通过将式（\ref{pg:eq:jsefForMinusi}）代入式（\ref{pg:eq:jsfpExpectU}）可得
+
+\begin{equation}
+\label{pg:eq:modifiedEU}
+	U_i(\overline a_i, z_{-i}(k)) = \frac{1}{k}\sum_{t=0}^{k-1} U_{\mathcal{M}_i}(\overline a_i, a_{-i}(k)).
+\end{equation}
+
+上式表示在前$k-1$次迭代智能体$i$如果选择目标$\overline a_i$，而其他智能体选择不变的情况下，智能体$i$可获得的平均效用。令$\overline U_i^{\overline a_i}(k)=U_i(\overline a_i, z_{-i}(k))$，则式（\ref{pg:eq:modifiedEU}）可改写为迭代形式：
+
+\begin{equation}
+\label{pg:eq:recurJSFP}
+	\overline U_i^{\overline a_i}(k+1) = \frac{k}{k+1} \overline U_i^{\overline a_i}(k) + \frac{1}{k+1} U_{\mathcal{M}_i}(\overline a_i, a_{-i}(k)).
+\end{equation}
+
+JSFP的算法流程如\ref{pg:algo:jsfp}所示。
+
+\begin{algorithm}[htb]
+	\caption{JSFP算法流程}
+	\label{pg:algo:jsfp}
+	\small
+	\SetAlgoLined
+	\KwIn{$\mathcal{M},n_m,\mathcal{T},n_t,\mathcal{A}$}
+	\KwOut{均衡解$a^*$}
+	
+	随机初始化分配解$a$\;
+	${\overline U}_i(0) \gets {\bm 0}_{1 \times n_t},i=1,\dots,n_t$\;
+	$k \gets 1$\;
+	\While{true}{
+		\For{$i=1:n_m$}{
+			计算选择不同目标${\overline a}_i$的$U_{\mathcal{M}_i}({\overline a}_i,a_{-i}(k))$\;
+			使用式（\ref{pg:eq:recurJSFP}）更新${\overline U}_i(k)$\;
+			$a(k) \gets \arg \max_{\alpha \in \mathcal{A}_i} {\overline U}_i(k)$\;
+			$k\gets k+1$\;
+		}
+	}
+	
+\end{algorithm}
+
+
+%----------------------------------
+\subsection{后悔匹配算法}
+\label{upgta:protocal:RM}
+
+后悔匹配算法（Regret Matching, RM）是借鉴了JSFP的思想，与JSFP计算前$k-1$个时刻选择目标的平均效用不同，RM计算的是前$k-1$次迭代不选择该目标将会损失的效用。沿用前面的符号，在第$k$次迭代，智能体$i$计算器对于目标$\overline a_i^j$平均后悔值为
+
+\begin{equation}
+\label{pg:eq:regret}
+	R_{\mathcal{M}_i}^j(k) = \frac{1}{k-1}\sum_{t=1}^{k-1} [U_{\mathcal{M}_i}(\overline a_i^j, a_{-i}(t)) - U_{\mathcal{M}_i}(a(t))]\ ,j=1,\dots,|\mathcal{A}_i|.
+\end{equation}
+
+式（\ref{pg:eq:regret}）可改写为迭代形式
+
+\begin{equation}
+\label{pg:eq:recurRM}
+	R_{\mathcal{M}_i}^j(k+1) = \frac{k-1}{k}R_{\mathcal{M}_i}^j(k) + \frac{1}{k} [U_{\mathcal{M}_i}(\overline a_i^j, a_{-i}(t)) - U_{\mathcal{M}_i}(a(t))],\quad k>1.
+\end{equation}
+
+在得到对每个目标的后悔值$R_{\mathcal{M}_i}(k)=[R_{\mathcal{M}_i}^1(k),\dots,R_{\mathcal{M}_i}^{|\mathcal{A}_i|}(k)]$后，智能体计算当前选择目标的概率分布$p_i(k)$
+
+\begin{equation}
+\label{pg:eq:rmpdf}
+	p_i(k) = \frac{[R_{\mathcal{M}_i}(k)]^+}{{\bm 1}^{\mathrm T}[R_{\mathcal{M}_i}(k)]^+]},
+\end{equation}
+其中$[x]^+=\max\{x,0\},{\bm 1}=[1,1,\dots,1]$。
+
+在RM的基础上进一步改进得到带有记忆和惰性的广义RM算法（Generalized RM with Fading Memory and Inertia, GRMFMI）。将式（\ref{pg:eq:recurRM}）改写为
+
+\begin{equation}
+	\widetilde R_{\mathcal{M}_i}^j(k+1) = (1-\rho)\widetilde R_{\mathcal{M}_i}^j(k) + \rho [U_{\mathcal{M}_i}(\overline a_i^j, a_{-i}(t)) - U_{\mathcal{M}_i}(a(t))],\quad j \in \{1,\dots,|\mathcal{A}_i|\}.
+\end{equation}
+
+将惰性概念引入智能体$i$选择目标的概率分布，智能体有$1-\alpha_i$的概率会继续选择前一时刻的目标，此时目标选择概率分布为
+
+\begin{equation}
+\label{pg:eq:interiapdf}
+	\widetilde p_i(k) = \alpha_i P_i(\widetilde R_{\mathcal{M}_i}(k)) + [1-\alpha _i]{\bm v}^{a_i(k-1)},
+\end{equation}
+其中${\bm v}^{a_i(k-1)}$表示第$a_i(k-1)$个元素为1，其余为0的$|\mathcal{A}_i|$维向量。$P_i(x)$是一个概率分布向量，其每个分量的表达式为
+
+\begin{equation}
+	P_i^l(x) = 	
+	\begin{cases}
+		\frac{e^{\frac{1}{\tau} x^l}}{\sum_{x^m>0}e^{\frac{1}{\tau}x^m}} I\{x^l>0\}, & \text{if ${\bm 1}^{\mathrm T}[x]^+>0$,}\\
+		\frac{1}{\mathcal{A}_i}, & \text{if ${\bm{1}}^{\mathrm T}[x]^+=0$.}
+	\end{cases},
+\end{equation}
+其中$\tau>0$是一个参数，当$\tau$较小时，$\mathcal{M}_i$会倾向于选择最大后悔值的目标，当$\tau$较大时，$\mathcal{M}_i$会倾向于在有正后悔值的目标中随机选择一个。
+
+综上所述，GRMFMI的算法流程如算法\ref{pg:algo:GRMFMI}所示。
+
+\begin{algorithm}[htb]
+	\caption{GRMFMI算法流程}
+	\label{pg:algo:GRMFMI}
+	\small
+	\SetAlgoLined
+	\KwIn{$\mathcal{M},n_m,\mathcal{T},n_t,\mathcal{A}$}
+	\KwOut{均衡解$a^*$}
+	
+	初始化$\widetilde R_{\mathcal{M}_i}^j(0)=0$\;
+	$k \gets 1$\;
+	\While{true}{
+		\For{$i=1:n_m$}{
+			使用式（\ref{pg:eq:recurRM}）计算$\widetilde R_{\mathcal{M}_i}^j(k)$\;
+			使用式（\ref{pg:eq:interiapdf}）计算目标概率分布$\widetilde p_i(k)$\;
+			根据$\widetilde p_i(k)$随机选择目标$a_i(k)$\;
+			$k\gets k+1$\;
+		}
+	}
+\end{algorithm}
+
+
+%------------------------------
+\subsection{空间自适应博弈算法}
+
+空间自适应博弈算法（Spatial Adaptive Play, SAP）原本是空间博弈中的一种自适应学习方法，本节将针对任务分配问题的特点，将其改造为适用于任务分配问题的SAP算法。
+
+不同于之前几种算法，SAP算法的特点是在每次迭代只等可能地随机选择一个智能体进行目标的选择，其他智能体保持目标不变。被选中的智能体$\mathcal{M}_i$根据式计算其目标选择概率分布$p_i(k)$
+
+\begin{equation}
+\label{pg:eq:MaxEntropy}
+	\max_{p_i(k) \in \Delta(|\mathcal{A}_i|)} p_i^{\mathrm T}(k) \begin{bmatrix}
+		U_{\mathcal{M}_i}(\overline a_i^{(1)},a_{-i}(k-1))\\ \vdots \\ U_{\mathcal{M}_i}(\overline a_i^{(|\mathcal{A}_i|)},a_{-i}(k-1))
+	\end{bmatrix}
+	+ \tau \mathcal{H}(p_i(k)),
+\end{equation}
+其中$\mathcal{H}({\bm x}) = -{\bm x}^{\mathrm T} \log({\bm x}), x^l \neq 0,l=1,\dots,|\mathcal{A}_i|$。
+
+根据式（\ref{pg:eq:MaxEntropy}）可求得$p_i(k)$的解析解形式为
+
+\begin{equation}
+\label{pg:eq:sappdf}
+	p_i(k) = \sigma \Bigg(\frac{1}{\tau}\begin{bmatrix}
+		U_{\mathcal{M}_i}(\overline a_i^{(1)},a_{-i}(k-1))\\ \vdots \\ U_{\mathcal{M}_i}(\overline a_i^{(|\mathcal{A}_i|)},a_{-i}(k-1))
+	\end{bmatrix} \Bigg),
+\end{equation}
+其中$\sigma(\cdot)$为softmax函数。
+
+为了进一步提高SAP算法的效率，还可对SAP算法进行改进得到部分选择SAP（Selective SAP, sSAP）算法。与SAP算法不同的是，sSAP算法在计算$p_i(k)$时，只在$\mathcal{A}_i$中挑选了$n_i$个目标（$1 \leq n_i < |\mathcal{A}_i|$）作为下一步可选目标集，其中包括了上一步选择的目标$a_i(k-1)$，因此sSAP算法下$p_i(k)$的计算公式为
+
+\begin{equation}
+\label{pg:eq:ssappdf}
+	p_i(k) = \sigma \Bigg(\frac{1}{\tau}\begin{bmatrix}
+		U_{\mathcal{M}_i}(a_i(k-1))\\ U_{\mathcal{M}_i}(\overline a_i^{(1)},a_{-i}(k-1))\\
+	\vdots \\ U_{\mathcal{M}_i}(\overline a_i^{(n_i)},a_{-i}(k-1))
+	\end{bmatrix} \Bigg),
+\end{equation}
+
+SAP算法和sSAP算法的流程如算法\ref{pg:algo:SAP}所示。
+
+\begin{algorithm}[htb]
+	\caption{SAP和sSAP算法流程}
+	\label{pg:algo:SAP}
+	\small
+	\SetAlgoLined
+	\KwIn{$\mathcal{M},n_m,\mathcal{T},n_t,\mathcal{A}$}
+	\KwOut{均衡解$a^*$}
+	
+	$k \gets 1$\;
+	\While{true}{
+		随机选择一个智能体$\mathcal{M}_i$\;
+		$n_i=|\mathcal{A}_i|$; \tcp{使用SAP算法}
+		(或者）确定$n_i$的值，$1 \leq n_i < |\mathcal{A}_i|$; \tcp{使用sSAP算法}
+		从$\mathcal{A}_i$中随机选择$n_i$个目标（包括$a_i(k-1)$）\;
+		使用式（\ref{pg:eq:sappdf}）计算$p_i(k)$\;
+		根据$p_i(k)$随机选择目标$a_i(k)$\;
+		$k\gets k+1$\;
+	}
+\end{algorithm}
+
+
+
+
+\section{仿真分析与对比}
+\label{pg:simulation}
+
+
+
+\section{本章小结}
+\label{pg:conclusion}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

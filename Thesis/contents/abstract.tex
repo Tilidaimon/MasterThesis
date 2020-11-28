@@ -1,0 +1,30 @@
+% !TEX root = ../main.tex
+
+\begin{abstract}
+  现代空战中，空空导弹是一种杀伤力强、威慑度高的尖端武器，对夺取战场制空权和主动权具有重要的意义。在空战环境中，常常面对着多目标、多任务的场景，发展空空导弹对集群目标的攻击作战模式是一个重要方向。但随着大规模集群，如无人机集群投入实战的趋势，在空空导弹拦截大规模集群的场景中，由于集中式算法在求解大规模任务分配问题时面临通信限制和实时性问题，因此研究使用分布式算法求解任务分配问题具有重要的现实意义。
+  
+  本文首先结合空空导弹的特点，系统介绍了空空导弹任务分配技术的研究现状及存在的主要问题。接着，本文依据空战的实际特点和需求，考虑空战中的约束条件，建立了整数规划模型。然后，针对空战强博弈的特点，本文利用博弈论的思想，建立了两种博弈论模型，研究并改进了在两种博弈论模型下的分布式任务分配算法，通过仿真与对比试验验证了其有效性，且在大规模问题实时性方面具有显著的优越性。最后，针对空战高动态的特点，本文研究了基于随机博弈模型下的动态任务分配算法，通过仿真试验研究了分配算法的动态适应性。
+  
+  本文的主要研究贡献主要有：
+  
+  1、针对空空导弹任务分配问题，以最短预计剩余攻击时间和最小导弹机动量为优化目标，建立了整数规划模型。利用博弈论中的势博弈模型，结合势博弈在多智能体系统控制中的应用，设计了无约束条件下导弹个体效用函数和协商协议，通过对比实验分析了该算法的有效性和实时性。然后针对整数规划问题的特点，提出了基于拉格朗日乘子法和基于改进美好生活效用（Wonderful Life Utility, WLU）的有约束条件下任务分配算法，通过理论分析和仿真对比验证了两种算法在求解有约束条件下的任务分配问题时保留了无约束优化时的有效性和实时性，具有良好的实用性和可扩展性。
+  
+  2、针对上述整数规划模型，利用博弈论中的享乐博弈模型，将任务分配问题转化为种群聚类问题，首先结合空战约束条件设计了享乐博弈模型下的关于种群数量的个体效用函数，然后基于Zeuthen策略设计了一种分布式协商协议，接着从理论方面分析了该算法的最坏优化值及迭代步数，并通过仿真对比实验验证了算法的有效性和实时性。
+  
+  3、针对高动态场景下需要及时调整任务分配的问题，研究了基于随机博弈模型的动态任务分配问题。设计了导弹与目标对战随机博弈场景框架，在假定静态模型区间内利用势博弈模型建立并求解任务分配问题，同时在模型状态切换的时间点，设计滚动策略集，兼顾智能体决策的连续性和对新生事件的及时响应性。
+  
+\end{abstract}
+
+\begin{abstract*}
+In modern air warfare, air-to-air missiles are sophisticated weapons with strong lethality and high deterrence. They are of great significance to air dominance and initiative on the battlefield. An air combat environment is often faced with multi-target and multi-task scenarios, thus it is an important direction to develop an air-to-air missile attack combat mode against cluster targets. However, with the trend of large-scale UAV clusters being put into actual combat, in the scenario of air-to-air missiles intercepting large-scale clusters, centralized task assignment algorithms are limited to communication limitations and real-time problems. Therefore, the use of distributed algorithms to solve the task assignment problem have important practical significance.
+  
+  This article first systematically introduces the related work and main problems of air-to-air missile task assignment technology,  combined with the characteristics of air-to-air missiles. Then, according to the actual characteristics and requirements of air combat, this article takes the constraints of air combat in consideration, and establishes an integer programming model. In view of the characteristics of the strong game of air combat, this article introduces the idea of ​​game theory to establish two game theory models, researches and improves the distributed task assignment algorithm under the two game theory models. These algorithms are verified effective and significantly advantageous in real-time large-scale problems through simulation and comparative experiments. Finally, in view of the high dynamic characteristics of air combat, this article studies the task reassignment algorithm based on the two game theory models proposed in three scenarios, and studies the dynamic adaptability of the reassignment algorithm through simulation experiments.
+  
+  The main research contributions of this article are as follows:
+  
+  1. Aiming at the task allocation problem of air-to-air missiles, with the shortest expected remaining attack time and the minimum missile maneuver as the optimization objectives, an integer programming model is established. Using the potential game model in game theory, combined with the application of potential game in the control of multi-agent systems, the individual utility function and negotiation protocol of the missile are designed under unconstrained conditions, and the effectiveness and real-time performance of the algorithm are analyzed through comparative experiments. Then, in view of the characteristics of integer programming problems, task assignment algorithms under constraints are proposed respectively based on Lagrange multiplier method and based on the adjusted Wonderful Life Utility (WLU) . Theoretical analysis and simulation comparison verify that the two algorithms retains the validity and real-time performance of unconstrained optimization, and has good practicability and scalability.
+  
+  2. Aiming at the above integer programming model, using the hedonic game model in game theory, the task allocation problem is transformed into a population clustering problem. First, the individual utility function with respect to the number of population under the hedonic game model is introduced based on the air combat constraints, and then A distributed negotiation protocol is designed based on the Zeuthen negotiation strategy. The worst performance analysis of the algorithm are theoretically conducted, and the effectiveness and real-time performance of the algorithm are verified through simulation and comparison experiments.
+  
+  3. Aiming at the problem of timely adjustment of task allocation in high dynamic scenarios, the dynamic task allocation problem based on stochastic game model is studied. A stochastic game framework of missile and target battle is designed, and the potential game model is used to establish and solve the task allocation problem in the assumed static model interval. At the same time, at the time of state switching, a rolling strategy set is designed to take into account the continuity and matching of the agent’s decision. Timely response to new events.
+\end{abstract*}
