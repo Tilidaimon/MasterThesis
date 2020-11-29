@@ -123,13 +123,13 @@ Lagrange乘子法是一种典型的处理含约束优化问题的方法，其将
 
 \begin{equation}
 \label{pg:eq:newTaskU}
-	\widetilde U_{\mathcal{T}_j}(a) = U_{\mathcal{T}_j}(a) + \lambda [b_{\text{max}}^{(j)} - s_j]^+,
+	\widetilde U_{\mathcal{T}_j}(a) = U_{\mathcal{T}_j}(a) + \lambda [b_{\text{max}}^{(j)} - s_j]^-,
 \end{equation}
-其中$[x]^+=\max\{x,0\}$，$s_j$是第二章中定义的目标同为$\mathcal{T}_j$的导弹数量。由式（\ref{model:eq:globalU}）得到修正后的全局效用函数为
+其中$[x]^+=\min\{x,0\}$，$s_j$是第二章中定义的目标同为$\mathcal{T}_j$的导弹数量。由式（\ref{model:eq:globalU}）得到修正后的全局效用函数为
 
 \begin{equation}
 \label{pg:eq:newglobalU}
-		\widetilde U_g(a) = U_g(a) +  \lambda \sum_{j=1}^{n_t}[b_{\text{max}}^{(j)} - s_j]^+
+		\widetilde U_g(a) = U_g(a) +  \lambda \sum_{j=1}^{n_t}[b_{\text{max}}^{(j)} - s_j]^-
 	\end{equation}
 
 再利用式（\ref{pg:eq:WLU2}）提出的WLU效用函数计算修正后的智能体效用函数（Modified WLU, MWLU）为
@@ -170,7 +170,7 @@ Lagrange乘子法是一种典型的处理含约束优化问题的方法，其将
 \label{pg:pro:feasibility}
 	当$\lambda$满足$\lambda > \lambda_0$时，若分配策略$a$是$\mathcal{G}$的一个纯纳什均衡，则$a$一定满足约束条件（\ref{model:eq:bmax}）。其中
 	\begin{equation}
-		\lambda_0 = \max_{\substack{\mathcal{M}_i \in \mathcal{M}, \mathcal{T}_j \in \mathcal{T} \\ s_j < b_{\text{max}}^{(j)}}} \Bigg\{ \frac{U_{\mathcal{T}_j}(a_i,a_{-i}) - U_{\mathcal{T}_j}(a_0,a_{-i})}{[b_{\text{max}}^{(j)} - s_j]^+} \Bigg\}
+		\lambda_0 = \max_{\substack{\mathcal{M}_i \in \mathcal{M}, \mathcal{T}_j \in \mathcal{T} \\ s_j > b_{\text{max}}^{(j)}}} \Bigg\{ \frac{U_{\mathcal{T}_j}(a_i,a_{-i}) - U_{\mathcal{T}_j}(a_i',a_{-i})}{s_j-b_{\text{max}}^{(j)}} \Bigg\}
 	\end{equation}
 	
 	\begin{proof}
@@ -178,11 +178,11 @@ Lagrange乘子法是一种典型的处理含约束优化问题的方法，其将
 		\begin{align}
 			&\widetilde U_{\mathcal{M}_k}(a_k^*,a_{-k}^*) - \widetilde U_{\mathcal{M}_k}(a_k',a_{-k}^*)\notag\\
 		    =&\ \widetilde U_{\mathcal{T}_j}(a_k^*,a_{-k}^*) - \widetilde U_{\mathcal{T}_l}(a_k',a_{-k}^*)\notag\\
-		    =&\ U_{\mathcal{T}_j}(a_k^*,a_{-k}^*) - [U_{\mathcal{T}_l}(a_k',a_{-k}^*) + \lambda[b_{\text{max}}^{(j)} - s_l']^+]\notag\\
-		    \leq &\ U_{\mathcal{T}_j}(a_k^*,a_{-k}^*) - U_{\mathcal{T}_l}(a_k',a_{-k}^*) - \lambda_0[b_{\text{max}}^{(j)} - s_l']^+ \notag \\
-		    \leq &\ \max_{\mathcal{T}_j \in \mathcal{T}} \{U_{\mathcal{T}_j}(a_i^*,a_{-i}^*) - U_{\mathcal{T}_j}(a_0,a_{-i}^*)\} - \lambda_0[b_{\text{max}}^{(j)} - s_l']^+
+		    =&\ U_{\mathcal{T}_j}(a_k^*,a_{-k}^*) - \lambda(s_j^*-b_{\text{max}}^{(j)}) - [U_{\mathcal{T}_l}(a_k',a_{-k}^*) + \lambda[b_{\text{max}}^{(l)} - s_l']^-]\notag\\
+		    \leq &\ U_{\mathcal{T}_j}(a_k^*,a_{-k}^*) - U_{\mathcal{T}_l}(a_k',a_{-k}^*) - \lambda(s_j^*-b_{\text{max}}^{(j)}) \notag \\
+		    \leq &\ \max_{\mathcal{T}_j \in \mathcal{T}} \{U_{\mathcal{T}_j}(a_i^*,a_{-i}^*) - U_{\mathcal{T}_j}(a_i',a_{-i}^*)\} - \lambda_0(s_j^*-b_{\text{max}}^{(j)})
 		\end{align}
-		由$\lambda_0$的定义，易知至少存在一个$k_0$满足$b_{\text{max}}^{(j)} - s_{k_0}>0$，使得$\widetilde U_{\mathcal{M}_{k_0}}(a_{k_0}^*,a_{-{k_0}}^*) - \widetilde U_{\mathcal{M}_{k_0}}(a_{k_0}',a_{-{k_0}}^*) \leq 0$，这与$a^*$是纯纳什均衡的条件（\ref{pg:eq:pure_Nash}）矛盾，因此$a^*$必然满足约束条件。
+		由$\lambda_0$的定义易知$\widetilde U_{\mathcal{M}_{k_0}}(a_{k_0}^*,a_{-{k_0}}^*) - \widetilde U_{\mathcal{M}_{k_0}}(a_{k_0}',a_{-{k_0}}^*) \leq 0$，这与$a^*$是纯纳什均衡的条件（\ref{pg:eq:pure_Nash}）矛盾，因此$a^*$必然满足约束条件。
 	\end{proof}
 	
 \end{proposition}
@@ -204,12 +204,12 @@ Lagrange乘子法是一种典型的处理含约束优化问题的方法，其将
 	势博弈模型$\mathcal{G}$的PoA上界为
 	\begin{equation}
 	\label{pg:pro:eq:High_Bound_PoA}
-		\mathrm{PoA}(\mathcal{G}) \leq 1 + \lambda
+		\mathrm{PoA}(\mathcal{G}) \leq 1 + \eta
 	\end{equation}
 	其中
 	\begin{equation}
-	\label{pg:pro:eq:lambda_PoA}
-		\lambda = \max_{\substack{\forall a,a' \in \mathcal{A}\\ \forall \mathcal{M}_i \in \mathcal{M}}} \Bigg\{ \frac{\widetilde U_g(a') - \widetilde U_g(a_i',a_{-i})}{\widetilde U_g(a)} \Bigg\}
+	\label{pg:pro:eq:eta_PoA}
+		\eta= \max_{\substack{\forall a,a' \in \mathcal{A}\\ \forall \mathcal{M}_i \in \mathcal{M}}} \Bigg\{ \frac{\widetilde U_g(a') - \widetilde U_g(a_i',a_{-i})}{\widetilde U_g(a)} \Bigg\}
 	\end{equation}
 	
 	\begin{proof}
@@ -239,13 +239,13 @@ Lagrange乘子法是一种典型的处理含约束优化问题的方法，其将
 		\label{pg:pro:eq:cal_PoA}
 			\frac{U_g(a^{\text{opt}})}{U_g(a^*)} &\leq 1 + \frac{\widetilde U_g(a^{\text{opt}}) - \widetilde U_g(a_i^{\text{opt}},a_{-i}^*)}{\widetilde U_g(a^*)}\notag\\
 			&\leq 1 + \max_{\substack{\forall a,a' \in \mathcal{A}\\ \forall \mathcal{M}_i \in \mathcal{M}}} \Bigg\{ \frac{\widetilde U_g(a') - \widetilde U_g(a_i',a_{-i})}{\widetilde U_g(a)} \Bigg\}\notag\\
-			&\triangleq 1 +\lambda
+			&\triangleq 1 +\eta
 		\end{align}
 		
 		因此
 		\begin{equation}
 		\label{pg:pro:eq:comclusion_PoA}
-			\mathrm{PoA}(\mathcal{G}) \leq 1 + \lambda
+			\mathrm{PoA}(\mathcal{G}) \leq 1 + \eta
 		\end{equation}
 	\end{proof}
 \end{proposition}

@@ -8,6 +8,7 @@ Missile.p = 10*rand(Nm,2);
 Missile.v = 0.4*ones(Nm,1);
 Missile.angle = 0.1*pi*rand(Nm,1);
 Missile.acc = zeros(Nm,1);
+Missile.adjacent = ones(Nm);
 
 Target.p = 20*rand(Nt,2);
 Target.p(:,1) = 10 + 5*rand(Nt,1);
@@ -17,7 +18,7 @@ Target.acc = (-2+4*rand(Nt,1))*0.0098;
 
 important_target_index = randi(Nt);
 Target.value = 200*ones(Nt,1);
-Target.value(important_target_index) = 300;
+% Target.value(important_target_index) = 300;
 
 Target.requireNum = ones(Nt,1);
 Target.requireNum(important_target_index) = 2;
@@ -80,9 +81,73 @@ end
 
 %% 分配
 Epis = 500;
-[SAP_assign, SAP_global, SAP_global_series] = SAPfunction(Target.value,Target.requireNum,T_go,J_opt,Epis);
-[SAP_lagrange_assign, SAP_lagrange_global, SAP_lagrange_global_series] = SAP_lagrange_function(Target.value,Target.requireNum,T_go,J_opt,Epis);
+for r = 1:100
+%[GRM_assign, GRM_global, GRM_global_series] = GRMfunction(Nm,Nt,Target.value,Target.requireNum,T_go,J_opt,Epis);
+[SAP_assign, SAP_global, SAP_global_series] = SAPfunction(Nm,Nt,Target.value,Target.requireNum,T_go,J_opt,Epis);
+[SAP_lagrange_assign, SAP_lagrange_global, SAP_lagrange_global_series] = SAP_lagrange_function(Nm,Nt,Target.value,Target.requireNum,T_go,J_opt,Epis);
+[HCG_assign, HCG_global, HCG_global_series] = HCGFunction(Nm,Nt,Missile.adjacent,Target.value,Target.requireNum,Target.requireNum,T_go,J_opt,Epis);
+[HCG2_assign, HCG2_global, HCG2_global_series] = HCGFunction2(Nm,Nt,Missile.adjacent,Target.value,Target.requireNum,Target.requireNum,T_go,J_opt,Epis);
+% [HCGZ_assign, HCGZ_global, HCGZ_global_series] = HCGFunction_with_Zeuthen(Nm,Nt,Missile.adjacent,Target.value,Target.requireNum,Target.requireNum,T_go,J_opt,Epis);
+% episode = 1:Epis;
+% plot(episode,SAP_global_series,episode,SAP_lagrange_global_series,episode,HCG_global_series,episode,HCG2_global_series)%,episode,HCGZ_global_series);
+% legend('SAP with newU','SAP lagrange','HCG','HCG2')%,'HCGZ')
 
-episode = 1:Epis;
-plot(episode,SAP_global_series,episode,SAP_lagrange_global_series);
-legend('SAP with newU','SAP lagrange')
+Ug_SAP(r) = GlobalUtility(SAP_assign,Target.value,T_go,J_opt);
+Ug_SAP_lagrange(r) = GlobalUtility(SAP_lagrange_assign,Target.value,T_go,J_opt);
+Ug_HCG(r) = GlobalUtility(HCG_assign,Target.value,T_go,J_opt);
+Ug_HCG2(r) = GlobalUtility(HCG2_assign,Target.value,T_go,J_opt);
+
+[Time_SAP(r),J_SAP(r)] = Time_and_Energy(SAP_assign,T_go,J_opt);
+[Time_SAP_lagrange(r),J_SAP_lagrange(r)] = Time_and_Energy(SAP_lagrange_assign,T_go,J_opt);
+[Time_HCG(r),J_HCG(r)] = Time_and_Energy(HCG_assign,T_go,J_opt);
+[Time_HCG2(r),J_HCG2(r)] = Time_and_Energy(HCG2_assign,T_go,J_opt);
+
+end
+
+figure(1)
+boxplot([Ug_SAP;Ug_SAP_lagrange;Ug_HCG;Ug_HCG2]');
+tick = {'SAP','SAPlagrange','HCG','HCG2'};
+set(gca,'XTickLabel',tick);
+
+figure(2)
+boxplot([Time_SAP;Time_SAP_lagrange;Time_HCG;Time_HCG2]');
+tick = {'SAP','SAPlagrange','HCG','HCG2'};
+set(gca,'XTickLabel',tick);
+
+figure(3)
+boxplot([J_SAP;J_SAP_lagrange;J_HCG;J_HCG2]');
+tick = {'SAP','SAPlagrange','HCG','HCG2'};
+set(gca,'XTickLabel',tick);
+%% 分配结果效用
+function [Ug] = GlobalUtility(Assign,Value,Time_to_go,J_opt)
+[Nt,~] = size(Value);
+Ug = 0;
+Ut = zeros(Nt,1);
+
+for j=1:Nt
+    part_missiles = find(Assign == j);
+    num_missiles = length(part_missiles);
+    if num_missiles == 0
+        Ut(j) = 0;
+    else
+        time_max = max(Time_to_go(part_missiles,j));
+        J_sum = sum(J_opt(part_missiles,j));
+        cost = time_max + J_sum;
+        Ut(j) = Value(j) - cost;
+    end
+    
+end
+Ug = sum(Ut);
+end
+
+function [Time,J] = Time_and_Energy(Assign,T_go,J_opt)
+
+[Nm,~] = size(Assign);
+for i=1:Nm
+    time_assign(i) = T_go(i,Assign(i));
+    J_assign(i) = J_opt(i,Assign(i));
+end
+
+Time = max(time_assign);
+J = sum(J_assign);
+end

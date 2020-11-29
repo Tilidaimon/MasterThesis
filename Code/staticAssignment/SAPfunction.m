@@ -1,11 +1,9 @@
-function [AssignTarget, MaxGlobalUtility, GlobalUtility] = SAPfunction(TargetValue,RequireNum,Time_to_go,J_opt,Epis)
-
-[AgentNum,TargetNum] = size(Time_to_go);
+function [AssignTarget, MaxGlobalUtility, GlobalUtility] = SAPfunction(AgentNum, TargetNum, TargetValue,RequireNum,Time_to_go,J_opt,Epis)
 
 ProbDist = rand(AgentNum, TargetNum);%智能体选择任务概率分布表存储
 assigntarget = [];
 for j=1:TargetNum
-    assigntarget = [assigntarget, j*ones(1,RequireNum(j))];
+    assigntarget = [assigntarget;j*ones(RequireNum(j),1)];
 end
 
 AssignTarget = assigntarget;
@@ -98,14 +96,15 @@ function [U] = TargetUtility(target,target_value,AssignTarget,Time_to_go,J_opt)
 part_missiles = find(AssignTarget == target);
 num_missiles = length(part_missiles);
 if num_missiles == 0
-    task_cost = 0;
+    U = 0;
 else
     Time_to_go_max = max(Time_to_go(part_missiles,target));
     %J_max_task = max(J_opt(part_missiles,j));
     task_cost = Time_to_go_max+sum(J_opt(part_missiles,target));
+    
+    U = target_value(target) - task_cost;
 end
 
-U = target_value(target) - task_cost;
 
 end
 

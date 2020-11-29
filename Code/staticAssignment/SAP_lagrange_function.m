@@ -1,10 +1,7 @@
-function [AssignTarget, MaxGlobalUtility, GlobalUtility] = SAP_lagrange_function(TargetValue,RequireNum,Time_to_go,J_opt,Epis)
+function [AssignTarget, MaxGlobalUtility, GlobalUtility] = SAP_lagrange_function(AgentNum, TargetNum, TargetValue,RequireNum,Time_to_go,J_opt,Epis)
 
-[AgentNum,TargetNum] = size(Time_to_go);
-
-
-ProbDist = rand(AgentNum, TargetNum);%智能体选择任务概率分布表存储
-AssignTarget = zeros(1,AgentNum);%分配任务表
+ProbDist = ones(AgentNum, TargetNum);%智能体选择任务概率分布表存储
+AssignTarget = zeros(AgentNum,1);%分配任务表
 % 初始任务分配
 % AssignTarget = randperm(TargetNum);
 
@@ -28,7 +25,7 @@ end
 %% 迭代更新
 T = Epis;%总迭代步数
 GlobalUtility = zeros(1,T);
-lambda = 10;
+lambda = 300;
 
 
 for j = 1:TargetNum
@@ -105,8 +102,8 @@ part_missiles = find(AssignTarget == target);
 num_missiles = length(part_missiles);
 num_require = require_num(target);
 if num_missiles == 0
-    task_cost = 0;
-    U = 0;
+    con = lambda*min(num_require-num_missiles,0);
+    U = con;
 else
     Time_to_go_max = max(Time_to_go(part_missiles,target));
     %J_max_task = max(J_opt(part_missiles,j));
