@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999991 (TeX Live 2019) (preloaded format=xelatex 2020.2.27)  29 NOV 2020 21:05
+This is XeTeX, Version 3.14159265-2.6-0.999991 (TeX Live 2019) (preloaded format=xelatex 2020.2.27)  30 NOV 2020 23:22
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -2010,9 +2010,9 @@ LaTeX Font Info:    Font shape `TU/SourceCodePro(1)/m/n' will be
 (Font)              scaled to size 4.6875pt on input line 325.
  [18] [19] [20]
 LaTeX Font Info:    Font shape `TU/SourceCodePro(0)/m/n' will be
-(Font)              scaled to size 11.29218pt on input line 471.
+(Font)              scaled to size 11.29218pt on input line 472.
 LaTeX Font Info:    Font shape `TU/SourceCodePro(0)/m/n' will be
-(Font)              scaled to size 9.88065pt on input line 471.
+(Font)              scaled to size 9.88065pt on input line 472.
 ) (./contents/hedonic_game.tex [21] [22]
 第四章
 ) (./contents/reassign.tex [23
@@ -2081,7 +2081,7 @@ Package pageslts Info: Total number of pages is odd.
 Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 86.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 86.
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: FEA667A43EB76D1EBA49A0FE65BCEC59.
+(rerunfilecheck)             Checksum: D02496C1A45D289A83115B924C03198B.
 
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
@@ -2091,10 +2091,10 @@ Package logreq Info: Writing requests to 'main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 57890 strings out of 492916
- 1171242 string characters out of 6133345
- 1781840 words of memory out of 5000000
- 61031 multiletter control sequences out of 15000+600000
+ 57891 strings out of 492916
+ 1171253 string characters out of 6133345
+ 1781872 words of memory out of 5000000
+ 61032 multiletter control sequences out of 15000+600000
  540568 words of font info for 190 fonts, out of 8000000 for 9000
  1349 hyphenation exceptions out of 8191
  71i,18n,120p,1140b,2766s stack positions out of 5000i,500n,10000p,200000b,80000s

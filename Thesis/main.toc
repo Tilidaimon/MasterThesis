@@ -24,8 +24,9 @@
 \contentsline {subsection}{\numberline {3.5.1}虚拟博弈算法}{17}{subsection.3.5.1}% 
 \contentsline {subsection}{\numberline {3.5.2}后悔匹配算法}{19}{subsection.3.5.2}% 
 \contentsline {subsection}{\numberline {3.5.3}空间自适应博弈算法}{21}{subsection.3.5.3}% 
-\contentsline {section}{\numberline {3.6}仿真分析与对比}{21}{section.3.6}% 
-\contentsline {section}{\numberline {3.7}本章小结}{21}{section.3.7}% 
+\contentsline {section}{\numberline {3.6}均衡选择}{21}{section.3.6}% 
+\contentsline {section}{\numberline {3.7}仿真分析与对比}{22}{section.3.7}% 
+\contentsline {section}{\numberline {3.8}本章小结}{22}{section.3.8}% 
 \contentsline {chapter}{\numberline {第四章}基于享乐联盟博弈的分布式任务分配}{23}{chapter.4}% 
 \contentsline {section}{\numberline {4.1}引言}{23}{section.4.1}% 
 \contentsline {section}{\numberline {4.2}享乐联盟博弈模型}{23}{section.4.2}% 

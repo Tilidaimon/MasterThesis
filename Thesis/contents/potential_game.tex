@@ -253,10 +253,10 @@ Lagrange乘子法是一种典型的处理含约束优化问题的方法，其将
 
 %----------------------------------------
 \section{均衡求解}
-\label{pg:upgta:protocal}
+\label{pg:pgta:protocal}
 
 \subsection{虚拟博弈算法}
-\label{upgta:protocal:FP}
+\label{pgta:protocal:FP}
 虚拟博弈算法（Fictitious Play, FP）是一种经典的学习算法，最初被用来求解零和博弈中的纳什均衡，但也被提出可以用于多智能体系统的学习算法。在本节，虚拟博弈算法被视为智能体选择目标的机制。在每个时刻$k$，智能体$i$计算自身的经验频率分布$q_i(k)$，并根据该分布选择下一步最优决策。智能体经验频率分布定义为
 
 \begin{equation}
@@ -342,7 +342,7 @@ JSFP的算法流程如\ref{pg:algo:jsfp}所示。
 
 %----------------------------------
 \subsection{后悔匹配算法}
-\label{upgta:protocal:RM}
+\label{pgta:protocal:RM}
 
 后悔匹配算法（Regret Matching, RM）是借鉴了JSFP的思想，与JSFP计算前$k-1$个时刻选择目标的平均效用不同，RM计算的是前$k-1$次迭代不选择该目标将会损失的效用。沿用前面的符号，在第$k$次迭代，智能体$i$计算器对于目标$\overline a_i^j$平均后悔值为
 
@@ -414,6 +414,7 @@ JSFP的算法流程如\ref{pg:algo:jsfp}所示。
 
 %------------------------------
 \subsection{空间自适应博弈算法}
+\
 
 空间自适应博弈算法（Spatial Adaptive Play, SAP）原本是空间博弈中的一种自适应学习方法，本节将针对任务分配问题的特点，将其改造为适用于任务分配问题的SAP算法。
 
@@ -470,8 +471,9 @@ SAP算法和sSAP算法的流程如算法\ref{pg:algo:SAP}所示。
 	}
 \end{algorithm}
 
-
-
+\section{均衡选择}
+\label{pg:selection}
+\ref{pg:pgta:protocal}节的均衡求解算法和
 
 \section{仿真分析与对比}
 \label{pg:simulation}
