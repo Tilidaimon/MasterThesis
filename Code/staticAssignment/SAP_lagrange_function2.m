@@ -94,8 +94,10 @@ for k = 2:T
    if sum(sap_satisfied(neighbors))==num_neighbors
        for p=1:num_neighbors
            if p==i
+               ex_satisfied(p) = 1;
                continue
            end
+           ex_satisfied(neighbors) = 1;
            AssignEx1 = AssignTarget;
            AssignEx2 = AssignTarget;
            task1 = AssignEx2(i);
@@ -110,8 +112,10 @@ for k = 2:T
                AssignTarget(p) = extask;
                sap_satisfied(i) = 0;
                sap_satisfied(p) = 0;
+               ex_satisfied(i) = 0;
+               ex_satisfied(p) = 0;
            end
-           ex_satisfied(neighbors) = 1;
+           
        end
    end
     

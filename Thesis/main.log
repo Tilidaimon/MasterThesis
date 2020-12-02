@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999991 (TeX Live 2019) (preloaded format=xelatex 2020.2.27)  30 NOV 2020 23:22
+This is XeTeX, Version 3.14159265-2.6-0.999991 (TeX Live 2019) (preloaded format=xelatex 2020.2.27)  2 DEC 2020 21:54
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1988,52 +1988,58 @@ Underfull \hbox (badness 10000) in paragraph at lines 40--41
  []
 
 [11] [12]
-Package hyperref Info: bookmark level for unknown proposition defaults to 0 on input line 101.
-Package hyperref Info: bookmark level for unknown proof defaults to 0 on input line 106.
+Package hyperref Info: bookmark level for unknown proposition defaults to 0 on input line 102.
+Package hyperref Info: bookmark level for unknown proof defaults to 0 on input line 107.
  [13]
-Underfull \hbox (badness 5652) in paragraph at lines 154--155
+Underfull \hbox (badness 5652) in paragraph at lines 155--156
 []\TU/STSong(0)/m/n/12.045 只 需 证 明 全 局 效 用 函 数 $[][][][]$ 与 式  |（[]\TU/XITS(0)/m/n/12.045 3–9[]\TU/STSong(0)/m/n/12.045 ）|  定 义 的 智 能 体 效 用 函 数
  []
 
-[14] [15] [16] [17]
+[14] [15] [16] [17] [18]
 LaTeX Font Info:    Font shape `TU/XITSMath-Regular(2)/m/n' will be
-(Font)              scaled to size 7.00075pt on input line 325.
+(Font)              scaled to size 7.00075pt on input line 328.
 LaTeX Font Info:    Font shape `TU/XITSMath-Regular(2)/m/n' will be
-(Font)              scaled to size 5.00053pt on input line 325.
+(Font)              scaled to size 5.00053pt on input line 328.
 LaTeX Font Info:    Font shape `TU/XITSMath-Regular(3)/m/n' will be
-(Font)              scaled to size 6.99925pt on input line 325.
+(Font)              scaled to size 6.99925pt on input line 328.
 LaTeX Font Info:    Font shape `TU/XITSMath-Regular(3)/m/n' will be
-(Font)              scaled to size 4.99947pt on input line 325.
+(Font)              scaled to size 4.99947pt on input line 328.
 LaTeX Font Info:    Font shape `TU/SourceCodePro(1)/m/n' will be
-(Font)              scaled to size 6.5625pt on input line 325.
+(Font)              scaled to size 6.5625pt on input line 328.
 LaTeX Font Info:    Font shape `TU/SourceCodePro(1)/m/n' will be
-(Font)              scaled to size 4.6875pt on input line 325.
- [18] [19] [20]
+(Font)              scaled to size 4.6875pt on input line 328.
 LaTeX Font Info:    Font shape `TU/SourceCodePro(0)/m/n' will be
-(Font)              scaled to size 11.29218pt on input line 472.
+(Font)              scaled to size 11.29218pt on input line 330.
 LaTeX Font Info:    Font shape `TU/SourceCodePro(0)/m/n' will be
-(Font)              scaled to size 9.88065pt on input line 472.
-) (./contents/hedonic_game.tex [21] [22]
+(Font)              scaled to size 9.88065pt on input line 330.
+ [19] [20] [21] [22]) (./contents/hedonic_game.tex [23] [24]
 第四章
-) (./contents/reassign.tex [23
+[25
 
-] [24
-
-]
+] [26]
+Package hyperref Info: bookmark level for unknown theorem defaults to 0 on input line 89.
+ [27]
+File: figures/taskreward.eps Graphic file (type eps)
+<figures/taskreward.eps>
+File: figures/agentreward.eps Graphic file (type eps)
+<figures/agentreward.eps>
+ [28] [29] [30] [31]) (./contents/reassign.tex [32]
 第五章
-) (./contents/summary.tex [25] [26
+) (./contents/summary.tex [33
+
+] [34
 
 ]
 第六章
-) (./contents/app_maxwell_equations.tex [27] [28
+) (./contents/app_maxwell_equations.tex [35] [36
 
 ]
 附录 A
-) (./contents/app_flow_chart.tex [29] [30
+) (./contents/app_flow_chart.tex [37] [38
 
 ]
 附录 B
-(./figures/flow_chart.tex)) [31] [32
+(./figures/flow_chart.tex)) [39] [40
 
 ]
 
@@ -2044,22 +2050,22 @@ LaTeX Warning: Empty bibliography on input line 68.
 LaTeX Font Warning: Font shape `TU/XITS(0)/m/sc' undefined
 (Font)              using `TU/XITS(0)/m/n' instead on input line 18.
 
-) (./contents/publications.tex [33
+) (./contents/publications.tex [41
 
 
-] [34
+] [42
 
-]) (./contents/achievements.tex [35
+]) (./contents/achievements.tex [43
 
-] [36
+] [44
 
-]) (./contents/resume.tex [37
+]) (./contents/resume.tex [45
 
-] [38
+] [46
 
 ]) (./contents/english_digest.tex) 
 AED: pageslts setting LastPage 
-[39
+[47
 
 ]
 \tf@thm=\write10
@@ -2081,7 +2087,7 @@ Package pageslts Info: Total number of pages is odd.
 Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 86.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 86.
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: D02496C1A45D289A83115B924C03198B.
+(rerunfilecheck)             Checksum: 1A7ECF27C634B0259168A83DB698AE07.
 
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
@@ -2091,12 +2097,12 @@ Package logreq Info: Writing requests to 'main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 57891 strings out of 492916
- 1171253 string characters out of 6133345
- 1781872 words of memory out of 5000000
- 61032 multiletter control sequences out of 15000+600000
- 540568 words of font info for 190 fonts, out of 8000000 for 9000
+ 57959 strings out of 492916
+ 1173491 string characters out of 6133345
+ 1789929 words of memory out of 5000000
+ 61090 multiletter control sequences out of 15000+600000
+ 540632 words of font info for 198 fonts, out of 8000000 for 9000
  1349 hyphenation exceptions out of 8191
- 71i,18n,120p,1140b,2766s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 71i,20n,120p,1140b,2766s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on main.pdf (63 pages).
+Output written on main.pdf (71 pages).

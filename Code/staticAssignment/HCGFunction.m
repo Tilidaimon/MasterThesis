@@ -1,4 +1,4 @@
-function [FinalAssignList, maxutility, globalutility] = HCGFunction(AgentNum, TaskNum, Adjacent, Task_Value, Desired_Num, Max_limit_num, Time_to_go, J_opt, Epis)
+function [FinalAssignList, maxutility, globalutility] = HCGFunction(AgentNum, TaskNum, Adjacent, Task_Value, Max_limit_num, Time_to_go, J_opt, Epis)
 
 %% Parameter Initialisation
 EvolveNum = zeros(1,AgentNum); % an integer variable to represent how many times partition has evolved
@@ -8,7 +8,7 @@ AssignList = ones(AgentNum); % Assign List for each agent
 % AssignList = randi(TaskNum, AgentNum);
 % AssignList = randi(TaskNum,AgentNum,1)*ones(1,AgentNum);
 
-coAgentNums = zeros(AgentNum, TaskNum); % Initial Partition
+coAgentNums = zeros(AgentNum, TaskNum+1); % Initial Partition
 coAgentNums(:,1) = AgentNum*ones(AgentNum,1); % Initial numbers distribution of cooperated agents
 Satisfied = zeros(1,AgentNum); % whether or not the agent is satisfied with the partition
 
@@ -23,7 +23,7 @@ for t = 1:T
         
         best_task = AssignList(i,i); % current task of agent i
 %         curUtility = AgentTaskUtility(TaskCat(bestTask), coAgentNums(i,bestTask), Distance(i,bestTask), Rmax(bestTask), DesiredNum(bestTask), Rmin(bestTask), epi);
-        curUtility = AuxiliaryUtility(coAgentNums(i,best_task), Task_Value(best_task), Desired_Num(best_task), Max_limit_num(best_task), Time_to_go(i,best_task), J_opt(i,best_task));
+        curUtility = AuxiliaryUtility(best_task, coAgentNums(i,best_task), Task_Value(best_task), Max_limit_num(best_task), Time_to_go(i,best_task), J_opt(i,best_task));
         bestUtility = curUtility;
         localutility(i) = curUtility;
         globalutility(t) = sum(localutility);
@@ -35,7 +35,7 @@ for t = 1:T
                     continue
                 else
 %                     tmpUti = AgentTaskUtility(j, TaskCat(j), coAgentNums(i,j)+1, Distance(i,j), Rmax(j), DesiredNum(j), Rmin(j), epi);
-                    tmpUti = AuxiliaryUtility(coAgentNums(i,j)+1, Task_Value(j), Desired_Num(j), Max_limit_num(j), Time_to_go(i,j), J_opt(i,j));
+                    tmpUti = AuxiliaryUtility(j, coAgentNums(i,j)+1, Task_Value(j), Max_limit_num(j), Time_to_go(i,j), J_opt(i,j));
                     if tmpUti > bestUtility
                         bestUtility = tmpUti;
                         best_task = j;
@@ -71,14 +71,21 @@ end
 
 
 %% Auxiliary individual utility function
-function [AU] = AuxiliaryUtility(coAgentNum, task_value, desired_num, max_limit_num, time_to_go, j_opt)
+function [AU] = AuxiliaryUtility(task, coAgentNum, task_value, max_limit_num, time_to_go, j_opt)
 
-if coAgentNum > max_limit_num
+e = 3;
+rmin = task_value;
+if task == 1
     AU = 0;
 else
-    R = (task_value/desired_num) * exp(-coAgentNum/desired_num+1);
-    cost = time_to_go + j_opt;
-    AU = R - cost;
+    if coAgentNum > max_limit_num
+        AU = 0;
+    else
+        %R = (task_value/desired_num) * exp(-coAgentNum/desired_num+1);
+        R = rmin*log(coAgentNum+e-1)/coAgentNum;
+        cost = time_to_go + j_opt;
+        AU = R - cost;
+    end
 end
 end
 

@@ -68,10 +68,11 @@ a_{-i}=(a_1,\dots,a_{i-1},a_{i+1},\dots,a_{n_m}),
 %-----------------------------------------------
 
 %--------------------------------
-\section{智能体效用函数}
+\section{面向任务分配问题的势博弈模型设计}
+\label{pg:agent_utility}
+
+\subsection{美好生活效用函数}
 \label{pg:wlu}
-
-
 使用势博弈模型解决任务分配问题对导弹的智能体效用函数提出的要求是，满足
 
 \begin{equation}
@@ -114,7 +115,7 @@ a_{-i}=(a_1,\dots,a_{i-1},a_{i+1},\dots,a_{n_m}),
 
 
 
-\section{约束条件处理方法}
+\subsection{约束条件处理方法}
 \label{pg:mwlu}
 
 上述势博弈框架和智能体效用函数设计下，对于智能体选择任务并没有做出任何限制和约束，因此需要利用约束条件式（\ref{model:eq:simbmax}）将势博弈的纳什均衡限制在可行解中。本节提出了基于Lagrange乘子法将有约束问题转化为无约束问题，并证明了在满足一定的条件下，新的无约束问题下获得的纳什均衡解均为原问题的可行解。
@@ -143,7 +144,7 @@ Lagrange乘子法是一种典型的处理含约束优化问题的方法，其将
 下面需要验证MWLU的有效性，主要分为三部分：（1）满足MWLU效用的智能体能否组成势博弈模型；（2）该势博弈模型下得到的纳什均衡是否都满足原问题的约束；（3）该势博弈模型下得到的纳什均衡解的最优性。
 
 %----------------------------
-\subsection{势博弈成立条件}
+\subsubsection{势博弈成立条件}
 \label{pg:mwlu:pgcondition}
 为了验证MWLU函数的有效性，首先需要验证式（\ref{pg:eq:newAgentU}）定义的智能体效用函数是否可以组成一个势博弈模型。设智能体效用函数为MWLU的智能体组成的组成的博弈模型为$\mathcal{G}=\{\mathcal{M},\mathcal{A},U_{\mathcal{M}}(a)\}$，实际上，可以得到以下结论：
 
@@ -162,7 +163,7 @@ Lagrange乘子法是一种典型的处理含约束优化问题的方法，其将
 \end{proposition}
 
 %--------------------------------
-\subsection{纯纳什均衡可行性分析}
+\subsubsection{纯纳什均衡可行性分析}
 \label{pg:mwlu:pgexist}
 在验证势博弈模型成立之后，下一步需要验证该势博弈模型所得到的纯纳什均衡是否是原问题的可行解，此处有以下结论：
 
@@ -188,7 +189,7 @@ Lagrange乘子法是一种典型的处理含约束优化问题的方法，其将
 \end{proposition}
 
 %---------------------
-\subsection{纳什均衡最优性}
+\subsubsection{纳什均衡最优性}
 \label{pg:mwlu:pgoptimal}
 
 在命题\ref{pg:pro:feasibility}下，势博弈模型$\mathcal{G}$的纳什均衡均为原问题的可行解，因此最后需要考察这些纳什均衡解的最优性。本节选择使用无秩序代价（Price of Anarchy, PoA）作为衡量纳什均衡性能的指标。设纯纳什均衡分配解为$a^*$，全局最优分配解为$a^{\text{opt}}$，则PoA的定义为全局最优效用和纳什均衡效用的最小值之比：
@@ -252,10 +253,12 @@ Lagrange乘子法是一种典型的处理含约束优化问题的方法，其将
 
 
 %----------------------------------------
-\section{均衡求解}
+\section{基于势博弈模型的任务分配算法}
+\label{pg:pgta}
+\subsection{单方决策}
 \label{pg:pgta:protocal}
 
-\subsection{虚拟博弈算法}
+\subsubsection{虚拟博弈算法}
 \label{pgta:protocal:FP}
 虚拟博弈算法（Fictitious Play, FP）是一种经典的学习算法，最初被用来求解零和博弈中的纳什均衡，但也被提出可以用于多智能体系统的学习算法。在本节，虚拟博弈算法被视为智能体选择目标的机制。在每个时刻$k$，智能体$i$计算自身的经验频率分布$q_i(k)$，并根据该分布选择下一步最优决策。智能体经验频率分布定义为
 
@@ -322,9 +325,9 @@ JSFP的算法流程如\ref{pg:algo:jsfp}所示。
 	\label{pg:algo:jsfp}
 	\small
 	\SetAlgoLined
-	\KwIn{$\mathcal{M},n_m,\mathcal{T},n_t,\mathcal{A}$}
+	\KwIn{$\mathcal{M},\mathcal{T},\mathcal{A},r$}
 	\KwOut{均衡解$a^*$}
-	
+	\tcp{初始化参数}
 	随机初始化分配解$a$\;
 	${\overline U}_i(0) \gets {\bm 0}_{1 \times n_t},i=1,\dots,n_t$\;
 	$k \gets 1$\;
@@ -341,7 +344,7 @@ JSFP的算法流程如\ref{pg:algo:jsfp}所示。
 
 
 %----------------------------------
-\subsection{后悔匹配算法}
+\subsubsection{后悔匹配算法}
 \label{pgta:protocal:RM}
 
 后悔匹配算法（Regret Matching, RM）是借鉴了JSFP的思想，与JSFP计算前$k-1$个时刻选择目标的平均效用不同，RM计算的是前$k-1$次迭代不选择该目标将会损失的效用。沿用前面的符号，在第$k$次迭代，智能体$i$计算器对于目标$\overline a_i^j$平均后悔值为
@@ -396,10 +399,10 @@ JSFP的算法流程如\ref{pg:algo:jsfp}所示。
 	\label{pg:algo:GRMFMI}
 	\small
 	\SetAlgoLined
-	\KwIn{$\mathcal{M},n_m,\mathcal{T},n_t,\mathcal{A}$}
+	\KwIn{$\mathcal{M},\mathcal{T},\mathcal{A},r$}
 	\KwOut{均衡解$a^*$}
-	
-	初始化$\widetilde R_{\mathcal{M}_i}^j(0)=0$\;
+	\tcp{初始化参数}
+	$\widetilde R_{\mathcal{M}_i}^j(0) \gets 0$\;
 	$k \gets 1$\;
 	\While{true}{
 		\For{$i=1:n_m$}{
@@ -413,8 +416,8 @@ JSFP的算法流程如\ref{pg:algo:jsfp}所示。
 
 
 %------------------------------
-\subsection{空间自适应博弈算法}
-\
+\subsubsection{空间自适应博弈算法}
+\label{pgta:protocal:sap}
 
 空间自适应博弈算法（Spatial Adaptive Play, SAP）原本是空间博弈中的一种自适应学习方法，本节将针对任务分配问题的特点，将其改造为适用于任务分配问题的SAP算法。
 
@@ -456,9 +459,9 @@ SAP算法和sSAP算法的流程如算法\ref{pg:algo:SAP}所示。
 	\label{pg:algo:SAP}
 	\small
 	\SetAlgoLined
-	\KwIn{$\mathcal{M},n_m,\mathcal{T},n_t,\mathcal{A}$}
+	\KwIn{$\mathcal{M},\mathcal{T},\mathcal{A},r$}
 	\KwOut{均衡解$a^*$}
-	
+	\tcp{初始化参数}
 	$k \gets 1$\;
 	\While{true}{
 		随机选择一个智能体$\mathcal{M}_i$\;
@@ -471,14 +474,71 @@ SAP算法和sSAP算法的流程如算法\ref{pg:algo:SAP}所示。
 	}
 \end{algorithm}
 
-\section{均衡选择}
+%---------------------------
+\subsection{任务交易}
 \label{pg:selection}
-\ref{pg:pgta:protocal}节的均衡求解算法和
+\ref{pg:pgta:protocal}小节的单方决策算法可求得任务分配问题的一个可行解，且该可行解由式（\ref{pg:pro:eq:High_Bound_PoA}）限定了最优性能下界。但此时得到的仍是一个次优解，为了在次基础上进一步优化，本节设计了纳什均衡选择算法，在多个纳什均衡解中寻找更优解。
+
+当智能体及其邻居节点均达到自身的最优状态时，根据势博弈架构的性质，智能体已经无法通过单向的决策提高自身和全局的效用，因此此时需要智能体之间进行双方的协商与交易，在纳什均衡的基础上继续寻找更优的分配方案。
+
+本文提出的智能体双方交易算法的主要思路是：假设参与交易的两个智能体分别为$\mathcal{M}_i$和$\mathcal{M}_j$，且$a_i=\mathcal{T}_k,a_j=\mathcal{T}_l$，其他不参与交易的智能体不改变自己的任务，即当前的任务分配方案为$a=(a_1,\dots,a_i,\dots,a_j,\dots,a_{n_m})$，若交易达成，则两个智能体交换任务，交易后的任务分配方案为$a'=(a_1,\dots,a_i',\dots,a_j',\dots,a_{n_m}),a_i'=\mathcal{T}_l,a_j'=\mathcal{T}_k$。判断是否交易的条件时，参与交易的两个智能体分别计算如果交换任务之后，自身的效用变化值，
+\begin{equation}
+\label{pg:eq:deltaU}
+	\Delta U_{\mathcal{M}_x}(a,a') = U_{\mathcal{M}_x}(a') - U_{\mathcal{M}_x}(a),\ x \in \{i,j\}.
+\end{equation}
+如果$\mathcal{M}_i$和$\mathcal{M}_j$的效用变化值之和大于0，即交易后双方整体效用上升，则交易达成；如果小于0，则交易不进行；若等于0，则以一定概率进行交易。
+
+结合\ref{pg:pgta:protocal}小节的单方决策算法，基于势博弈模型的任务分配算法流程如算法\ref{pg:algo:pgta}所示。
+
+\begin{algorithm}[htb]
+	\caption{基于势博弈模型的任务分配算法}
+	\label{pg:algo:pgta}
+	\small
+	\SetAlgoLined
+	\KwIn{$\mathcal{M},\mathcal{T},\mathcal{A},r$}
+	\KwOut{最优解$a^*$}
+	\tcp{初始化}
+	$k \gets 1$\;
+	satisfied $\gets {\bm 0}_{1 \times n_m}$\;
+	\tcp{每个智能体的决策过程}
+	\tcp{循环终止条件为所有智能体达到满意状态}
+	\While{\text{!satisfied}}{
+		$a_i^* = \text{UnilateralDecision}(a_i,a_{-i})$); \tcp{智能体进行单方决策}
+		satisfied$(i) \gets 1$;\tcp{智能体$\mathcal{M}_i$进行最优决策后满意值置为1}
+		neighbors$ = \text{GetNeighbors}(i)$; \tcp{获取节点邻居}
+		\tcp{判断节点及其邻居是否均达到均衡，若均达到均衡，则返回flag为1}
+		flag$ = \text{JudgeEquilibrium}(\{i\} \cup \text{neighbors})$\; 
+		\If{$flag$}{
+			 \tcp{计算交易前后效用净变化值，选择净变化为正且最大的邻居}
+			deltaU$ \gets \max_{\mathcal{M}_k \in \text{neighbors}}\{\Delta U_{\mathcal{M}_i}(a,a')+\Delta U_{\mathcal{M}_k}(a,a')\}$\;
+			trader$\gets \arg\max_{\mathcal{M}_k \in \text{neighbors}}\{\Delta U_{\mathcal{M}_i}(a,a')+\Delta U_{\mathcal{M}_k}(a,a')\}$\;
+			
+			\uIf{$deltaU < 0$}{
+				TraderFlag$\gets 1$;\tcp{如果交易使得效用上升，则交换任务}
+			}
+			\ElseIf{$deltaU == 0$}{
+				TraderFlag $\gets \mathrm{rand}\{0,1\}$;\tcp{如果交易使得效用不变，则随机选择是否交换任务}
+			}
+			\If{TraderFlag $== 1$}{
+				tmp$ \gets a_{\text{trader}}^*$\;
+				$a_{\text{trader}}^* \gets a_i$\;
+				$a_{i}^* \gets $tmp\;
+				\tcp{将交易双方的满意值重置，重新进行单向决策}
+				satisfied$(i) \gets 0$\;
+				satisfied(trader)$ \gets 0$\;
+			}
+			
+		}
+		$k\gets k+1$\;
+	}
+\end{algorithm}
+
+
 
 \section{仿真分析与对比}
 \label{pg:simulation}
 
-
+仿真
 
 \section{本章小结}
 \label{pg:conclusion}

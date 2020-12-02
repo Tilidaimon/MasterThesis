@@ -94,15 +94,17 @@ for k = 2:T
    if sum(sap_satisfied(neighbors))==num_neighbors
        for p=1:num_neighbors
            if p==i
+               ex_satisfied(p) = 1;
                continue
            end
+           ex_satisfi
            AssignEx1 = AssignTarget;
            AssignEx2 = AssignTarget;
            task1 = AssignEx2(i);
            AssignEx2(i) = AssignEx2(p);
            AssignEx2(p) = task1;
-           AgentU1 = Agent_Utility(AssignEx1(i),TargetValue,AssignEx1,RequireNum,Time_to_go,J_opt,lambda)-Agent_Utility(AssignEx2(i),TargetValue,AssignEx2,RequireNum,Time_to_go,J_opt,lambda);
-           AgentU2 = Agent_Utility(AssignEx1(p),TargetValue,AssignEx1,RequireNum,Time_to_go,J_opt,lambda)-Agent_Utility(AssignEx2(p),TargetValue,AssignEx2,RequireNum,Time_to_go,J_opt,lambda);
+           AgentU1 = Agent_Utility(i,TargetValue,AssignEx2,RequireNum,Time_to_go,J_opt,lambda)-Agent_Utility(i,TargetValue,AssignEx1,RequireNum,Time_to_go,J_opt,lambda);
+           AgentU2 = Agent_Utility(p,TargetValue,AssignEx2,RequireNum,Time_to_go,J_opt,lambda)-Agent_Utility(p,TargetValue,AssignEx1,RequireNum,Time_to_go,J_opt,lambda);
            Net_utility = AgentU1+AgentU2;
            if Net_utility>0
                extask = AssignTarget(i);
@@ -129,10 +131,13 @@ for k = 2:T
         GlobalUtility(k) = GlobalUtility(k) - lagrange_multipler;
     end
     
-    if sum(sap_satisfied) == AgentNum
-        MaxGlobalUtility = GlobalUtility(Epis);
-        GlobalUtility(k+1:T) = MaxGlobalUtility*ones(1,T-tk);
+    if (sum(sap_satisfied) == AgentNum)&&(sum(ex_satisfied)==AgentNum)
+        MaxGlobalUtility = GlobalUtility(k);
+        GlobalUtility(k+1:T) = MaxGlobalUtility*ones(1,T-k);
         break
+    end
+    if k==T
+        MaxGlobalUtility = GlobalUtility(T);
     end
 end
 
