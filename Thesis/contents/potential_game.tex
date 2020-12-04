@@ -202,10 +202,10 @@ Lagrange乘子法是一种典型的处理含约束优化问题的方法，其将
 
 \begin{proposition}
 \label{pg:pro:PoA}
-	势博弈模型$\mathcal{G}$的PoA上界为
+	势博弈模型$\mathcal{G}_{\text{PG}}$的PoA上界为
 	\begin{equation}
 	\label{pg:pro:eq:High_Bound_PoA}
-		\mathrm{PoA}(\mathcal{G}) \leq 1 + \eta
+		\mathrm{PoA}(\mathcal{G}_{\text{PG}}) \leq 1 + \eta_{\text{PG}}
 	\end{equation}
 	其中
 	\begin{equation}
@@ -240,17 +240,18 @@ Lagrange乘子法是一种典型的处理含约束优化问题的方法，其将
 		\label{pg:pro:eq:cal_PoA}
 			\frac{U_g(a^{\text{opt}})}{U_g(a^*)} &\leq 1 + \frac{\widetilde U_g(a^{\text{opt}}) - \widetilde U_g(a_i^{\text{opt}},a_{-i}^*)}{\widetilde U_g(a^*)}\notag\\
 			&\leq 1 + \max_{\substack{\forall a,a' \in \mathcal{A}\\ \forall \mathcal{M}_i \in \mathcal{M}}} \Bigg\{ \frac{\widetilde U_g(a') - \widetilde U_g(a_i',a_{-i})}{\widetilde U_g(a)} \Bigg\}\notag\\
-			&\triangleq 1 +\eta
+			&\triangleq 1 +\eta_{\text{PG}}
 		\end{align}
 		
 		因此
 		\begin{equation}
 		\label{pg:pro:eq:comclusion_PoA}
-			\mathrm{PoA}(\mathcal{G}) \leq 1 + \eta
+			\mathrm{PoA}(\mathcal{G}_{\text{PG}}) \leq 1 + \eta_{\text{PG}}
 		\end{equation}
 	\end{proof}
 \end{proposition}
 
+由命题可知，一旦模型的效用函数确定，则模型纳什均衡性能的下界也随之确定。且为了使得设计的模型表现更好，应该通过设计全局效用函数尽量减小$\eta_{\text{PG}}$的值。
 
 %----------------------------------------
 \section{基于势博弈模型的任务分配算法}
@@ -266,6 +267,7 @@ Lagrange乘子法是一种典型的处理含约束优化问题的方法，其将
 \label{pg:eq:frequency}
 	q_i^j(k) = \frac{1}{k} \sum_{t=0}^{k-1} I\{a_i = A_i^j\},\ A_i^j \in \mathcal{A}_i, j = 1,\dots,|\mathcal{A}_i|,
 \end{equation}
+
 其中$I\{\cdot\}$为指示函数，$|\mathcal{A}_i|$表示目标集$\mathcal{A}_i$的势。
 
 智能体$i$在FP下选择目标的策略是假设其他智能体会独立地根据各自的经验频率分布随机选择一个目标。在此假设下，可计算出智能体$i$选择目标$A_i^j$的期望效用为

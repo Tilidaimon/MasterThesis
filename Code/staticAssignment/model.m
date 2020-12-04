@@ -82,7 +82,7 @@ end
 %% ·ÖÅä
 Epis = 500;
 tic
-% for r = 1:100
+for r = 1:100
 [SAP_lagrange2_assign, SAP_lagrange2_global, SAP_lagrange2_global_series] = SAP_lagrange_function2(Nm,Nt,Missile.adjacent,Target.value,Target.requireNum,T_go,J_opt,Epis);
 SAP_lagrange2_time = toc;
 tic
@@ -96,10 +96,10 @@ tic
 HCG2_time = toc;
 % [HCGZ_assign, HCGZ_global, HCGZ_global_series] = HCGFunction_with_Zeuthen(Nm,Nt,Missile.adjacent,Target.value,Target.requireNum,Target.requireNum,T_go,J_opt,Epis);
 
-Ug_SAP_lagrange2 = GlobalUtility(SAP_lagrange2_assign,Target.value,T_go,J_opt);
-Ug_HCG = GlobalUtility(HCG_assign,Target.value,T_go,J_opt);
-Ug_HCG2 = GlobalUtility(HCG2_assign,Target.value,T_go,J_opt);
-Ug_HCGSAP = GlobalUtility(HCGSAP_assign,Target.value,T_go,J_opt);
+Ug_SAP_lagrange2(r) = GlobalUtility(SAP_lagrange2_assign,Target.value,T_go,J_opt);
+Ug_HCG(r) = GlobalUtility(HCG_assign,Target.value,T_go,J_opt);
+% Ug_HCG2(r) = GlobalUtility(HCG2_assign,Target.value,T_go,J_opt);
+Ug_HCGSAP(r) = GlobalUtility(HCGSAP_assign,Target.value,T_go,J_opt);
 
 % episode = 1:Epis;
 % plot(episode,SAP_lagrange2_global_series,episode,HCG_global_series,episode,HCG2_global_series,episode,HCGSAP_global_series)%,episode,HCGZ_global_series);
@@ -117,12 +117,12 @@ Ug_HCGSAP = GlobalUtility(HCGSAP_assign,Target.value,T_go,J_opt);
 % [Time_HCG(r),J_HCG(r)] = Time_and_Energy(HCG_assign,T_go,J_opt);
 % [Time_HCG2(r),J_HCG2(r)] = Time_and_Energy(HCG2_assign,T_go,J_opt);
 % % 
-% end
+end
 % 
-% figure(1)
-% boxplot([Ug_SAP_lagrange2;Ug_HCG;Ug_HCG2;Ug_HCGSAP]');
-% tick = {'SAPlagrange2','HCG','HCG2','HCGSAP'};
-% set(gca,'XTickLabel',tick);
+figure(1)
+boxplot([Ug_SAP_lagrange2;Ug_HCG;Ug_HCGSAP]');
+tick = {'SAPlagrange2','HCG','HCGSAP'};
+set(gca,'XTickLabel',tick);
 % 
 % figure(2)
 % boxplot([Time_SAP_lagrange;Time_SAP_lagrange2;Time_HCG;Time_HCG2]');

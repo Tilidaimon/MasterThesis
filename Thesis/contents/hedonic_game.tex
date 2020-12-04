@@ -6,7 +6,7 @@
 \section{引言}
 \label{hg:sec:intro}
 
-使用享乐联盟博弈模型（Hedonic Coalition Game, HCG）解决任务分配问题的思路是将任务分配问题看作是智能体划分问题，按照任务或目标的不同划分联盟，每个智能体对不同联盟有着不同的偏好，智能体会根据自己的偏好选择自己的联盟，最终所有智能体在确定了自己的所属联盟后，便得到了任务分配的解。本章将建立基于HCG的任务分配框架并提出对应求解算法，并通过仿真对比实验验证其有效性、
+使用享乐联盟博弈模型（Hedonic Coalition Game, HCG）解决任务分配问题的思路是将任务分配问题看作是智能体划分问题，按照任务或目标的不同划分联盟，每个智能体对不同联盟有着不同的偏好，智能体会根据自己的偏好选择自己的联盟，最终所有智能体在确定了自己的所属联盟后，便得到了任务分配的解。本章将建立基于HCG的任务分配框架并提出对应求解算法，并通过仿真对比实验验证其有效性。
 
 
 % ---------------------
@@ -18,12 +18,12 @@
 
 \begin{equation}
 \label{hcg:eq:gloablU}
-	U_g(a) = \sum_{a_i \in a} U_i(a_i,p_j),
+	U_g(a) = \sum_{\mathcal{M}_i \in \mathcal{M}} U_i(a_i,p_j),
 \end{equation}
 其中
 \begin{equation}
 \label{hcg:eq:parcitipants}
-	p_j = \sum_{a_i \in a} I\{a_i = \mathcal{T}_j\},\ \mathcal{T}_j \in \mathcal{T}.
+	p_j = \sum_{\mathcal{M}_i \in \mathcal{M}} I\{a_i = \mathcal{T}_j\},\ \mathcal{T}_j \in \mathcal{T}.
 \end{equation}
 
 为了建立HCG模型，现引入如下概念。
@@ -61,13 +61,11 @@ HCG模型$\mathcal{G}=(\mathcal{M},\mathcal{T},\succeq_i)$是由智能体集合�
 
 % ------------------------------------
 % ------------------------------------
-\section{基于享乐联盟博弈模型设计}
+\section{面向任务分配的享乐联盟博弈模型设计}
 \label{hcg:HGTA}
 
-\subsection{智能体效用函数设计}
-\label{hcg:coalition}
 
-为了保证HCG模型纳什均衡状态存在的必然性，需要对智能体效用函数$U_i(\mathcal{T}_j,p)$做出一定的要求。
+针对任务分配问题建立的HCG模型需要解决智能体效用函数设计问题。若采用式（\ref{hcg:eq:preference}） 定义的偏好关系，则智能体效用函数直接关系着智能体的偏好关系。因此首先为了保证HCG模型纳什均衡状态存在的必然性，需要对智能体效用函数$U_i(\mathcal{T}_j,p)$做出一定的要求。
 
 \begin{definition}[社交疏远性质]
 \label{hcg:eq:spao}
@@ -121,13 +119,14 @@ HCG模型$\mathcal{G}=(\mathcal{M},\mathcal{T},\succeq_i)$是由智能体集合�
 \label{hcg:eq:task_reward}
 	r(\mathcal{T}_j,|S_j|) = r_j^{\text{min}} \cdot \log_{\varepsilon_j} (|S_j|+\varepsilon_j-1),
 \end{equation}
-其中$r_j^{\text{min}}$代表联盟中只有一位成员时的回报值，$\varepsilon_j>0$是一个正数，与边际回报的递减速率有关。该函数的图像如图\ref{hcg:fig:rewardfunc}（a）所示，图中$r_j^{\text{min}}=10, \varepsilon_j = 3$。将任务回报函数代入式（\ref{hcg:eq:agentU}）可得智能体效用函数为
+其中$r_j^{\text{min}}$代表联盟中只有一位成员时的回报值，本文采用的是式（\ref{model:eq:taskU}）定义的任务效用函数，$\varepsilon_j>0$是一个正数，与边际回报的递减速率有关。该函数的图像如图\ref{hcg:fig:rewardfunc}（a）所示，图中$r_j^{\text{min}}=10, \varepsilon_j = 3$。将任务回报函数代入式（\ref{hcg:eq:agentU}）可得智能体效用函数为
 
 \begin{equation}
 \label{hcg:eq:agentU_reward}
 	U_i(\mathcal{T}_j,|S_j|) = \frac{r_j^{\text{min}} \cdot \log_{\varepsilon_j} (|S_j|+\varepsilon_j-1)}{|S_j|} - c_i(\mathcal{T}_j),
 \end{equation}
-智能体效用函数的图像如图\ref{hcg:fig:rewardfunc}（b）所示，由图像可知，该智能体效用符合SIC要求。
+
+图\ref{hcg:fig:rewardfunc}（b）所示的是$r_j^{\text{min}}=10,\varepsilon_j=3$时的智能体效用函数图像，由图像可知，该智能体效用符合SIC要求。
 
 \begin{figure}[!hbtp]
   \centering
@@ -238,7 +237,7 @@ HCG模型$\mathcal{G}=(\mathcal{M},\mathcal{T},\succeq_i)$是由智能体集合�
 	\tcp{初始化参数}
 	$\text{satisfied} \gets true$\;
 	\For{$M_k \in \mathcal{M}^i$}{
-		\If{$\text{evolved}^k>\text{evolved}^i)\ \text{or}\ (\text{evolved}^k=\text{evolved}^i\ \text{and}\ \text{stamp}^k > \text{stamp}^i)$}{
+		\If{$(\text{evolved}^k>\text{evolved}^i)\ \text{or}\ (\text{evolved}^k=\text{evolved}^i\ \text{and}\ \text{stamp}^k > \text{stamp}^i)$}{
 			$\text{evolved}^i \gets \text{evolved}^k$\;
 			$\text{stamp}^i \gets \text{stamp}^k$\;
 			$\Pi^i \gets \Pi^k$\;
@@ -253,11 +252,11 @@ HCG模型$\mathcal{G}=(\mathcal{M},\mathcal{T},\succeq_i)$是由智能体集合�
 
 
 %------------------------------------------
-\subsection{算法性能分析}
+\subsection{模型与算法性能分析}
 \label{hcg:performance}
 
 %------------------------------------------
-\subsubsection{算法收敛性分析}
+\subsubsection{收敛性分析}
 \label{perform:convergence}
 
 对于HCG模型下的任务分配算法收敛性，有如下定理。
@@ -268,7 +267,7 @@ HCG模型$\mathcal{G}=(\mathcal{M},\mathcal{T},\succeq_i)$是由智能体集合�
 	\begin{proof}
 		证明可以从只包含一个智能体的模型开始，逐一在模型中增加智能体并且找到新模型的纳什均衡划分。由定理1的证明过程可知，当一个新的智能体加入一个已得到纳什均衡划分的模型时，至多需要原有智能体个数加一次策略改变，新的模型就可以获得新的纳什均衡划分。因此可得，对于含有$|\mathcal{M}|$个智能体的模型，要获得其纳什均衡划分，至多需要的迭代次数为
 		\begin{equation}
-		\label{hcg:eq:maxiter}
+		\label{hcg:eq:maxIter}
 			\sum_{k=1}^{|\mathcal{M}|} k = \frac{|\mathcal{A}|\cdot(|\mathcal{A}|+1)}{2}
 		\end{equation}
 		
@@ -276,10 +275,101 @@ HCG模型$\mathcal{G}=(\mathcal{M},\mathcal{T},\succeq_i)$是由智能体集合�
 \end{theorem}
 
 而实际在使用\ref{hcg:decision}小节中的决策算法的场景下，不必像定理\ref{hcg:tm:convergence}的证明中在等到所有智能体达到纳什均衡后再加入新的智能体，因此实际迭代次数会小于定理中给出的上界。
+
+
+%
+\subsubsection{复杂度分析}
+\label{perform:complexity}
+
+假设算法\ref{hcg:algo:decsion}中在每次迭代过程中智能体进行的主要流程，即第6-17行，为一个迭代步。由于智能体之间的通信架构特点，可能存在着某些智能体的迭代步只是执行了发送信息的工作，并没有改变自身的信息（如$\Pi^i,\text{evolved}^i,\text{stamp}^i$），将这种迭代称为伪迭代过程，与其他改变了信息的正常迭代区分开来。
+
+注意到在一次正常迭代发生前，伪迭代至多只会发生$d_G$次，$d_G$为通信网络的直径。因此根据定理\ref{hcg:tm:convergence}可知，模型收敛到纳什均衡所需的迭代步数为$O(d_G n_m^2)$。特别地，如果通信网络是全连通，则$d_G=1$，迭代步数变为$O(n_m^2)$。
+
+接着考虑每次迭代过程中的计算复杂度。每个智能体在一次迭代中需要比较包括$\mathcal{T}_0$在内的$n_t+1$个任务联盟，因此计算复杂度为$O(n_t)$，结合前文所述的迭代步数复杂度，可知算法的总复杂度为$O(d_G n_t n_m^2)$。但注意到定理\ref{hcg:tm:convergence}的结果是保守的，因此实际复杂度会比上述结果更小。
+
+
+
 %-----------------------------------------
-\subsubsection{算法优化性能分析}
+\subsubsection{优化性能分析}
+\label{perform:optimality}
 
+关于HCG模型下得到的纳什均衡最优值和全局最优相比较的结果，可类比于命题\ref{pg:pro:PoA}的证明得到HCG模型$\mathcal{G}_{\text{HCG}}$的PoA指标上界为
+\begin{equation}
+\label{hcg:eq:PoA}
+	\mathrm{PoA}(\mathcal{G}_{\text{HCG}}) \leq 1+\eta_{\text{HCG}},
+\end{equation}
+其中
+\begin{equation}
+\label{hcg:eq:eta}
+	\eta_{\text{HCG}} = \sum_{S_j \in \Pi} \max_{\mathcal{M}_i \in \mathcal{M},p\leq |\mathcal{M}|} \big\{p \big[U_i(\mathcal{T}_j,p) - U_i(\mathcal{T}_j,|S_j \cup\{\mathcal{M}_i\}| \big] \big\}
+\end{equation}
 
+下面将针对前文所定义的智能体效用函数这一特殊情况，推导出关于PoA上界的更具体的结论。此处暂时性地引入任务效用函数概念$U_{\mathcal{T}_j}(\mathcal{T}_j,p)$，定义任务效用函数为执行该任务的所有智能体效用之和，即
+
+\begin{equation}
+\label{hcg:eq:taskU}
+	U_{\mathcal{T}}(\mathcal{T}_j,p) = \sum_{\mathcal{M}_i \in S_j} U_i(\mathcal{T}_j,|S_j|).
+\end{equation}
+
+结合全局效用函数的定义式（\ref{hcg:eq:gloablU}）有
+
+\begin{equation}
+\label{hcg:eq:taskU_to_globalU}
+	U_g(a) = \sum_{\mathcal{M}_j \in \mathcal{M}} U_i(a_i,p_i) = \sum_{\mathcal{T} \in \mathcal{T}} U_{\mathcal{T}_j}(\mathcal{T}_j,p)
+\end{equation}
+
+若使用式（\ref{hcg:eq:agentU_reward}）定义的智能体效用函数，使得任务效用函数$r(\mathcal{T}_j,p)$满足关于智能体数量$p$单调递增的性质，则可以进一步限定PoA的上界，实际上可得到如下命题。
+
+\begin{proposition}
+	设HCG模型$\mathcal{G}_{\text{HCG}}$中智能体效用函数$U_i(\mathcal{T}_j,|S_j|)$定义为式（\ref{hcg:eq:agentU_reward}），则$\mathrm{PoA}(\mathcal{G}_{\text{HCG}})$满足
+	\begin{equation}
+	\label{hcg:eq:PoAforU}
+		\mathrm{PoA}(\mathcal{G}_{\text{HCG}}) \leq 1 + \eta_{\text{HCG}}'
+	\end{equation}
+	
+	\begin{proof}
+		首先引入一个符号$\oplus$。给定两个划分$\Pi^A = \{S_0^A,\dots,S_{n_t}^A\}$和$\Pi^B = \{S_0^B,\dots,S_{n_t}^B\}$，$\Pi^A \neq \Pi^B$，
+		\begin{equation}
+		\label{hcg:pro:eq:oplus}
+			\Pi^A \oplus \Pi^B := \{S_0^A \cup S_0^B, S_1^A \cup S_1^B, \dots, S_{n_t}^A \cup S_{n_t}^B \},
+		\end{equation}
+		由于$\cup_{j=0}^{n_t} S_j^A = \cup_{j=0}^{n_t} S_j^B = \mathcal{M}$，因此可能存在一个智能体$\mathcal{M}_i$在$\Pi^A \oplus \Pi^B$的两个不同联盟中出现了两次，但在此处我们分析时将这种出现了两次的智能体看做是两个不同的智能体。
+		
+		由式（\ref{hcg:eq:agentU_reward}）定义的智能体效用函数，使得任务效用函数$r(\mathcal{T}_j,p)$满足关于智能体数量$p$单调递增的性质，另外全局效用函数为任务效用函数之和，因此对全局效用函数有
+		\begin{equation}
+			U_g(\Pi^A) \leq U_g(\Pi^A \oplus \Pi^B).
+		\end{equation}
+		
+		将全局最优划分$\Pi^{\text{opt}}$和纳什均衡划分$\Pi^*$分别取代上式中的$\Pi^A$和$\Pi^B$，则不等式左侧为即为全局最优效用$U_g(\Pi^{\text{opt}})$，不等式右侧可写为
+		
+		\begin{equation}
+		\label{hcg:pro:inequlity}
+			U_g(\Pi^{\text{opt}} \oplus \Pi^*) = \sum_{\mathcal{M}_i \in \mathcal{M}} U_i(\mathcal{T}_{\Pi^*(i)}, |S_{\Pi^*(i)}^{\text{opt}} \cup S_{\Pi^*(i)}^*|) + \sum_{\mathcal{M}_i \in \mathcal{M}^-} U_i(\mathcal{T}_{\Pi^*(i)}, |S_{\Pi^*(i)}^{\text{opt}} \cup S_{\Pi^*(i)}^*|),
+		\end{equation}
+		其中$\mathcal{M}^-$为在$\Pi^{\text{opt}} \oplus \Pi^*$中出现了两次的智能体集合。代入式（\ref{hcg:eq:task_reward}）可将上式等号右侧第一项化为
+		
+		\begin{align}
+			&\ \sum_{\mathcal{M}_i \in \mathcal{M}} U_i(\mathcal{T}_{\Pi^*(i)}, |S_{\Pi^*(i)}^{\text{opt}} \cup S_{\Pi^*(i)}^*|)\notag\\
+			&= \sum_{j=1}^{n_t} U_{\mathcal{T}}(\mathcal{T}_{\Pi^*(i)},|S_{\Pi^*(i)}^{\text{opt}} \cup S_{\Pi^*(i)}^*|)\notag\\
+			&= \sum_{j=1}^{n_t} r_j^{\text{min}} \log_{\varepsilon_j} \big(|S_{\Pi^*(i)}^{\text{opt}} \cup S_{\Pi^*(i)}^*| + \varepsilon_j - 1\big)\notag\\
+			&\leq \sum_{j=1}^{n_t} r_j^{\text{min}} \log_{\varepsilon_j} \big(|S_{\Pi^*(i)}^{\text{opt}}| + |S_{\Pi^*(i)}^*| + \varepsilon_j - 1\big)\notag\\
+			&= \sum_{j=1}^{n_t} r_j^{\text{min}} \log_{\varepsilon_j}\big(|S_{\Pi^*(i)}^*|+ \varepsilon_j - 1\big) + \Big[\sum_{j=1}^{n_t} r_j^{\text{min}} \log_{\varepsilon_j} \big(|S_{\Pi^*(i)}^{\text{opt}}| + |S_{\Pi^*(i)}^*| + \varepsilon_j - 1\big)\notag\\
+			&- \sum_{j=1}^{n_t} r_j^{\text{min}} \log_{\varepsilon_j}\big(|S_{\Pi^*(i)}^*|+ \varepsilon_j - 1\big)\Big]\notag\\
+			&= U_g(\Pi^*) + \Big[\sum_{j=1}^{n_t} r_j^{\text{min}} \log_{\varepsilon_j} \big(|S_{\Pi^*(i)}^{\text{opt}}| + |S_{\Pi^*(i)}^*| + \varepsilon_j - 1\big) - U_g(\Pi^*) \Big]
+		\end{align}
+		
+		由于对于整数$x,y$满足$0< x,y < n_m$且$\varepsilon>1$，有
+		\begin{align}
+			&\ \log_{\varepsilon}(x+y+\varepsilon-1) - \log_{\varepsilon}(x+\varepsilon-1)\notag\\
+			&= \log_{\varepsilon} \frac{x+y+\varepsilon-1}{x+\varepsilon-1}\notag\\
+			&= \log_{\varepsilon}(1+\frac{y}{x+\varepsilon-1})\notag\\
+			&\leq \log_{\varepsilon}(1+\frac{n_m-1}{1+\varepsilon-1})\notag\\
+			&= \log_{\varepsilon}\frac{n_m+\varepsilon-1}{\varepsilon}\notag\\
+			&= \log_{\varepsilon}(n_m+\varepsilon-1)-1
+		\end{align}
+		
+	\end{proof}
+\end{proposition}
 
 
 \section{仿真分析与对比}

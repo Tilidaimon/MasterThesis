@@ -32,30 +32,30 @@
 \contentsline {chapter}{\numberline {第四章}基于享乐联盟博弈的分布式任务分配}{25}{chapter.4}% 
 \contentsline {section}{\numberline {4.1}引言}{25}{section.4.1}% 
 \contentsline {section}{\numberline {4.2}享乐联盟博弈模型}{25}{section.4.2}% 
-\contentsline {section}{\numberline {4.3}基于享乐联盟博弈模型设计}{26}{section.4.3}% 
-\contentsline {subsection}{\numberline {4.3.1}智能体效用函数设计}{26}{subsection.4.3.1}% 
+\contentsline {section}{\numberline {4.3}面向任务分配的享乐联盟博弈模型设计}{26}{section.4.3}% 
 \contentsline {section}{\numberline {4.4}基于享乐联盟博弈模型的决策算法}{29}{section.4.4}% 
 \contentsline {subsection}{\numberline {4.4.1}SAP算法}{29}{subsection.4.4.1}% 
-\contentsline {subsection}{\numberline {4.4.2}分布式互斥算法}{30}{subsection.4.4.2}% 
-\contentsline {subsection}{\numberline {4.4.3}算法性能分析}{31}{subsection.4.4.3}% 
-\contentsline {subsubsection}{\numberline {4.4.3.1}算法收敛性分析}{31}{subsubsection.4.4.3.1}% 
-\contentsline {subsubsection}{\numberline {4.4.3.2}算法优化性能分析}{32}{subsubsection.4.4.3.2}% 
-\contentsline {section}{\numberline {4.5}仿真分析与对比}{32}{section.4.5}% 
-\contentsline {subsection}{\numberline {4.5.1}算法性能对比}{32}{subsection.4.5.1}% 
-\contentsline {section}{\numberline {4.6}本章小结}{32}{section.4.6}% 
-\contentsline {chapter}{\numberline {第五章}基于随机博弈模型的分布式动态任务分配}{33}{chapter.5}% 
-\contentsline {section}{\numberline {5.1}引言}{33}{section.5.1}% 
-\contentsline {section}{\numberline {5.2}随机博弈模型}{33}{section.5.2}% 
-\contentsline {section}{\numberline {5.3}面向动态任务分配问题的随机博弈模型设计}{33}{section.5.3}% 
-\contentsline {subsection}{\numberline {5.3.1}效用函数估计}{33}{subsection.5.3.1}% 
-\contentsline {subsection}{\numberline {5.3.2}滚动策略集}{33}{subsection.5.3.2}% 
-\contentsline {subsection}{\numberline {5.3.3}分布式随机算法}{33}{subsection.5.3.3}% 
-\contentsline {section}{\numberline {5.4}仿真对比与分析}{33}{section.5.4}% 
-\contentsline {section}{\numberline {5.5}本章小结}{33}{section.5.5}% 
-\contentsline {chapter}{\numberline {第六章}总结与展望}{35}{chapter.6}% 
-\contentsline {chapter}{\numberline {附录 A}Maxwell Equations}{37}{appendix.A}% 
-\contentsline {chapter}{\numberline {附录 B}绘制流程图}{39}{appendix.B}% 
-\contentsline {chapter}{致\hspace {\ccwd }谢}{41}{section*.28}% 
-\contentsline {chapter}{攻读学位期间发表（或录用）的学术论文}{43}{section*.30}% 
-\contentsline {chapter}{攻读学位期间获得的科研成果}{45}{section*.32}% 
-\contentsline {chapter}{个人简历}{47}{section*.34}% 
+\contentsline {subsection}{\numberline {4.4.2}分布式互斥算法}{29}{subsection.4.4.2}% 
+\contentsline {subsection}{\numberline {4.4.3}模型与算法性能分析}{31}{subsection.4.4.3}% 
+\contentsline {subsubsection}{\numberline {4.4.3.1}收敛性分析}{31}{subsubsection.4.4.3.1}% 
+\contentsline {subsubsection}{\numberline {4.4.3.2}复杂度分析}{32}{subsubsection.4.4.3.2}% 
+\contentsline {subsubsection}{\numberline {4.4.3.3}优化性能分析}{33}{subsubsection.4.4.3.3}% 
+\contentsline {section}{\numberline {4.5}仿真分析与对比}{35}{section.4.5}% 
+\contentsline {subsection}{\numberline {4.5.1}算法性能对比}{35}{subsection.4.5.1}% 
+\contentsline {section}{\numberline {4.6}本章小结}{35}{section.4.6}% 
+\contentsline {chapter}{\numberline {第五章}基于随机博弈模型的分布式动态任务分配}{37}{chapter.5}% 
+\contentsline {section}{\numberline {5.1}引言}{37}{section.5.1}% 
+\contentsline {section}{\numberline {5.2}随机博弈模型}{37}{section.5.2}% 
+\contentsline {section}{\numberline {5.3}面向动态任务分配问题的随机博弈模型设计}{37}{section.5.3}% 
+\contentsline {subsection}{\numberline {5.3.1}效用函数估计}{37}{subsection.5.3.1}% 
+\contentsline {subsection}{\numberline {5.3.2}滚动策略集}{37}{subsection.5.3.2}% 
+\contentsline {subsection}{\numberline {5.3.3}分布式随机算法}{37}{subsection.5.3.3}% 
+\contentsline {section}{\numberline {5.4}仿真对比与分析}{37}{section.5.4}% 
+\contentsline {section}{\numberline {5.5}本章小结}{37}{section.5.5}% 
+\contentsline {chapter}{\numberline {第六章}总结与展望}{39}{chapter.6}% 
+\contentsline {chapter}{\numberline {附录 A}Maxwell Equations}{41}{appendix.A}% 
+\contentsline {chapter}{\numberline {附录 B}绘制流程图}{43}{appendix.B}% 
+\contentsline {chapter}{致\hspace {\ccwd }谢}{45}{section*.28}% 
+\contentsline {chapter}{攻读学位期间发表（或录用）的学术论文}{47}{section*.30}% 
+\contentsline {chapter}{攻读学位期间获得的科研成果}{49}{section*.32}% 
+\contentsline {chapter}{个人简历}{51}{section*.34}% 
