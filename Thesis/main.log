@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999991 (TeX Live 2019) (preloaded format=xelatex 2020.2.27)  5 DEC 2020 00:24
+This is XeTeX, Version 3.14159265-2.6-0.999991 (TeX Live 2019) (preloaded format=xelatex 2020.2.27)  6 DEC 2020 12:52
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -2023,12 +2023,7 @@ File: figures/taskreward.eps Graphic file (type eps)
 <figures/taskreward.eps>
 File: figures/agentreward.eps Graphic file (type eps)
 <figures/agentreward.eps>
- [28] [29] [30] [31] [32] [33]
-Overfull \hbox (1.59879pt too wide) detected at line 348
-[][][][][][] [] [][][] [] [] [][][][][][] [][][] [] [][][][] [] [] [][][][][][] [][][] [] [][][][][]
- []
-
-[34]) (./contents/reassign.tex [35] [36
+ [28] [29] [30] [31] [32] [33] [34]) (./contents/reassign.tex [35] [36
 
 ]
 第五章
@@ -2102,10 +2097,10 @@ Package logreq Info: Writing requests to 'main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 57967 strings out of 492916
- 1173632 string characters out of 6133345
- 1800330 words of memory out of 5000000
- 61098 multiletter control sequences out of 15000+600000
+ 57973 strings out of 492916
+ 1173776 string characters out of 6133345
+ 1800572 words of memory out of 5000000
+ 61104 multiletter control sequences out of 15000+600000
  540632 words of font info for 198 fonts, out of 8000000 for 9000
  1349 hyphenation exceptions out of 8191
  71i,20n,120p,1140b,2766s stack positions out of 5000i,500n,10000p,200000b,80000s

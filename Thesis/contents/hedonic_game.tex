@@ -117,13 +117,13 @@ HCG模型$\mathcal{G}=(\mathcal{M},\mathcal{T},\succeq_i)$是由智能体集合�
 
 \begin{equation}
 \label{hcg:eq:task_reward}
-	r(\mathcal{T}_j,|S_j|) = r_j^{\text{min}} \cdot \log_{\varepsilon_j} (|S_j|+\varepsilon_j-1),
+	r(\mathcal{T}_j,|S_j|) = r_j^0 \cdot \log_{\varepsilon_j} (|S_j|+\varepsilon_j-1),
 \end{equation}
-其中$r_j^{\text{min}}$代表联盟中只有一位成员时的回报值，本文采用的是式（\ref{model:eq:taskU}）定义的任务效用函数，$\varepsilon_j>0$是一个正数，与边际回报的递减速率有关。该函数的图像如图\ref{hcg:fig:rewardfunc}（a）所示，图中$r_j^{\text{min}}=10, \varepsilon_j = 3$。将任务回报函数代入式（\ref{hcg:eq:agentU}）可得智能体效用函数为
+其中$r_j^0$代表联盟中只有一位成员时的回报值，本文采用的是式（\ref{model:eq:taskU}）定义的任务效用函数，$\varepsilon_j>0$是一个正数，与边际回报的递减速率有关。该函数的图像如图\ref{hcg:fig:rewardfunc}（a）所示，图中$r_j^{\text{min}}=10, \varepsilon_j = 3$。将任务回报函数代入式（\ref{hcg:eq:agentU}）可得智能体效用函数为
 
 \begin{equation}
 \label{hcg:eq:agentU_reward}
-	U_i(\mathcal{T}_j,|S_j|) = \frac{r_j^{\text{min}} \cdot \log_{\varepsilon_j} (|S_j|+\varepsilon_j-1)}{|S_j|} - c_i(\mathcal{T}_j),
+	U_i(\mathcal{T}_j,|S_j|) = \frac{r_j^0 \cdot \log_{\varepsilon_j} (|S_j|+\varepsilon_j-1)}{|S_j|} - c_i(\mathcal{T}_j),
 \end{equation}
 
 图\ref{hcg:fig:rewardfunc}（b）所示的是$r_j^{\text{min}}=10,\varepsilon_j=3$时的智能体效用函数图像，由图像可知，该智能体效用符合SIC要求。
@@ -321,10 +321,15 @@ HCG模型$\mathcal{G}=(\mathcal{M},\mathcal{T},\succeq_i)$是由智能体集合�
 若使用式（\ref{hcg:eq:agentU_reward}）定义的智能体效用函数，使得任务效用函数$r(\mathcal{T}_j,p)$满足关于智能体数量$p$单调递增的性质，则可以进一步限定PoA的上界，实际上可得到如下命题。
 
 \begin{proposition}
-	设HCG模型$\mathcal{G}_{\text{HCG}}$中智能体效用函数$U_i(\mathcal{T}_j,|S_j|)$定义为式（\ref{hcg:eq:agentU_reward}），则$\mathrm{PoA}(\mathcal{G}_{\text{HCG}})$满足
+	设HCG模型$\mathcal{G}_{\text{HCG}}$中智能体效用函数$U_i(\mathcal{T}_j,|S_j|)$定义为式（\ref{hcg:eq:agentU_reward}），且$\varepsilon_j=\varepsilon>1$，则$\mathrm{PoA}(\mathcal{G}_{\text{HCG}})$满足
 	\begin{equation}
 	\label{hcg:eq:PoAforU}
 		\mathrm{PoA}(\mathcal{G}_{\text{HCG}}) \leq 1 + \eta_{\text{HCG}}'
+	\end{equation}
+	其中
+	\begin{equation}
+	\label{hcg:pro:eq:etapie}
+		\eta' = \log_{\varepsilon}(n_m+\varepsilon) -1
 	\end{equation}
 	
 	\begin{proof}
@@ -337,38 +342,62 @@ HCG模型$\mathcal{G}=(\mathcal{M},\mathcal{T},\succeq_i)$是由智能体集合�
 		
 		由式（\ref{hcg:eq:agentU_reward}）定义的智能体效用函数，使得任务效用函数$r(\mathcal{T}_j,p)$满足关于智能体数量$p$单调递增的性质，另外全局效用函数为任务效用函数之和，因此对全局效用函数有
 		\begin{equation}
+		\label{hcg:pro:eq:oplus_inequility}
 			U_g(\Pi^A) \leq U_g(\Pi^A \oplus \Pi^B).
 		\end{equation}
 		
 		将全局最优划分$\Pi^{\text{opt}}$和纳什均衡划分$\Pi^*$分别取代上式中的$\Pi^A$和$\Pi^B$，则不等式左侧为即为全局最优效用$U_g(\Pi^{\text{opt}})$，不等式右侧可写为
 		
 		\begin{equation}
-		\label{hcg:pro:inequlity}
-			U_g(\Pi^{\text{opt}} \oplus \Pi^*) = \sum_{\mathcal{M}_i \in \mathcal{M}} U_i(\mathcal{T}_{\Pi^*(i)}, |S_{\Pi^*(i)}^{\text{opt}} \cup S_{\Pi^*(i)}^*|) + \sum_{\mathcal{M}_i \in \mathcal{M}^-} U_i(\mathcal{T}_{\Pi^*(i)}, |S_{\Pi^*(i)}^{\text{opt}} \cup S_{\Pi^*(i)}^*|),
+		\label{hcg:pro:eq:inequlity}
+			U_g(\Pi^{\text{opt}} \oplus \Pi^*) = \sum_{\mathcal{T}_j \in \mathcal{T}_{\Pi^*}} U_{\mathcal{T}} \Big(\mathcal{T}_j, |S_j^{\text{opt}} \cup S_j^*|\Big) + \sum_{\mathcal{T}_k \in \mathcal{T}^-} U_i\Big(\mathcal{T}_k, |S_k^{\text{opt}} \cup S_k^*|\Big),
 		\end{equation}
-		其中$\mathcal{M}^-$为在$\Pi^{\text{opt}} \oplus \Pi^*$中出现了两次的智能体集合。代入式（\ref{hcg:eq:task_reward}）可将上式等号右侧第一项化为
+		其中$\mathcal{T}^-$为在$\Pi^*$中满足$S_j^* = \emptyset, S_j^{\text{opt}} \neq \emptyset$的任务$\mathcal{T}_j$集合。但在实际场景中认为除$\mathcal{T}_0$以外各任务均有智能体去执行，因此实际上$\mathcal{T}^- = \emptyset$，所以式（\ref{hcg:pro:eq:inequlity}）实际上等于
+		\begin{align}
+			U_g(\Pi^{\text{opt}} \oplus \Pi^*) &= \sum_{\mathcal{T}_j \in \mathcal{T}_{\Pi^*}} U_{\mathcal{T}} \Big(\mathcal{T}_j, |S_j^{\text{opt}} \cup S_j^*|\Big)\notag\\
+			&= \sum_{j=1}^{n_t} U_{\mathcal{T}} \Big(\mathcal{T}_j, |S_j^{\text{opt}} \cup S_j^*|\Big).
+		\end{align}
+			
+		 代入式（\ref{hcg:eq:task_reward}），其中总代价函数$C=2\sum_{i=1}^{n_m} \sum_{j=1}^{n_t} c_i(\mathcal{T}_j)$是一常数，因此推导时暂时忽略，不会影响最终结果，将上式等号右侧化为
 		
 		\begin{align}
-			&\ \sum_{\mathcal{M}_i \in \mathcal{M}} U_i(\mathcal{T}_{\Pi^*(i)}, |S_{\Pi^*(i)}^{\text{opt}} \cup S_{\Pi^*(i)}^*|)\notag\\
-			&= \sum_{j=1}^{n_t} U_{\mathcal{T}}(\mathcal{T}_{\Pi^*(i)},|S_{\Pi^*(i)}^{\text{opt}} \cup S_{\Pi^*(i)}^*|)\notag\\
-			&= \sum_{j=1}^{n_t} r_j^{\text{min}} \log_{\varepsilon_j} \big(|S_{\Pi^*(i)}^{\text{opt}} \cup S_{\Pi^*(i)}^*| + \varepsilon_j - 1\big)\notag\\
-			&\leq \sum_{j=1}^{n_t} r_j^{\text{min}} \log_{\varepsilon_j} \big(|S_{\Pi^*(i)}^{\text{opt}}| + |S_{\Pi^*(i)}^*| + \varepsilon_j - 1\big)\notag\\
-			&= \sum_{j=1}^{n_t} r_j^{\text{min}} \log_{\varepsilon_j}\big(|S_{\Pi^*(i)}^*|+ \varepsilon_j - 1\big) + \Big[\sum_{j=1}^{n_t} r_j^{\text{min}} \log_{\varepsilon_j} \big(|S_{\Pi^*(i)}^{\text{opt}}| + |S_{\Pi^*(i)}^*| + \varepsilon_j - 1\big)\notag\\
-			&- \sum_{j=1}^{n_t} r_j^{\text{min}} \log_{\varepsilon_j}\big(|S_{\Pi^*(i)}^*|+ \varepsilon_j - 1\big)\Big]\notag\\
-			&= U_g(\Pi^*) + \Big[\sum_{j=1}^{n_t} r_j^{\text{min}} \log_{\varepsilon_j} \big(|S_{\Pi^*(i)}^{\text{opt}}| + |S_{\Pi^*(i)}^*| + \varepsilon_j - 1\big) - U_g(\Pi^*) \Big]
+			&\ \sum_{j=1}^{n_t} U_{\mathcal{T}}\Big(\mathcal{T}_j,|S_{\Pi^*(i)}^j \cup S_j^*|\Big)\notag\\
+			&= \sum_{j=1}^{n_t} r_j^0 \log_{\varepsilon_j} \big(|S_j^{\text{opt}} \cup S_j^*| + \varepsilon_j - 1\big)\notag\\
+			&\leq \sum_{j=1}^{n_t} r_j^0 \log_{\varepsilon_j} \big(|S_j^{\text{opt}}| + |S_j^*| + \varepsilon_j - 1\big)\notag\\
+			\label{hcg:pro:eq:expand}&= \sum_{j=1}^{n_t} r_j^0 \Big[ \frac{\log_{\varepsilon_j} \big(|S_j^{\text{opt}}| + |S_j^*| + \varepsilon_j - 1\big)}{\log_{\varepsilon_j}\big(|S_j^*|+ \varepsilon_j - 1\big)} \cdot \log_{\varepsilon_j}\big(|S_j^*|+ \varepsilon_j - 1\big)\Big].
 		\end{align}
 		
-		由于对于整数$x,y$满足$0< x,y < n_m$且$\varepsilon>1$，有
+		若令$x=|S_j^*|,y=|S_j^{\text{opt}}|$，并代入$\varepsilon_j = \varepsilon>1$，由
+		
+		\begin{equation}
+			\frac{\log_{\varepsilon}(x+y+\varepsilon-1)}{\log_{\varepsilon}(x+\varepsilon-1)} \leq \frac{\log_{\varepsilon}(n_m+\varepsilon)}{\log_{\varepsilon}(\varepsilon)} = \log_{\varepsilon}(n_m+\varepsilon),\ 1\leq x \leq x_m,\ 1 \leq y \leq n_m,
+		\end{equation}
+		
+		因此
+		
 		\begin{align}
-			&\ \log_{\varepsilon}(x+y+\varepsilon-1) - \log_{\varepsilon}(x+\varepsilon-1)\notag\\
-			&= \log_{\varepsilon} \frac{x+y+\varepsilon-1}{x+\varepsilon-1}\notag\\
-			&= \log_{\varepsilon}(1+\frac{y}{x+\varepsilon-1})\notag\\
-			&\leq \log_{\varepsilon}(1+\frac{n_m-1}{1+\varepsilon-1})\notag\\
-			&= \log_{\varepsilon}\frac{n_m+\varepsilon-1}{\varepsilon}\notag\\
-			&= \log_{\varepsilon}(n_m+\varepsilon-1)-1
+			\label{hcg:pro:eq:oplus_leq_nash}
+			U_g(\Pi^{\text{opt}} \oplus \Pi^*) &\leq \sum_{j=1}^{n_t} r_j^0 \Big[\log_{\varepsilon}(n_m+\varepsilon) \cdot \log_{\varepsilon}\big(|S_j^*|+ \varepsilon - 1\big) \Big]\notag\\
+			&= \log_{\varepsilon}(n_m+\varepsilon) \sum_{j=1}^{n_t} r_j^0 \Big[\log_{\varepsilon}\big(|S_j^*|+ \varepsilon - 1\big) \Big]\notag\\
+			&= \log_{\varepsilon}(n_m+\varepsilon) U_g(\Pi^*).
 		\end{align}
 		
-	\end{proof}
+		而由式（\ref{hcg:pro:eq:oplus_inequility}）可得
+		\begin{equation}
+		\label{hcg:pro:eq:opt_leq_oplus}
+			U_g(\Pi^{\text{opt}}) \leq U_g(\Pi^{\text{opt}} \oplus \Pi^*).
+		\end{equation}
+		
+		结合式（\ref{hcg:pro:eq:oplus_leq_nash}）和式（\ref{hcg:pro:eq:opt_leq_oplus}）即可得
+		\begin{align}
+		\label{hcg:pro:eq:PoA_max}
+			U_g(\Pi^{\text{opt}}) &\leq \log_{\varepsilon}(n_m+\varepsilon) U_g(\Pi^*)\\
+			\mathrm{PoA}(\mathcal{G}_{\text{HCG}}) &\leq 1+ \big[\log_{\varepsilon}(n_m+\varepsilon) -1\big]\notag\\
+			&\triangleq 1+\eta'.
+		\end{align}
+		
+				
+		\end{proof}
 \end{proposition}
 
 

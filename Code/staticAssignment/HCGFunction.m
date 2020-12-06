@@ -73,7 +73,7 @@ end
 %% Auxiliary individual utility function
 function [AU] = AuxiliaryUtility(task, coAgentNum, task_value, max_limit_num, time_to_go, j_opt)
 
-e = 3;
+e = 5;
 rmin = task_value;
 if task == 1
     AU = 0;
