@@ -143,6 +143,12 @@ classdef DynamicMissileAndTarget
             model.Targets.alive_num = sum(model.Targets.alive);
         end
         
+        %% 取出生存导弹和目标的分配子集
+        function sub_plan = GetAliveAssignPlan(model,assign_plan)
+            sub_plan = zeros(model.Missiles.alive_num,1);
+            for i=1:model.Missiles.alive_num
+        end
+        
         %% 计算导弹邻接矩阵
         function adjacent = GetAdjacentMatrix(model)
             n = model.Missiles.alive_num;
@@ -174,12 +180,9 @@ classdef DynamicMissileAndTarget
         function model = TargetShared(model)
             %target_list = false(model.num_missiles,model.num_targets);
             for i=1:model.Missiles.alive_num
-                    for j=1:model.Missiles.alive_num
-                        if model.Missiles.alive(j)==1
-                            if model.Adjacent(i,j) == true
-                                model.Missiles.target_set(j,:) = model.Missiles.target_set(j,:) | model.Missiles.target_set(i,:);
-                            end
-                        end
+                for j=1:model.Missiles.alive_num
+                    if model.Adjacent(i,j) == true
+                        model.Missiles.target_set(j,:) = model.Missiles.target_set(j,:) | model.Missiles.target_set(i,:);
                     end
                 end
                 %target_list(model.Adjacent(i,:)==true,:) = ones(num_neighbors,1) * target;
@@ -193,14 +196,16 @@ classdef DynamicMissileAndTarget
             Nt = model.Targets.alive_num;
             TimeToGo = zeros(Nm, Nt);
             for i=1:Nm
+                m = model.Missiles.alive_missiles(i);
                 for j=1:Nt
+                    t = model.Targets.alive_targets(j);
                     d = model.distance_missiles_targets(i,j);
-                    aM = [cos(model.Missiles.angle(i)),sin(model.Missiles.angle(i))]; % 导弹方向向量
-                    b = [model.Targets.p(j,1)-model.Missiles.p(i,1), model.Targets.p(j,2)-model.Missiles.p(i,2)]; % 视线角向量
+                    aM = [cos(model.Missiles.angle(m)),sin(model.Missiles.angle(t))]; % 导弹方向向量
+                    b = [model.Targets.p(t,1)-model.Missiles.p(m,1), model.Targets.p(t,2)-model.Missiles.p(m,2)]; % 视线角向量
                     alpha = acos(max(-1,min(1,dot(aM,b)/(norm(aM)*norm(b)))));  % 方位角[0,pi]
-                    aT = [cos(model.Targets.angle(j)),sin(model.Targets.angle(j))]; % 目标方向向量
+                    aT = [cos(model.Targets.angle(t)),sin(model.Targets.angle(t))]; % 目标方向向量
                     beta = acos(max(-1,min(1,dot(aT,b)/(norm(aT)*norm(b))))); % 进入角[0,pi]
-                    relative_v = model.Missiles.v(i) - model.Targets.v(j)*cos(beta);
+                    relative_v = model.Missiles.v(m) - model.Targets.v(t)*cos(beta);
                     TimeToGo(i,j) = d/relative_v*(1+0.5*alpha^2/(2*N-1));
                 end
             end
@@ -208,32 +213,32 @@ classdef DynamicMissileAndTarget
         
         %% 计算最优制导律及其预计消耗能量
         function [acc, energy] = OptimalInterceptGuidance(model)
+            Nm = model.Missiles.alive_num;
+            Nt = model.Targets.alive_num;
+            acc = zeros(Nm, Nt);
+            energy = zeros(Nm, Nt);
             
-            acc = zeros(model.num_missiles, model.num_targets);
-            energy = zeros(model.num_missiles, model.num_targets);
-            for i=1:model.num_missiles
-                if model.Missiles.alive(i)==1
-                    for j=1:model.num_targets
-                        if model.Targets.alive(j)==1
-                            t_go = model.Time_to_go(i,j);
-                            T_m = t_go/model.tau_m;
-                            T_t = t_go/model.tau_t;
-                            Noig = T_m^2*(exp(-T_m)-1+T_m)/(-0.5*exp(-2*T_m)-2*T_m*exp(-T_m)+T_m^3/3-T_m^2+T_m+0.5);
-                            R = model.distance_missiles_targets(i,j);
-                            aM = [cos(model.Missiles.angle(i)),sin(model.Missiles.angle(i))]; % 导弹方向向量
-                            b = [model.Targets.p(j,1)-model.Missiles.p(i,1), model.Targets.p(j,2)-model.Missiles.p(i,2)]; % 视线角向量
-                            alpha = acos(max(-1,min(1,dot(aM,b)/(norm(aM)*norm(b)))));  % 方位角[0,pi]
-                            aT = [cos(model.Targets.angle(j)),sin(model.Targets.angle(j))]; % 目标方向向量
-                            beta = acos(max(-1,min(1,dot(aT,b)/(norm(aT)*norm(b))))); % 进入角[0,pi]
-                            dotR = model.Targets.v(j)*cos(beta) - model.Missiles.v(i)*cos(alpha); % 弹目距离变化率
-                            acc(i,j) = Noig/t_go^2 * (R + dotR*t_go + model.tau_m^2*(exp(-T_m)-1+T_m)*model.Missiles.acc(i)) - model.tau_t^2*(exp(-T_t)-1+T_t)*model.Targets.acc(j);
-                            acc(i,j) = sign(acc(i,j)) * min(abs(acc(i,j)),model.GOfMissile);
-                            
-                            P = [1;t_go;model.tau_m^2*(exp(-T_m)-1+T_m)];
-                            X_state = [R;dotR;model.Missiles.acc(i)];
-                            energy(i,j) = 0.5*X_state'*(P*P')*X_state;
-                        end
-                    end
+            for i=1:Nm
+                m = model.Missiles.alive_missiles(i);
+                for j=1:Nt
+                    t = model.Targets.alive_targets(j);
+                    t_go = model.Time_to_go(i,j);
+                    T_m = t_go/model.tau_m;
+                    T_t = t_go/model.tau_t;
+                    Noig = T_m^2*(exp(-T_m)-1+T_m)/(-0.5*exp(-2*T_m)-2*T_m*exp(-T_m)+T_m^3/3-T_m^2+T_m+0.5);
+                    R = model.distance_missiles_targets(i,j);
+                    aM = [cos(model.Missiles.angle(m)),sin(model.Missiles.angle(t))]; % 导弹方向向量
+                    b = [model.Targets.p(t,1)-model.Missiles.p(m,1), model.Targets.p(t,2)-model.Missiles.p(m,2)]; % 视线角向量
+                    alpha = acos(max(-1,min(1,dot(aM,b)/(norm(aM)*norm(b)))));  % 方位角[0,pi]
+                    aT = [cos(model.Targets.angle(t)),sin(model.Targets.angle(t))]; % 目标方向向量
+                    beta = acos(max(-1,min(1,dot(aT,b)/(norm(aT)*norm(b))))); % 进入角[0,pi]
+                    dotR = model.Targets.v(t)*cos(beta) - model.Missiles.v(m)*cos(alpha); % 弹目距离变化率
+                    acc(i,j) = Noig/t_go^2 * (R + dotR*t_go + model.tau_m^2*(exp(-T_m)-1+T_m)*model.Missiles.acc(i)) - model.tau_t^2*(exp(-T_t)-1+T_t)*model.Targets.acc(j);
+                    acc(i,j) = sign(acc(i,j)) * min(abs(acc(i,j)),model.GOfMissile);
+                    
+                    P = [1;t_go;model.tau_m^2*(exp(-T_m)-1+T_m)];
+                    X_state = [R;dotR;model.Missiles.acc(i)];
+                    energy(i,j) = 0.5*X_state'*(P*P')*X_state;
                 end
             end
         end
@@ -243,97 +248,100 @@ classdef DynamicMissileAndTarget
         %% 导弹根据最优制导律OIG移动
         function model = MissilesMoveByOIG(model,assign_plan)
             N=3;
-            for i=1:model.num_missiles
-                if model.Missiles.alive(i)==1
-                    % 未完成攻击的导弹运动
-                    target = assign_plan(i);
-                    if target ~= 0 && model.Targets.alive(target)==1% 导弹被分配到目标
-                        d = model.distance_missiles_targets(i,target);
-                        aM = [cos(model.Missiles.angle(i)),sin(model.Missiles.angle(i))]; % 导弹方向向量
-                        b = [model.Targets.p(target,1)-model.Missiles.p(i,1), model.Targets.p(target,2)-model.Missiles.p(i,2)]; % 视线角向量
-                        alpha = acos(max(-1,min(1,dot(aM,b)/(norm(aM)*norm(b)))));  % 方位角[0,pi]
-                        aT = [cos(model.Targets.angle(target)),sin(model.Targets.angle(target))]; % 目标方向向量
-                        beta = acos(max(-1,min(1,dot(aT,b)/(norm(aT)*norm(b))))); % 进入角[0,pi]
-                        relative_v = model.Missiles.v(i) - model.Targets.v(target)*cos(beta);
-                        TimeToGo = d/relative_v*(1+0.5*alpha^2/(2*N-1));
+            Nm = model.Missiles.alive_num;
+%             Nt = model.Targets.alive_num;
+            for i=1:Nm
+                m = model.Missiles.alive_missiles(i);
+                t = assign_plan(i);
+                target = model.Targets.alive_targets(t);
+                if target ~= 0 % 导弹被分配到目标
+                    d = model.distance_missiles_targets(i,t);
+                    aM = [cos(model.Missiles.angle(m)),sin(model.Missiles.angle(m))]; % 导弹方向向量
+                    b = [model.Targets.p(target,1)-model.Missiles.p(m,1), model.Targets.p(target,2)-model.Missiles.p(m,2)]; % 视线角向量
+                    alpha = acos(max(-1,min(1,dot(aM,b)/(norm(aM)*norm(b)))));  % 方位角[0,pi]
+                    aT = [cos(model.Targets.angle(target)),sin(model.Targets.angle(target))]; % 目标方向向量
+                    beta = acos(max(-1,min(1,dot(aT,b)/(norm(aT)*norm(b))))); % 进入角[0,pi]
+                    relative_v = model.Missiles.v(m) - model.Targets.v(target)*cos(beta);
+                    TimeToGo = d/relative_v*(1+0.5*alpha^2/(2*N-1));
+                    
+                    R=d;
+                    T_m = TimeToGo/model.tau_m;
+                    T_t = TimeToGo/model.tau_t;
+                    Noig = T_m^2*(exp(-T_m)-1+T_m)/(-0.5*exp(-2*T_m)-2*T_m*exp(-T_m)+T_m^3/3-T_m^2+T_m+0.5);
+                    dotR = -relative_v;
+                    %                     dotR = model.Targets.v(target)*cos(beta) - model.Missiles.v(i)*cos(alpha); % 弹目距离变化率
+                    model.Missiles.acc(i) = Noig/TimeToGo^2 * (R + dotR*TimeToGo - model.tau_m^2*(exp(-T_m)-1+T_m)*model.Missiles.acc(i))...
+                        - model.tau_t^2*(exp(-T_t)-1+T_t)*model.Targets.acc(target);
+                    model.Missiles.acc(i) = sign(model.Missiles.acc(i))*min(model.GOfMissile,abs(model.Missiles.acc(i)));
+                    if model.distance_missiles_targets(i,t)<0.03 % 击落距离30m
+                        model.Targets.num_attacked(target) = model.Targets.num_attacked(target) + 1;
+                        model.Missiles.alive(i) = 0;
+                        model.Missiles.v(m) = 0; % 击中目标的导弹停止移动
+                        model.Missiles.target_set(i,:) = 0;
                         
-                        R=d;
-                        T_m = TimeToGo/model.tau_m;
-                        T_t = TimeToGo/model.tau_t;
-                        Noig = T_m^2*(exp(-T_m)-1+T_m)/(-0.5*exp(-2*T_m)-2*T_m*exp(-T_m)+T_m^3/3-T_m^2+T_m+0.5);
-                        dotR = -relative_v;
-                        %                     dotR = model.Targets.v(target)*cos(beta) - model.Missiles.v(i)*cos(alpha); % 弹目距离变化率
-                        model.Missiles.acc(i) = Noig/TimeToGo^2 * (R + dotR*TimeToGo - model.tau_m^2*(exp(-T_m)-1+T_m)*model.Missiles.acc(i))...
-                            - model.tau_t^2*(exp(-T_t)-1+T_t)*model.Targets.acc(target);
-                        model.Missiles.acc(i) = sign(model.Missiles.acc(i))*min(model.GOfMissile,abs(model.Missiles.acc(i)));
-                        if model.distance_missiles_targets(i,target)<0.03 % 击落距离30m
-                            model.Targets.num_attacked(target) = model.Targets.num_attacked(target) + 1;
-                            model.Missiles.alive(i) = 0;
-                            model.Missiles.v(i) = 0; % 击中目标的导弹停止移动
-                            model.Missiles.target_set(i,:) = 0;
+                        if model.Targets.num_attacked(target) == model.target_require_num_list(target)
+                            model.Targets.v(target) = 0; % 目标被击中，停止移动
+                            model.Targets.alive(target) = false;
+                            model.Missiles.target_set(:,target) = false; % 被击中的目标不再成为可选目标
                             
-                            if model.Targets.num_attacked(target) == model.target_require_num_list(target)
-                                model.Targets.v(target) = 0; % 目标被击中，停止移动
-                                model.Targets.alive(target) = false;
-                                model.Missiles.target_set(:,target) = false; % 被击中的目标不再成为可选目标
-                                
-                            end
-                        else
-                            accMX = model.Missiles.acc(i)*(-sin(model.Missiles.angle(i)));
-                            accMY = model.Missiles.acc(i)*cos(model.Missiles.angle(i));
-                            VX = model.Missiles.v(i)*cos(model.Missiles.angle(i)) + accMX*model.dT;
-                            VY = model.Missiles.v(i)*sin(model.Missiles.angle(i)) + accMY*model.dT;
-                            model.Missiles.angle(i) = atan2(VY,VX);
                         end
+                    else
+                        accMX = model.Missiles.acc(i)*(-sin(model.Missiles.angle(m)));
+                        accMY = model.Missiles.acc(i)*cos(model.Missiles.angle(m));
+                        VX = model.Missiles.v(m)*cos(model.Missiles.angle(m)) + accMX*model.dT;
+                        VY = model.Missiles.v(m)*sin(model.Missiles.angle(m)) + accMY*model.dT;
+                        model.Missiles.angle(m) = atan2(VY,VX);
                     end
-                    model.Missiles.angle(model.Missiles.angle>pi) = model.Missiles.angle(model.Missiles.angle>pi) - 2*pi;
-                    model.Missiles.angle(model.Missiles.angle<-pi) = model.Missiles.angle(model.Missiles.angle<-pi) + 2*pi;
-                    model.Missiles.p(i,:) = model.Missiles.p(i,:) + model.Missiles.v(i)*model.dT*...
-                        [cos(model.Missiles.angle(i)), sin(model.Missiles.angle(i))];
                 end
+                model.Missiles.angle(model.Missiles.angle>pi) = model.Missiles.angle(model.Missiles.angle>pi) - 2*pi;
+                model.Missiles.angle(model.Missiles.angle<-pi) = model.Missiles.angle(model.Missiles.angle<-pi) + 2*pi;
+                model.Missiles.p(i,:) = model.Missiles.p(i,:) + model.Missiles.v(i)*model.dT*...
+                    [cos(model.Missiles.angle(i)), sin(model.Missiles.angle(i))];
             end
         end
         
         %% 导弹以PNG方式移动
         function model = MissilesMoveByPNG(model,assign_plan)
             N=3;
-            for i=1:model.num_missiles
-                if model.Missiles.alive(i)==1
-                    target = assign_plan(i);
-                    if target ~= 0 % 导弹被分配到目标
-                        R = model.distance_missiles_targets(i,target);
-                        b = [model.Targets.p(target,1)-model.Missiles.p(i,1), model.Targets.p(target,2)-model.Missiles.p(i,2)]; % 视线角向量
-                        v = [-model.Missiles.v(i)*cos(model.Missiles.angle(i)) + model.Targets.v(target)*cos(model.Targets.angle(target)),...
-                            -model.Missiles.v(i)*sin(model.Missiles.angle(i)) + model.Targets.v(target)*sin(model.Targets.angle(target))];
-                        Vtm = -(b(1)*v(1)+b(2)*v(2))/R;
-                        Rtm = (b(1)*v(2)-b(2)*v(1))/(R^2);
-                        model.Missiles.acc(i) = N*Vtm*Rtm;
-                        if model.distance_missiles_targets(i,target)<0.03 % 击落距离30m
-                            model.Targets.num_attacked(target) = model.Targets.num_attacked(target) + 1;
-                            model.Missiles.alive(i) = 0;
-                            model.Missiles.v(i) = 0; % 击中目标的导弹停止移动
-                            model.Missiles.target_set(i,:) = false;
-                            
-                            if model.Targets.num_attacked(target) == model.target_require_num_list(target)
-                                model.Targets.v(target) = 0; % 目标被击中，停止移动
-                                model.Targets.alive(target) = 0;
-                                model.Missiles.target_set(:,target) = false; % 被击中的目标不再成为可选目标
-                            end
-                        else
-                            accMX = model.Missiles.acc(i)*(-sin(model.Missiles.angle(i)));
-                            accMY = model.Missiles.acc(i)*cos(model.Missiles.angle(i));
-                            VX = model.Missiles.v(i)*cos(model.Missiles.angle(i)) + accMX*model.dT;
-                            VY = model.Missiles.v(i)*sin(model.Missiles.angle(i)) + accMY*model.dT;
-                            model.Missiles.angle(i) = atan2(VY,VX);
+            Nm = model.Missiles.alive_num;
+            for i=1:Nm
+                m = model.Missiles.alive_missiles(i);
+                t = assign_plan(i);
+                target = model.Targets.alive_targets(t);
+                if target ~= 0 % 导弹被分配到目标
+                    R = model.distance_missiles_targets(i,t);
+                    b = [model.Targets.p(target,1)-model.Missiles.p(m,1), model.Targets.p(t,2)-model.Missiles.p(m,2)]; % 视线角向量
+                    v = [-model.Missiles.v(i)*cos(model.Missiles.angle(m)) + model.Targets.v(target)*cos(model.Targets.angle(target)),...
+                        -model.Missiles.v(i)*sin(model.Missiles.angle(m)) + model.Targets.v(target)*sin(model.Targets.angle(target))];
+                    Vtm = -(b(1)*v(1)+b(2)*v(2))/R;
+                    Rtm = (b(1)*v(2)-b(2)*v(1))/(R^2);
+                    model.Missiles.acc(i) = N*Vtm*Rtm;
+                    if model.distance_missiles_targets(i,t)<0.03 % 击落距离30m
+                        model.Targets.num_attacked(target) = model.Targets.num_attacked(target) + 1;
+                        model.Missiles.alive(m) = 0;
+                        model.Missiles.v(m) = 0; % 击中目标的导弹停止移动
+                        model.Missiles.target_set(i,:) = false;
+                        
+                        if model.Targets.num_attacked(target) == model.target_require_num_list(target)
+                            model.Targets.v(target) = 0; % 目标被击中，停止移动
+                            model.Targets.alive(target) = 0;
+                            model.Missiles.target_set(:,target) = false; % 被击中的目标不再成为可选目标
                         end
-                        model.Missiles.angle(model.Missiles.angle>pi) = model.Missiles.angle(model.Missiles.angle>pi) - 2*pi;
-                        model.Missiles.angle(model.Missiles.angle<-pi) = model.Missiles.angle(model.Missiles.angle<-pi) + 2*pi;
-                        model.Missiles.p(i,:) = model.Missiles.p(i,:) + model.Missiles.v(i)*model.dT*...
-                            [cos(model.Missiles.angle(i)), sin(model.Missiles.angle(i))];
+                    else
+                        accMX = model.Missiles.acc(i)*(-sin(model.Missiles.angle(m)));
+                        accMY = model.Missiles.acc(i)*cos(model.Missiles.angle(m));
+                        VX = model.Missiles.v(m)*cos(model.Missiles.angle(m)) + accMX*model.dT;
+                        VY = model.Missiles.v(m)*sin(model.Missiles.angle(m)) + accMY*model.dT;
+                        model.Missiles.angle(m) = atan2(VY,VX);
                     end
+                    model.Missiles.angle(model.Missiles.angle>pi) = model.Missiles.angle(model.Missiles.angle>pi) - 2*pi;
+                    model.Missiles.angle(model.Missiles.angle<-pi) = model.Missiles.angle(model.Missiles.angle<-pi) + 2*pi;
+                    model.Missiles.p(m,:) = model.Missiles.p(m,:) + model.Missiles.v(m)*model.dT*...
+                        [cos(model.Missiles.angle(m)), sin(model.Missiles.angle(m))];
                 end
             end
         end
+
         
         %% 判断导弹是否可以改变目标
         function flag = MissileCanChangeTarget(model)
@@ -361,7 +369,7 @@ classdef DynamicMissileAndTarget
             for i=1:model.Missiles.alive_num
                 m = model.Missiles.alive_missiles(i);
                 for j=1:model.Targets.alive_num
-                    t = model.Targets.alive_target(j);
+                    t = model.Targets.alive_targets(j);
                     dismatrix(i,j) = norm(model.Missiles.p(m,:)-model.Targets.p(t,:));
                 end
             end

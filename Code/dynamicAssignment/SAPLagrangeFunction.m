@@ -24,14 +24,14 @@ end
 for k = 2:T
     %for i = 1:AgentNum
         
-        i = alive_agent(randi(alive_agent_num));
+        i = randi(model.Missiles.alive_num);
         % 假设第i个智能体不选任务
         Assign2 = assign_plan;
         Assign2(i) = 0;
         
         tau = 10/k^2;
         % 计算k+1时刻不同任务的效用值
-        AgentUtility = zeros(TargetNum,1);%智能体i在k+1时刻执行不同任务的效用值
+        AgentUtility = zeros(1,TargetNum);%智能体i在k+1时刻执行不同任务的效用值
         for j = 1:TargetNum
             if model.Missiles.target_set(i,j) == true
                 Assign1 = Assign2;
@@ -45,8 +45,6 @@ for k = 2:T
         %计算概率分布，此处是以熵最大化为原则选择概率分布
         AU = AgentUtility/tau;
         newProb = exp(AU)/sum(exp(AU));
-        newProb(model.Targets.alive==0) = 0;
-        newProb = newProb/sum(newProb);
         flag = 0;
         for j = 1:TargetNum
             if isnan(newProb(j))

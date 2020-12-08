@@ -3,8 +3,8 @@ clc
 file = fopen('log.txt','w');
 
 % 初始化模型
-num_missiles = 5;
-num_targets = 4;
+num_missiles = 12;
+num_targets = 10;
 model = DynamicMissileAndTarget(num_missiles,num_targets);
 model = RandomSetSituation(model);
 
@@ -30,7 +30,7 @@ for i=2:stepMissiles
     pre_assign_plan = assign_plan; % 前一时刻分配
     pre_missiles_alive = model.Missiles.alive;
     pre_targets_attack = model.Targets.num_attacked;
-    if rem(i,50)==0
+    if rem(i,50)==0 && model.Missiles.alive_num>1
         % 计算剩余攻击时间矩阵
         model.Time_to_go = AttackTimeToGo(model);
         
@@ -38,7 +38,10 @@ for i=2:stepMissiles
         [model.oig_acc, model.Energy_opt] = OptimalInterceptGuidance(model);
         
         % 进行分配
-        new_assign_plan = SAPLagrangeFunction(model,stepTime,assign_plan);
+        sub_plan = GetAliveAssignPlan(model,assign_plan);
+        new_sub_plan = SAPLagrangeFunction(model,stepTime,sub_plan);
+        new_assign_plan = GetAllAssignPlan(model,assign_plan,new_sub_plan);
+        sub_plan = new_sub_plan;
         if sum(new_assign_plan ~= pre_assign_plan) > 0
             flag = MissileCanChangeTarget(model);
             for k=1:model.num_missiles
@@ -57,6 +60,10 @@ for i=2:stepMissiles
         end
     end
     
+    % 统计还存活的导弹和目标
+    model = GetAliveMissiles(model);
+    model = GetAliveTarget(model);
+    
     % 目标移动
     model.Targets.angle = model.Targets.angle + model.Targets.acc*model.dT;
     
@@ -74,6 +81,8 @@ for i=2:stepMissiles
     model = MissilesMoveByPNG(model,assign_plan);
 %     model.Missiles.acc
     model = TargetMove(model);
+    
+    
     
     if sum(pre_targets_attack ~= model.Targets.num_attacked)>0
         for k=1:model.num_targets
@@ -160,10 +169,10 @@ for i=1:model.num_targets
     quiver(x,y, cos(targets_save.angle(1,i))',sin(targets_save.angle(1,i))',5,'color','r');
 end
 
-for i=1:model.num_missiles
-    plot([missiles_save.p(1,i,1),targets_save.p(1,assign_plan(i),1)],...
-        [missiles_save.p(1,i,2),targets_save.p(1,assign_plan(i),2)],'m');
-end
+% for i=1:model.num_missiles
+%     plot([missiles_save.p(1,i,1),targets_save.p(1,assign_plan(i),1)],...
+%         [missiles_save.p(1,i,2),targets_save.p(1,assign_plan(i),2)],'m');
+% end
 
 for i=1:model.num_missiles
     plot(missiles_save.p(:,i,1),missiles_save.p(:,i,2),'b');
