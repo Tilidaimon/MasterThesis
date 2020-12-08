@@ -155,13 +155,13 @@ num_missiles = length(part_missiles);
 num_require = require_num(target);
 if num_missiles == 0
     con = lambda*min(num_require-num_missiles,0);
-    U = con;
+    U = max(0,con);
 else
     Time_to_go_max = max(Time_to_go(part_missiles,target));
     %J_max_task = max(J_opt(part_missiles,j));
     task_cost = Time_to_go_max+sum(J_opt(part_missiles,target));
     con = lambda*min(num_require-num_missiles,0);
-    U = target_value(target) - task_cost + con;
+    U = max(target_value(target) - task_cost + con,0);
 end
 
 end
