@@ -1,0 +1,71 @@
+missileplan0=3   6   4   4   2  10   1   7   5   9   2   8
+Change at 100
+currentPlan=4   6   3   4   1  10   2   7   5   9   2   8
+Change at 200
+currentPlan=4   6   4   3   1  10   5   2   2   9   7   8
+Change at 400
+currentPlan=4   6   4   2  10   3   5   1   2   9   7   8
+Change at 500
+currentPlan=5   6   4   4   3   1   8  10   2   7   2   9
+Change at 600
+currentPlan=4   6   1   4   3   5   7  10   2   8   2   9
+Change at 700
+currentPlan=4   6   3   4   1   5   7  10   2   8   2   9
+Change at 800
+currentPlan=4   6   3   4   1   5   7  10   2   9   8   2
+Change at 900
+currentPlan=4   6   3   4   1   5   7   8   2   9  10   2
+Change at 1000
+currentPlan=4   6   3   4   5   1  10   7   2   9   8   2
+Change at 1200
+currentPlan=4   6   3   4   5   1  10   2   7   9   8   2
+Change at 1500
+currentPlan=1   6   4   4   5   3  10   2   7   8   9   2
+Change at 1600
+currentPlan=1   6   4   4   5   3  10   2   7   8   2   9
+Change at 1800
+currentPlan=4   6   3   4   5   1  10   2   7   9   8   2
+Change at 2500
+currentPlan=4   6   3   4   1   5  10   2   7   9   8   2
+Change at 2600
+currentPlan=4   6   3   4   5   1  10   2   7   9   8   2
+Change at 3300
+currentPlan=2   6   3   4   5   1  10   2   7   9   8   4
+Change at 3600
+currentPlan=4   6   2   5   7   1  10   2   3   9   8   4
+Change at 3700
+currentPlan=4   6   3   5   7   1   4   2  10   9   8   2
+Change at 4000
+currentPlan=4   6   3   5   7   1  10   2   4   9   8   2
+Change at 4400
+currentPlan=4   6   3   4   7   1  10   2   9   5   8   2
+Change at 4500
+currentPlan=4   6   5   4   7   1  10   2   9   3   8   2
+Change at 4600
+currentPlan=4   6   5   4   7   1  10   2   3   9   8   2
+Change at 4700
+currentPlan=1   6   4   4   7   5  10   2   3   9   8   2
+Change at 4800
+currentPlan=7   6   4   4   5   1  10   2   8   3   9   2
+Change at 4900
+currentPlan=5   6   4   4   1   7  10   2   8   3   9   2
+Change at 5000
+currentPlan=4   6   5   4   1   7  10   2   8   3   9   2
+Change at 5200
+currentPlan=4   6   5   4   3   7  10   2   1   8   9   2
+Target 8 has been hit 1 of 1 times by Missile 10 
+Change at 5300
+currentPlan=4   6   5   4   1   7  10   2   3   8   9   2
+Target 5 has been hit 1 of 1 times by Missile 3 
+Change at 5500
+currentPlan=4   6   5   4   1   7   3   2  10   8   9   2
+Target 7 has been hit 1 of 1 times by Missile 6 
+Target 1 has been hit 1 of 1 times by Missile 5 
+Target 6 has been hit 1 of 1 times by Missile 2 
+Target 2 has been hit 1 of 2 times by Missile 8 
+Target 3 has been hit 1 of 1 times by Missile 7 
+Target 9 has been hit 1 of 1 times by Missile 11 
+Target 2 has been hit 2 of 2 times by Missile 12 
+Target 4 has been hit 1 of 2 times by Missile 4 
+Target 4 has been hit 2 of 2 times by Missile 1 
+Target 10 has been hit 1 of 1 times by Missile 9 

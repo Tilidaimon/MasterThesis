@@ -126,7 +126,7 @@ Lagrange乘子法是一种典型的处理含约束优化问题的方法，其将
 \label{pg:eq:newTaskU}
 	\widetilde U_{\mathcal{T}_j}(a) = U_{\mathcal{T}_j}(a) + \lambda [b_{\text{max}}^{(j)} - s_j]^-,
 \end{equation}
-其中$[x]^+=\min\{x,0\}$，$s_j$是第二章中定义的目标同为$\mathcal{T}_j$的导弹数量。由式（\ref{model:eq:globalU}）得到修正后的全局效用函数为
+其中$[x]^-=\min\{x,0\}$，$s_j$是第二章中定义的目标同为$\mathcal{T}_j$的导弹数量。由式（\ref{model:eq:globalU}）得到修正后的全局效用函数为
 
 \begin{equation}
 \label{pg:eq:newglobalU}
@@ -317,7 +317,7 @@ JSFP第二个改进的地方在于，虽然式（\ref{pg:eq:jsfpExpectU}）似�
 
 \begin{equation}
 \label{pg:eq:recurJSFP}
-	\overline U_i^{\overline a_i}(k+1) = \frac{k}{k+1} \overline U_i^{\overline a_i}(k) + \frac{1}{k+1} U_{\mathcal{M}_i}(\overline a_i, a_{-i}(k)).
+	\overline U_i^{\overline a_i}(k) = \frac{k-1}{k} \overline U_i^{\overline a_i}(k-1) + \frac{1}{k} U_{\mathcal{M}_i}(\overline a_i, a_{-i}(k)).
 \end{equation}
 
 JSFP的算法流程如\ref{pg:algo:jsfp}所示。
@@ -490,7 +490,7 @@ SAP算法和sSAP算法的流程如算法\ref{pg:algo:SAP}所示。
 \end{equation}
 如果$\mathcal{M}_i$和$\mathcal{M}_j$的效用变化值之和大于0，即交易后双方整体效用上升，则交易达成；如果小于0，则交易不进行；若等于0，则以一定概率进行交易。
 
-结合\ref{pg:pgta:protocal}小节的单方决策算法，基于势博弈模型的任务分配算法流程如算法\ref{pg:algo:pgta}所示。
+结合\ref{pg:pgta:protocal}小节的单方决策算法，基于势博弈模型的任务分配算法流程如算法\ref{pg:algo:pgta}所示。算法中的UnilateralDecision函数实现的是单方决策算法，GetNeighbors函数用于获得当前节点的邻居节点，JudgeEquilibrium函数用于判断当前节点及其所有邻居节点是否达到了均衡状态。
 
 \begin{algorithm}[htb]
 	\caption{基于势博弈模型的任务分配算法}
@@ -540,7 +540,14 @@ SAP算法和sSAP算法的流程如算法\ref{pg:algo:SAP}所示。
 \section{仿真分析与对比}
 \label{pg:simulation}
 
-仿真
+针对第\ref{chap:model}章建立的任务分配模型，随机生成导弹与目标参数，使用本章提出的势博弈模型，并分别使用JSFP、GRMFMI、SAP的决策算法对该模型进行求解。为了对比效果，使用几种集中式启发算法进行对比，使用到的启发式算法包括遗传算法（GA）、粒子群算法（PSO）、退火遗传算法（SAGA）、蚁群退火遗传算法（ACOSAGA）。
+
+\subsection{收敛速度分析}
+
+\subsection{优化性能分析}
+
+\subsection{优化时间分析}
+
 
 \section{本章小结}
 \label{pg:conclusion}

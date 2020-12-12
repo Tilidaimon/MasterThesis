@@ -11,51 +11,60 @@
 \contentsline {section}{\numberline {2.3}剩余攻击时间估计}{4}{section.2.3}% 
 \contentsline {section}{\numberline {2.4}最优制导律}{6}{section.2.4}% 
 \contentsline {section}{\numberline {2.5}任务分配模型建立}{8}{section.2.5}% 
-\contentsline {section}{\numberline {2.6}本章小结}{9}{section.2.6}% 
-\contentsline {chapter}{\numberline {第三章}基于势博弈模型的分布式任务分配}{11}{chapter.3}% 
-\contentsline {section}{\numberline {3.1}引言}{11}{section.3.1}% 
-\contentsline {section}{\numberline {3.2}势博弈模型}{11}{section.3.2}% 
-\contentsline {section}{\numberline {3.3}面向任务分配问题的势博弈模型设计}{12}{section.3.3}% 
-\contentsline {subsection}{\numberline {3.3.1}美好生活效用函数}{12}{subsection.3.3.1}% 
-\contentsline {subsection}{\numberline {3.3.2}约束条件处理方法}{13}{subsection.3.3.2}% 
-\contentsline {subsubsection}{\numberline {3.3.2.1}势博弈成立条件}{14}{subsubsection.3.3.2.1}% 
-\contentsline {subsubsection}{\numberline {3.3.2.2}纯纳什均衡可行性分析}{15}{subsubsection.3.3.2.2}% 
-\contentsline {subsubsection}{\numberline {3.3.2.3}纳什均衡最优性}{16}{subsubsection.3.3.2.3}% 
-\contentsline {section}{\numberline {3.4}基于势博弈模型的任务分配算法}{17}{section.3.4}% 
-\contentsline {subsection}{\numberline {3.4.1}单方决策}{17}{subsection.3.4.1}% 
-\contentsline {subsubsection}{\numberline {3.4.1.1}虚拟博弈算法}{17}{subsubsection.3.4.1.1}% 
-\contentsline {subsubsection}{\numberline {3.4.1.2}后悔匹配算法}{19}{subsubsection.3.4.1.2}% 
-\contentsline {subsubsection}{\numberline {3.4.1.3}空间自适应博弈算法}{20}{subsubsection.3.4.1.3}% 
-\contentsline {subsection}{\numberline {3.4.2}任务交易}{22}{subsection.3.4.2}% 
-\contentsline {section}{\numberline {3.5}仿真分析与对比}{23}{section.3.5}% 
-\contentsline {section}{\numberline {3.6}本章小结}{23}{section.3.6}% 
-\contentsline {chapter}{\numberline {第四章}基于享乐联盟博弈的分布式任务分配}{25}{chapter.4}% 
-\contentsline {section}{\numberline {4.1}引言}{25}{section.4.1}% 
-\contentsline {section}{\numberline {4.2}享乐联盟博弈模型}{25}{section.4.2}% 
-\contentsline {section}{\numberline {4.3}面向任务分配的享乐联盟博弈模型设计}{26}{section.4.3}% 
-\contentsline {section}{\numberline {4.4}基于享乐联盟博弈模型的决策算法}{29}{section.4.4}% 
-\contentsline {subsection}{\numberline {4.4.1}SAP算法}{29}{subsection.4.4.1}% 
-\contentsline {subsection}{\numberline {4.4.2}分布式互斥算法}{29}{subsection.4.4.2}% 
-\contentsline {subsection}{\numberline {4.4.3}模型与算法性能分析}{31}{subsection.4.4.3}% 
-\contentsline {subsubsection}{\numberline {4.4.3.1}收敛性分析}{31}{subsubsection.4.4.3.1}% 
-\contentsline {subsubsection}{\numberline {4.4.3.2}复杂度分析}{32}{subsubsection.4.4.3.2}% 
-\contentsline {subsubsection}{\numberline {4.4.3.3}优化性能分析}{33}{subsubsection.4.4.3.3}% 
-\contentsline {section}{\numberline {4.5}仿真分析与对比}{35}{section.4.5}% 
-\contentsline {subsection}{\numberline {4.5.1}算法性能对比}{35}{subsection.4.5.1}% 
-\contentsline {section}{\numberline {4.6}本章小结}{35}{section.4.6}% 
-\contentsline {chapter}{\numberline {第五章}基于随机博弈模型的分布式动态任务分配}{37}{chapter.5}% 
-\contentsline {section}{\numberline {5.1}引言}{37}{section.5.1}% 
-\contentsline {section}{\numberline {5.2}随机博弈模型}{37}{section.5.2}% 
-\contentsline {section}{\numberline {5.3}面向动态任务分配问题的随机博弈模型设计}{37}{section.5.3}% 
-\contentsline {subsection}{\numberline {5.3.1}效用函数估计}{37}{subsection.5.3.1}% 
-\contentsline {subsection}{\numberline {5.3.2}滚动策略集}{37}{subsection.5.3.2}% 
-\contentsline {subsection}{\numberline {5.3.3}分布式随机算法}{37}{subsection.5.3.3}% 
-\contentsline {section}{\numberline {5.4}仿真对比与分析}{37}{section.5.4}% 
-\contentsline {section}{\numberline {5.5}本章小结}{37}{section.5.5}% 
-\contentsline {chapter}{\numberline {第六章}总结与展望}{39}{chapter.6}% 
-\contentsline {chapter}{\numberline {附录 A}Maxwell Equations}{41}{appendix.A}% 
-\contentsline {chapter}{\numberline {附录 B}绘制流程图}{43}{appendix.B}% 
-\contentsline {chapter}{致\hspace {\ccwd }谢}{45}{section*.28}% 
-\contentsline {chapter}{攻读学位期间发表（或录用）的学术论文}{47}{section*.30}% 
-\contentsline {chapter}{攻读学位期间获得的科研成果}{49}{section*.32}% 
-\contentsline {chapter}{个人简历}{51}{section*.34}% 
+\contentsline {subsection}{\numberline {2.5.1}基本模型}{8}{subsection.2.5.1}% 
+\contentsline {subsection}{\numberline {2.5.2}动态任务分配模型}{9}{subsection.2.5.2}% 
+\contentsline {section}{\numberline {2.6}本章小结}{10}{section.2.6}% 
+\contentsline {chapter}{\numberline {第三章}基于势博弈模型的分布式任务分配}{13}{chapter.3}% 
+\contentsline {section}{\numberline {3.1}引言}{13}{section.3.1}% 
+\contentsline {section}{\numberline {3.2}势博弈模型}{13}{section.3.2}% 
+\contentsline {section}{\numberline {3.3}面向任务分配问题的势博弈模型设计}{14}{section.3.3}% 
+\contentsline {subsection}{\numberline {3.3.1}美好生活效用函数}{14}{subsection.3.3.1}% 
+\contentsline {subsection}{\numberline {3.3.2}约束条件处理方法}{15}{subsection.3.3.2}% 
+\contentsline {subsubsection}{\numberline {3.3.2.1}势博弈成立条件}{16}{subsubsection.3.3.2.1}% 
+\contentsline {subsubsection}{\numberline {3.3.2.2}纯纳什均衡可行性分析}{17}{subsubsection.3.3.2.2}% 
+\contentsline {subsubsection}{\numberline {3.3.2.3}纳什均衡最优性}{18}{subsubsection.3.3.2.3}% 
+\contentsline {section}{\numberline {3.4}基于势博弈模型的任务分配算法}{19}{section.3.4}% 
+\contentsline {subsection}{\numberline {3.4.1}单方决策}{19}{subsection.3.4.1}% 
+\contentsline {subsubsection}{\numberline {3.4.1.1}虚拟博弈算法}{19}{subsubsection.3.4.1.1}% 
+\contentsline {subsubsection}{\numberline {3.4.1.2}后悔匹配算法}{21}{subsubsection.3.4.1.2}% 
+\contentsline {subsubsection}{\numberline {3.4.1.3}空间自适应博弈算法}{22}{subsubsection.3.4.1.3}% 
+\contentsline {subsection}{\numberline {3.4.2}任务交易}{24}{subsection.3.4.2}% 
+\contentsline {section}{\numberline {3.5}仿真分析与对比}{25}{section.3.5}% 
+\contentsline {subsection}{\numberline {3.5.1}收敛速度分析}{25}{subsection.3.5.1}% 
+\contentsline {subsection}{\numberline {3.5.2}优化性能分析}{25}{subsection.3.5.2}% 
+\contentsline {subsection}{\numberline {3.5.3}优化时间分析}{25}{subsection.3.5.3}% 
+\contentsline {section}{\numberline {3.6}本章小结}{25}{section.3.6}% 
+\contentsline {chapter}{\numberline {第四章}基于享乐联盟博弈的分布式任务分配}{27}{chapter.4}% 
+\contentsline {section}{\numberline {4.1}引言}{27}{section.4.1}% 
+\contentsline {section}{\numberline {4.2}享乐联盟博弈模型}{27}{section.4.2}% 
+\contentsline {section}{\numberline {4.3}面向任务分配的享乐联盟博弈模型设计}{29}{section.4.3}% 
+\contentsline {section}{\numberline {4.4}基于享乐联盟博弈模型的决策算法}{31}{section.4.4}% 
+\contentsline {subsection}{\numberline {4.4.1}SAP算法}{31}{subsection.4.4.1}% 
+\contentsline {subsection}{\numberline {4.4.2}分布式互斥算法}{32}{subsection.4.4.2}% 
+\contentsline {subsection}{\numberline {4.4.3}模型与算法性能分析}{34}{subsection.4.4.3}% 
+\contentsline {subsubsection}{\numberline {4.4.3.1}收敛性分析}{34}{subsubsection.4.4.3.1}% 
+\contentsline {subsubsection}{\numberline {4.4.3.2}复杂度分析}{35}{subsubsection.4.4.3.2}% 
+\contentsline {subsubsection}{\numberline {4.4.3.3}优化性能分析}{35}{subsubsection.4.4.3.3}% 
+\contentsline {section}{\numberline {4.5}仿真分析与对比}{38}{section.4.5}% 
+\contentsline {subsection}{\numberline {4.5.1}算法性能对比}{38}{subsection.4.5.1}% 
+\contentsline {section}{\numberline {4.6}本章小结}{38}{section.4.6}% 
+\contentsline {chapter}{\numberline {第五章}基于随机博弈模型的分布式动态任务分配框架}{39}{chapter.5}% 
+\contentsline {section}{\numberline {5.1}引言}{39}{section.5.1}% 
+\contentsline {section}{\numberline {5.2}随机博弈模型}{39}{section.5.2}% 
+\contentsline {section}{\numberline {5.3}面向动态任务分配问题的随机博弈框架设计}{39}{section.5.3}% 
+\contentsline {subsection}{\numberline {5.3.1}时间窗口划分}{40}{subsection.5.3.1}% 
+\contentsline {subsection}{\numberline {5.3.2}博弈子模型建立}{40}{subsection.5.3.2}% 
+\contentsline {subsection}{\numberline {5.3.3}博弈阶段切换}{41}{subsection.5.3.3}% 
+\contentsline {section}{\numberline {5.4}事件触发重分配机制}{42}{section.5.4}% 
+\contentsline {subsection}{\numberline {5.4.1}通信网络非连通}{42}{subsection.5.4.1}% 
+\contentsline {subsection}{\numberline {5.4.2}目标数量变化}{44}{subsection.5.4.2}% 
+\contentsline {section}{\numberline {5.5}动态任务分配系统流程}{44}{section.5.5}% 
+\contentsline {section}{\numberline {5.6}仿真对比与分析}{46}{section.5.6}% 
+\contentsline {section}{\numberline {5.7}本章小结}{46}{section.5.7}% 
+\contentsline {chapter}{\numberline {第六章}总结与展望}{47}{chapter.6}% 
+\contentsline {chapter}{\numberline {附录 A}Maxwell Equations}{49}{appendix.A}% 
+\contentsline {chapter}{\numberline {附录 B}绘制流程图}{51}{appendix.B}% 
+\contentsline {chapter}{致\hspace {\ccwd }谢}{53}{section*.33}% 
+\contentsline {chapter}{攻读学位期间发表（或录用）的学术论文}{55}{section*.35}% 
+\contentsline {chapter}{攻读学位期间获得的科研成果}{57}{section*.37}% 
+\contentsline {chapter}{个人简历}{59}{section*.39}% 

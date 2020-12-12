@@ -1,6 +1,6 @@
-function [zbest,fitnesszbest,yy] = PSOfunction(Val)
+function [zbest,yy,time] = PSOfunction(model)
 
-[m,n]=size(Val);
+n = length(model.order_targets);
 
 %% III. 参数初始化
 c1 = 1.49445;
@@ -12,8 +12,8 @@ maxgen = 50;   % 进化次数
 sizepop = 100;   %种群规模
 
 % V上下限的选取？
-Vmax =n/2;
-Vmin = -n/2;
+Vmax =round(n/2);
+Vmin = round(-n/2);
 popmax = n;
 popmin = 1;
 chao_num=10;
@@ -26,7 +26,7 @@ for i = 1:sizepop
     pop(i,:) = randperm(n);    %初始种群
     V(i,:) = round(rand(1,n)*3);  %初始化速度
     % 计算适应度
-    fitness(i) = fun(pop(i,:),Val);   %染色体的适应度
+    fitness(i) = GlobalUtility(model,pop(i,:));   %染色体的适应度
 end
 
 %% V. 个体极值和群体极值
@@ -37,6 +37,7 @@ fitnessgbest = fitness;   %个体最佳适应度值
 fitnesszbest = bestfitness;   %全局最佳适应度值
 
 %% VI. 迭代寻优
+tic
 for i = 1:maxgen
     w(i) = ws - (ws-we)*(i/maxgen);   %线性惯性权重
     for j = 1:sizepop
@@ -64,7 +65,7 @@ for i = 1:maxgen
         end
         
         % 适应度值更新
-        fitness(j) = fun(pop(j,:),Val); 
+        fitness(j) = GlobalUtility(model,pop(j,:)); 
     end
     
     for j = 1:sizepop  
@@ -143,7 +144,35 @@ for i = 1:maxgen
 %       end
 %       end
     
-    yy(i) = fitnesszbest;            
+    yy(i) = GlobalUtility(model,zbest);            
+end
+time = toc
 end
 
+function [Ug] = GlobalUtility(model,plan)
+Nm = model.num_missiles;
+Nt = model.num_targets;
+Ut = zeros(Nt,1);
+
+assign = zeros(model.num_missiles,1);
+for i=1:Nm
+    assign(i) = model.order_targets(plan(i));
 end
+
+for j=1:Nt
+    part_missiles = find(assign == j);
+    num_missiles = length(part_missiles);
+    if num_missiles == 0
+        Ut(j) = 0;
+    else
+        time_max = max(model.Time_to_go(part_missiles,j));
+        J_sum = sum(model.Energy_opt(part_missiles,j));
+        cost = time_max + J_sum;
+        Ut(j) = max(0,model.Targets.value(j) - cost);
+    end
+    
+end
+Ug = sum(Ut);
+end
+
+

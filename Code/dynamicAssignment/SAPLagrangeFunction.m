@@ -9,6 +9,14 @@ TargetNum = model.Targets.alive_num;
 ProbDist = ones(AgentNum, TargetNum);%智能体选择任务概率分布表存储
 assign_plan = initial_plan;%randi(model.num_targets,model.num_missiles,1);%分配任务表
 
+if AgentNum == 1
+    assign_plan = 1;
+    return
+end
+if TargetNum == 1
+    assign_plan = ones(AgentNum,1);
+    return
+end
 %% 迭代更新
 T = Epis;%总迭代步数
 GlobalUtility = zeros(1,T);
@@ -17,10 +25,10 @@ lambda = 300;
 sap_satisfied = zeros(AgentNum,1);
 ex_satisfied = zeros(AgentNum,1);
 
-for j = 1:TargetNum
-    GlobalUtility(1) = GlobalUtility(1) + TargetUtility(j, model, assign_plan, lambda);
-end
-
+% for j = 1:TargetNum
+%     GlobalUtility(1) = GlobalUtility(1) + TargetUtility(1, j, model, assign_plan, lambda);
+% end
+attack_flag = MissileCanChangeTarget(model);
 for k = 2:T
     %for i = 1:AgentNum
         
@@ -32,12 +40,14 @@ for k = 2:T
         tau = 10/k^2;
         % 计算k+1时刻不同任务的效用值
         AgentUtility = zeros(1,TargetNum);%智能体i在k+1时刻执行不同任务的效用值
+        
         for j = 1:TargetNum
-            if model.Missiles.target_set(i,j) == true
+            %if model.Missiles.target_set(i,j) == true
+            if attack_flag(i,j)
                 Assign1 = Assign2;
                 Assign1(i) = j;
                 % 计算第i个智能体的边际收益
-                AgentUtility(j) = TargetUtility(j,model,Assign1,lambda) - TargetUtility(j,model,Assign2,lambda);
+                AgentUtility(j) = TargetUtility(i,j,model,Assign1,lambda) - TargetUtility(i,j,model,Assign2,lambda);
             else
                 AgentUtility(j) = 0;
             end
@@ -45,6 +55,8 @@ for k = 2:T
         %计算概率分布，此处是以熵最大化为原则选择概率分布
         AU = AgentUtility/tau;
         newProb = exp(AU)/sum(exp(AU));
+        newProb(model.Missiles.target_set(i,:)==false) = 0;
+        newProb = newProb/sum(newProb);
         flag = 0;
         for j = 1:TargetNum
             if isnan(newProb(j))
@@ -56,7 +68,9 @@ for k = 2:T
             ProbDist(i,:) = newProb;
         else
             AU = AU/max(abs(AU))*k/2;
-            ProbDist(i,:) = exp(AU)/sum(exp(AU));
+            Prob = exp(AU)/sum(exp(AU));
+            Prob(model.Missiles.target_set(i,:)==0) = 0;
+            ProbDist(i,:) = Prob/sum(Prob);
         end
         % 任务分配
         e = rand;
@@ -73,6 +87,10 @@ for k = 2:T
                 break
             end
         end
+        
+%         if (sum(sap_satisfied) == AgentNum)
+%             break;
+%         end
     %end
    neighbors = find(model.Adjacent(i,:)==true);
    num_neighbors = length(neighbors);
@@ -112,20 +130,20 @@ for k = 2:T
         lagrange_multipler = lagrange_multipler + min(model.target_require_num_list(p)-num_missiles,0);
     end
     %计算总效用
-    for j = 1:AgentNum
-        s = assign_plan(j);
-        GlobalUtility(k) = GlobalUtility(k) + TargetUtility(s, model, assign_plan, lambda);
-        GlobalUtility(k) = GlobalUtility(k) - lagrange_multipler;
-    end
-    
+%     for j = 1:AgentNum
+%         s = assign_plan(j);
+%         GlobalUtility(k) = GlobalUtility(k) + TargetUtility(s, model, assign_plan, lambda);
+%         GlobalUtility(k) = GlobalUtility(k) - lagrange_multipler;
+%     end
+%     
     if (sum(sap_satisfied) == AgentNum)&&(sum(ex_satisfied)==AgentNum)
-        MaxGlobalUtility = GlobalUtility(k);
-        GlobalUtility(k+1:T) = MaxGlobalUtility*ones(1,T-k);
+%         MaxGlobalUtility = GlobalUtility(k);
+%         GlobalUtility(k+1:T) = MaxGlobalUtility*ones(1,T-k);
         break
     end
-    if k==T
-        MaxGlobalUtility = GlobalUtility(T);
-    end
+%     if k==T
+%         MaxGlobalUtility = GlobalUtility(T);
+%     end
 end
 
 %-lambda*(sum(RequireNum)-AgentNum);
@@ -133,12 +151,20 @@ end
 end
 
 %% 计算效用函数
-function [U] = TargetUtility(target, model, assign_plan, lambda)
+function [U] = TargetUtility(agent, target, model, assign_plan, lambda)
 
-part_missiles = find(assign_plan == target);
+neighbors = find(model.Adjacent(agent,:)==true);
+part_missiles = find(assign_plan(neighbors) == target);
 num_missiles = length(part_missiles);
-num_require = max(0,model.target_require_num_list(target) - model.Targets.num_attacked(target));
-if num_missiles == 0
+
+if target==0
+    global_target = 0;
+    num_require = 0;
+else
+    global_target = model.Targets.alive_targets(target);
+    num_require = max(0,model.target_require_num_list(global_target) - model.Targets.num_attacked(global_target));
+end
+if (num_missiles == 0) || (target==0)
     con = lambda*min(num_require-num_missiles,0);
     U = con;
 else
@@ -146,7 +172,7 @@ else
     %J_max_task = max(J_opt(part_missiles,j));
     task_cost = Time_to_go_max+sum(model.Energy_opt(part_missiles,target));
     con = lambda*min(num_require-num_missiles,0);
-    U = model.Targets.value(target) - task_cost + con;
+    U = model.Targets.value(global_target) - task_cost + con;
 end
 end
 
@@ -155,6 +181,6 @@ function [U] = Agent_Utility(agent,model,assign_plan,lambda)
 Assign = assign_plan;
 Assign(agent) = 0;
 target = assign_plan(agent);
-U = TargetUtility(target,model,assign_plan,lambda)...
-    -TargetUtility(target,model,Assign,lambda);
+U = TargetUtility(agent,target,model,assign_plan,lambda)...
+    -TargetUtility(agent,target,model,Assign,lambda);
 end

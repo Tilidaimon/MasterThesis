@@ -3,12 +3,12 @@ clc
 file = fopen('log.txt','w');
 
 % 初始化模型
-num_missiles = 12;
-num_targets = 10;
+num_missiles = 6;
+num_targets = 4;
 model = DynamicMissileAndTarget(num_missiles,num_targets);
 model = RandomSetSituation(model);
 
-stepMissiles = 6000; % 最大迭代步数
+stepMissiles = 10000; % 最大迭代步数
 stepTime = 1500; % 最大分配算法迭代步数
 
 % 数据存储
@@ -17,48 +17,62 @@ targets_save.p(1,:,:) = model.Targets.p;
 
 missiles_save.angle(1,:) = model.Missiles.angle;
 targets_save.angle(1,:) = model.Targets.angle;
-initial_plan = randi(model.num_targets,model.num_missiles,1);
+
+missiles_save.acc(1,:) = model.Missiles.acc;
+
+initial_plan = GetInitialPlan(model); %randi(model.num_targets,model.num_missiles,1);
 assign_plan = SAPLagrangeFunction(model,stepTime,initial_plan);
 fprintf(file,"missileplan0=");
 fprintf(file,num2str(assign_plan'));
 fprintf(file,"\n");
 
+
 %% 动态过程
 stopSteps = stepMissiles;
-model.Targets.acc =0*(rand(model.num_targets,1)-0.5);  % 目标随机加速度引起的角度变化
+model.Targets.acc =0.005*(rand(model.num_targets,1)-0.5);  % 目标随机加速度引起的角度变化
 for i=2:stepMissiles
     pre_assign_plan = assign_plan; % 前一时刻分配
     pre_missiles_alive = model.Missiles.alive;
     pre_targets_attack = model.Targets.num_attacked;
-    if rem(i,50)==0 && model.Missiles.alive_num>1
+%     flag = MissileCanChangeTarget(model);
+    if ((rem(i,100)==0 && model.Missiles.alive_num>1) || (model.reassign_flag))% && (sum(flag)~= 0)
         % 计算剩余攻击时间矩阵
         model.Time_to_go = AttackTimeToGo(model);
         
         % 计算最优制导律及预计消耗能量
-        [model.oig_acc, model.Energy_opt] = OptimalInterceptGuidance(model);
+        [model.oig_acc, model.Energy_opt] = OptimalInterceptGuidance(model,i);
         
         % 进行分配
         sub_plan = GetAliveAssignPlan(model,assign_plan);
         new_sub_plan = SAPLagrangeFunction(model,stepTime,sub_plan);
         new_assign_plan = GetAllAssignPlan(model,assign_plan,new_sub_plan);
         sub_plan = new_sub_plan;
+        model.reassign_flag = 0;
         if sum(new_assign_plan ~= pre_assign_plan) > 0
-            flag = MissileCanChangeTarget(model);
-            for k=1:model.num_missiles
-                if flag(k)==0
-                    assign_plan(k) = pre_assign_plan(k);
-                else
-                    assign_plan(k) = new_assign_plan(k);
-                end
-                
-            end
+%             flag = MissileCanChangeTarget(model);
+%             for k=1:model.Missiles.alive_num
+%                 if flag(k)==0
+%                     assign_plan(k) = pre_assign_plan(k);
+%                 else
+%                     assign_plan(k) = new_assign_plan(k);
+%                 end
+%                 
+%             end
+            assign_plan = new_assign_plan;
             if sum(flag)>0
-                fprintf(file,"Change");fprintf(file,"\n");
+                fprintf(file,"Change at ");fprintf(file,num2str(i));
+                fprintf(file,"\n");
                 fprintf(file,"currentPlan=");
                 fprintf(file,num2str(assign_plan'));fprintf(file,"\n");
             end
         end
     end
+    
+    
+    [model,assign_plan] = MissilesMoveByOIG(model,assign_plan,i);
+%     [model,assign_plan] = MissilesMoveByPNG(model,assign_plan);
+%     model.Missiles.acc
+    model = TargetMove(model);
     
     % 统计还存活的导弹和目标
     model = GetAliveMissiles(model);
@@ -78,9 +92,7 @@ for i=2:stepMissiles
     % 共享目标信息
     model = TargetShared(model);
     
-    model = MissilesMoveByPNG(model,assign_plan);
-%     model.Missiles.acc
-    model = TargetMove(model);
+    
     
     
     
@@ -93,13 +105,14 @@ for i=2:stepMissiles
                 fprintf(file,num2str(model.Targets.num_attacked(k)));
                 fprintf(file," of ");
                 fprintf(file,num2str(model.target_require_num_list(k)));
-                fprintf(file," times by Missile");
+                fprintf(file," times by Missile ");
                 missile_indexs = find(assign_plan==k);
                 if length(missile_indexs)>1
                     for p=1:length(missile_indexs)
                         m = missile_indexs(p);
                         if model.Missiles.alive(m) == 0 && pre_missiles_alive(m) == 1
-                            attack_index = p;
+                            attack_index = missile_indexs(p);
+                            break;
                         end
                     end
                 else
@@ -117,10 +130,12 @@ for i=2:stepMissiles
     missiles_save.angle(i,:) = model.Missiles.angle;
     targets_save.angle(i,:) = model.Targets.angle;
     
+    missiles_save.acc(i,:) = model.Missiles.acc;
+    
     % 检测是否停止攻击
-    stopFlag = logical(sum(model.Targets.alive));
+    stopFlag = model.Missiles.alive_num & model.Targets.alive_num;
     if ~stopFlag
-        stopsteps = i;
+        stopSteps = i;
         break;
     end
 end
