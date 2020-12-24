@@ -137,7 +137,7 @@
 
 
 % --------------------------------------------
-\section{最优制导律}
+\section{能量最优制导律}
 \label{model:sec:energy}
 
 除了预计攻击时间最小化以外，由于导弹在攻击过程中大部分时间处于无动力滑翔阶段，在机动追踪目标时会不断消耗能量，因此为了保证击中目标前导弹动能不会耗尽，需要追求导弹机动程度最小化。实际中导弹系统具有高阶动态特性和非线性，难以利用最优控制原理求得闭环解，但对于只考虑导弹低阶系统特性和二次型性能指标取极小的最优控制问题，可以求得闭环解。本节将在导弹在\ref{model:sec:time}小节估计剩余攻击时间的基础上，基于最优控制原理，设计使得导弹机动最小化的最优制导律。
@@ -263,16 +263,15 @@ $U_{\mathcal T_j}(a)$表示与目标$\mathcal{T}_j$有关的任务效用，为�
 
 \begin{equation}
 \label{model:eq:taskU}
-	U_{\mathcal{T}_j}(a) = \max \{ 0, r_j - w_1 \max_{\mathcal{M}_i \in S_j} t_{ij} -
-	w_2 \mathcal{C}_{\mathcal{T}_j} \},
+	U_{\mathcal{T}_j}(a) = r_j - \sum_{\mathcal{M}_i \in S_j} c_{ij},
 \end{equation}
-其中，$w_1$和$w_2$为权重值；$r_j$是攻击目标$\mathcal{T}_j$可获得的奖励值，本文假设该值仅与目标属性有关，与攻击的导弹无关；$t_{ij}$表示导弹$\mathcal{M}_i$攻击目标$\mathcal{T}_j$的预计剩余攻击时间。$\mathcal{C}_{\mathcal{T}_j}$表示导弹攻击目标$\mathcal{T}_j$的成本函数，定义为：
+其中，$r_j$是目标$\mathcal{T}_j$的价值，本文假设该值仅与目标属性有关，与攻击的导弹无关；$x_{ij}$表示导弹$\mathcal{M}_i$攻击目标$\mathcal{T}_j$的成本函数，其定义为
 
 \begin{equation}
-\label{model:eq:costU}
-	\mathcal{C}_{\mathcal{T}_j} = \sum_{\mathcal{M}_i \in S_j} J_{ij},
+\label{model:eq:cost}
+	c_{ij} = w_1 t_{ij} + w_2 \mathcal{J}_{ij},
 \end{equation}
-其中$J_{ij}$为导弹$\mathcal{M}_i$攻击目标$\mathcal{T}_j$的预计机动能量消耗可由式(\ref{model:eq:Jstar})得到。
+其中，$w_1$和$w_2$为权重值，代表对于攻击时间和攻击消耗能量的权衡程度；$t_{ij}$表示导弹$\mathcal{M}_i$攻击目标$\mathcal{T}_j$的预计剩余攻击时间。$J_{ij}$为导弹$\mathcal{M}_i$攻击目标$\mathcal{T}_j$的预计机动能量消耗可由式(\ref{model:eq:Jstar})得到。
 
 \subsection{动态任务分配模型}
 \label{model:dynamic_model}

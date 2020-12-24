@@ -2468,6 +2468,55 @@
     <bcf:datasource type="file" datatype="bibtex">bibdata/thesis.bib</bcf:datasource>
   </bcf:bibdata>
   <bcf:section number="0">
+    <bcf:citekey order="1">monderer_potential_1996</bcf:citekey>
+    <bcf:citekey order="2">liuhongguo_2020</bcf:citekey>
+    <bcf:citekey order="3">liupenghuang_2020</bcf:citekey>
+    <bcf:citekey order="4">shaochong_2020</bcf:citekey>
+    <bcf:citekey order="5">Mahn_game_2020</bcf:citekey>
+    <bcf:citekey order="6">liujijun_2020</bcf:citekey>
+    <bcf:citekey order="6">zhanggenshan_2019</bcf:citekey>
+    <bcf:citekey order="7">gongjunhui_2020</bcf:citekey>
+    <bcf:citekey order="8">liuzening_2020</bcf:citekey>
+    <bcf:citekey order="9">heqiuge_2017</bcf:citekey>
+    <bcf:citekey order="9">heyaguang_2019</bcf:citekey>
+    <bcf:citekey order="10">chen_2015</bcf:citekey>
+    <bcf:citekey order="10">haoxiaochen_2015</bcf:citekey>
+    <bcf:citekey order="11">jiajie_2014</bcf:citekey>
+    <bcf:citekey order="12">moragrega_2015</bcf:citekey>
+    <bcf:citekey order="13">caoxin_2020</bcf:citekey>
+    <bcf:citekey order="14">arslan_autonomous_2007</bcf:citekey>
+    <bcf:citekey order="15">hanpeng_2020</bcf:citekey>
+    <bcf:citekey order="16">chapman_2010</bcf:citekey>
+    <bcf:citekey order="17">bakolas_decentralized_2020</bcf:citekey>
+    <bcf:citekey order="18">marden_revisiting_2010</bcf:citekey>
+    <bcf:citekey order="19">marden_joint_2009</bcf:citekey>
+    <bcf:citekey order="20">Lhazmir_2018</bcf:citekey>
+    <bcf:citekey order="21">deng_2019</bcf:citekey>
+    <bcf:citekey order="22">dreze_hedonic_1980</bcf:citekey>
+    <bcf:citekey order="23">bogomolnaia_stability_2002</bcf:citekey>
+    <bcf:citekey order="24">weisiwen_2020</bcf:citekey>
+    <bcf:citekey order="25">saad_hedonic_2010</bcf:citekey>
+    <bcf:citekey order="26">saad_selfish_2009</bcf:citekey>
+    <bcf:citekey order="27">caoyang_2017</bcf:citekey>
+    <bcf:citekey order="28">saad_hedonic_2011</bcf:citekey>
+    <bcf:citekey order="29">Aziz_2015</bcf:citekey>
+    <bcf:citekey order="30">aziz_hedonic_2019</bcf:citekey>
+    <bcf:citekey order="31">aziz_2015</bcf:citekey>
+    <bcf:citekey order="31">chen_2019</bcf:citekey>
+    <bcf:citekey order="32">janovsky_multi-agent_2016</bcf:citekey>
+    <bcf:citekey order="33">jang_anonymous_2018</bcf:citekey>
+    <bcf:citekey order="34">czatnecki_hedonic_2019</bcf:citekey>
+    <bcf:citekey order="35">saad_hedonic_2010</bcf:citekey>
+    <bcf:citekey order="36">jang_anonymous_2018</bcf:citekey>
+    <bcf:citekey order="37">lishihao_2019</bcf:citekey>
+    <bcf:citekey order="38">sunqian_2020</bcf:citekey>
+    <bcf:citekey order="39">zhouhong_2020</bcf:citekey>
+    <bcf:citekey order="40">marden_state_2012</bcf:citekey>
+    <bcf:citekey order="41">liu_stochastic_2013</bcf:citekey>
+    <bcf:citekey order="42">chapman_2010</bcf:citekey>
+    <bcf:citekey order="43">mawen_2020</bcf:citekey>
+    <bcf:citekey order="44">liuhao_2020</bcf:citekey>
+    <bcf:citekey order="45">marden_state_2012</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="none">

@@ -79,13 +79,15 @@ classdef DynamicMissileAndTarget
             model.Targets.alive_num = model.num_targets;
             
             % 需要用两枚导弹攻击的目标序号
-            index_important_targets = randperm(model.num_targets, model.num_missiles-model.num_targets);
-            model.target_require_num_list = ones(model.num_targets,1);
+            basic_attack_num = floor(model.num_missiles/model.num_targets);
+            extra_targets_num = mod(model.num_missiles, model.num_targets);
+            index_important_targets = randperm(model.num_targets, extra_targets_num);
+            model.target_require_num_list = basic_attack_num * ones(model.num_targets,1);
             model.target_require_num_list(index_important_targets) = model.target_require_num_list(index_important_targets) +1;
             
             % 虚拟目标增广序列
             k=1;
-            model.order_targets = zeros(model.num_targets,1);
+            model.order_targets = zeros(model.num_missiles,1);
             for i=1:model.num_targets
                 for j=1:model.target_require_num_list(i)
                     model.order_targets(k) = i;
@@ -94,8 +96,8 @@ classdef DynamicMissileAndTarget
             end
             
             % 目标价值
-            model.Targets.value = 200*ones(model.num_targets,1);
-            model.Targets.value(index_important_targets) = 2*model.Targets.value(index_important_targets);
+            model.Targets.value = 1000*ones(model.num_targets,1);
+            model.Targets.value = model.target_require_num_list.*model.Targets.value;
             model.extend_value = model.Targets.value(model.order_targets);
             
             % 计算矩阵邻接矩阵
@@ -412,9 +414,9 @@ classdef DynamicMissileAndTarget
                     pre_diff_R = model.Missiles.diff_R(m);
                     model.Missiles.diff_R(m) = diff_R;
 %                   
-%                     lambda = atan2(b(2),b(1));
-%                     pre_lambda = atan2(pre_target_p(2)-pre_missiles_p(2),pre_target_p(1)-pre_missiles_p(1));
-%                     Qtm = (lambda-pre_lambda)/model.dT;
+                    lambda = atan2(b(2),b(1));
+                    pre_lambda = atan2(pre_target_p(2)-pre_missiles_p(2),pre_target_p(1)-pre_missiles_p(1));
+                    Qtm = (lambda-pre_lambda)/model.dT;
                     
                     
                     Vtm = -(b(1)*v(1)+b(2)*v(2))/R;
@@ -424,7 +426,7 @@ classdef DynamicMissileAndTarget
                     elseif Qtm>pi
                         Qtm = Qtm - 2*pi;
                     end
-                    acc = N*Vtm*Qtm;
+                    acc = N*diff_R*Qtm;
                     model.Missiles.acc(m) = sign(acc)*min(abs(acc),model.GOfMissile);
 %                     r = model.Missiles.angle(m) + model.Missiles.acc(m)*model.dT;
                     if R<0.05 || diff_R>0% 击落距离30m

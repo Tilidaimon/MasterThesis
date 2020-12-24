@@ -1,0 +1,8 @@
+missileplan0=5  2  1  4  3
+Change at 1500
+currentPlan=4  1  2  3  5
+Target 3 has been hit 1 of 1 times by Missile 4 
+Target 1 has been hit 1 of 1 times by Missile 2 
+Target 5 has been hit 1 of 1 times by Missile 5 
+Target 4 has been hit 1 of 1 times by Missile 1 
+Target 2 has been hit 1 of 1 times by Missile 3 

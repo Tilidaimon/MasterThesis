@@ -1,0 +1,6 @@
+missileplan0=1  4  5  3  2
+Target 5 has been hit 1 of 1 times by Missile 3 
+Target 4 has been hit 1 of 1 times by Missile 2 
+Target 1 has been hit 1 of 1 times by Missile 1 
+Target 3 has been hit 1 of 1 times by Missile 4 
+Target 2 has been hit 1 of 1 times by Missile 5 

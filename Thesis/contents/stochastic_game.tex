@@ -8,7 +8,7 @@
 
 第\ref{chap:pg}章和第\ref{chap:hedonic}章是针对静态场景下的任务分配问题，但在解决第\ref{chap:model}章中提出的动态场景下的任务分配问题时，会面临两大问题：一是环境动态变化难以预测，如出现导弹通信网络变化，或目标数量可能出现变化等情况，使得求解模型中的重要变量，如任务效用函数发生变化，原纳什均衡被破坏；二是前两章提出的利用博弈理论提出的决策算法，由仿真结果可知最终收敛结果与收敛速度具有一定的波动性，实际上与算法开始迭代时的初始解有关。
 
-为了解决以上问题，本章利用随机博弈模型建立了分布式动态任务分配框架，并结合前两章的模型与算法，实现动态环境下的任务分配，并通过仿真结果验证了该框架具有较好动态自适应性。
+为了解决以上问题，本章利用随机博弈模型建立了分布式动态任务分配框架，并根据实际场景中可能发生的事件，设计了任务重分配触发机制，在此基础上结合前两章的模型与算法，实现动态环境下的任务分配，并通过仿真结果验证了该框架具有较好动态自适应性。
 
 \section{随机博弈模型}
 \label{sg:stochastic_game}
@@ -44,7 +44,15 @@
 
 动态模型下每个时刻环境的状态都与前一时刻不同，一方面不可能对每一时刻建立任务分配模型进行求解，另一方面求解任务分配也需要时间。因此本文将攻击过程划分为若干时间窗口$[t,t+w]$，每一时间窗口作为一个博弈阶段，在同一窗口内，假设导弹和目标态势关系变化不大，最优任务分配结果不会发生改变，因此可以在一个时间窗口内建立起任务分配模型并求解。
 
-时间窗口长度$w$的选取是一个需要权衡的问题。一方面，由于在一个窗口期内，认为态势变化不大，因此如果时间窗口过长，导弹和目标的位置已发生较大变化，态势变化不大的前提假设不再成立，且一些突发事件可能会被忽略而不能及时响应；另一方面，如果时间窗口过短，一方面可能任务分配结果可能还未解出，另一方面鉴于导弹的运动特性，如果频繁重分配可能导致弹道过于弯曲而造成能量浪费。本文后续将通过仿真实验确定时间窗口长度$w$的最优值。
+时间窗口长度$w$的选取是一个需要权衡的问题。一方面，由于在一个窗口期内，认为态势变化不大，因此如果时间窗口过长，导弹和目标的位置已发生较大变化，态势变化不大的前提假设不再成立，且一些突发事件可能会被忽略而不能及时响应；另一方面，如果时间窗口过短，一方面可能任务分配结果可能还未解出，另一方面鉴于导弹的运动特性，如果频繁重分配可能导致弹道过于弯曲而造成能量浪费。
+
+根据以上分析，结合第\ref{chap:model}、\ref{chap:pg}、\ref{chap:hedonic}章里的相关模型和假设，可以给出时间窗口长度$w$应该满足的条件为
+
+\begin{equation}
+\label{sg:eq:window}
+	w \geq t_{\text C} + t_{\text A},
+\end{equation}
+其中，$t_{\text C}$表示导弹之间进行通信并达成信息一致所需的时间，$t_{\text A}$表示导弹进行任务分配决策达到收敛所需的时间。式（\ref{sg:eq:window}）的含义是窗口时间的长度不得少于导弹需要完成信息交互和任务分配求解两个过程的时间。
 
 \subsection{博弈子模型建立}
 \label{game_stage:submodel}
@@ -73,7 +81,7 @@
 
 
 
-\section{事件触发重分配机制}
+\section{重分配触发机制}
 \label{sg:special_incidence}
 
 虽然在上述随机博弈框架下，假设在一个博弈阶段内态势不会发生重大变化，但实际情况中，发生足以需要重新分配的场景和事件仍是存在的。针对这类突发状况，需要制定一套事件触发机制，明确事件触发信号和触发后重分配方法。
@@ -115,7 +123,7 @@
   \label{fig:collision_resolution}
 \end{figure}
 
-\subsection{目标数量变化}
+\subsection{目标数量可变}
 \label{special:target_num_change}
 
 目标数量变化可分为目标数量增加和目标数量减少两种场景。目标增加的原因通常有两种：一是导弹发射前已知该目标，但导弹发射后该目标处于导弹探测区外，随着攻击过程的进行才进入导弹探测范围；二是导弹发射前该目标未出现或未被地面雷达或载机捕捉，在导弹飞行过程中被导弹自行捕获。本文不考虑原先被跟踪的目标逃出导弹探测范围的情况，因此目标减少的原因通常就是被导弹击中。
@@ -126,9 +134,13 @@
 
 针对目标减少的场景，往往是由于导弹击中目标，因此也包含着导弹数量减少的场景。本章建立的模型中，导弹击中目标的判定条件是弹目距离小于指定阈值$R_{\text{min}}$代表目标进入导弹杀伤范围，或弹目相对接近速度$V_R>0$，代表弹目距离不再减小。此时击中目标数量若达到$b_{\text{max}}^{(j)}$，则目标被击落，攻击该目标的导弹也退出通信网络与分配模型。当一些导弹攻击完成后，其邻居节点可能失去连接通道，从而不再连通，此时将回到\ref{special:disconnected_network}小节中所论述的场景。
 
-\section{动态任务分配系统流程}
+\section{系统设计与仿真验证}
+\label{sg:system&simulation}
 
-结合\ref{sg:framework}节和\ref{sg:special_incidence}节的内容，图给出了动态环境下基于随机博弈模型的任务分配系统框图。
+\subsection{动态任务分配系统设计}
+\label{sg:dynamic_system}
+
+结合\ref{sg:framework}节和\ref{sg:special_incidence}节的内容，图\ref{fig:framework}给出了动态环境下基于随机博弈模型的任务分配系统框图。
 
 \begin{figure}[!htp]
   \centering
@@ -151,8 +163,87 @@
 
 在每个时间点，导弹不断重复以上四个步骤，直到该导弹击中目标即停止。当所有导弹均击中目标时，整个导弹集群任务分配系统停止运行。
 
-\section{仿真对比与分析}
+\subsection{仿真实验}
+\label{sg:simulation}
+
+根据\ref{sg:dynamic_system}小节建立的动态任务分配系统，结合第\ref{chap:pg}章和第\ref{chap:hedonic}章建立的任务分配模型和算法，进行动态环境下的空空导弹任务分配仿真实验。实验中导弹和目标的初始位置、速度、角度等信息随机生成，目标以一定的加速度做机动运动，导弹在发射前可以根据地面雷达或载机收集到已探测到的目标状态信息，并生成初始分配解。在发射后，导弹进入”发射后不管“状态，即导弹与地面或空中平台不再建立通信，只依赖于互相之间的通信进行协同攻击。
+
+\begin{figure}[!hbtp]
+  \centering
+  \bisubcaptionbox{平衡分配场景分配效果（5vs5）}%
+                  {Performance of balance assignment scenario (5vs5)}%
+                  {\includegraphics[height=8cm]{stochastic_game/SAP5vs5}}
+  \bisubcaptionbox{非平衡场景分配效果（6vs4）}%
+                  {Performance of unbalance assignment scenario (6vs4)}%
+                  {\includegraphics[height=8cm]{stochastic_game/SAP6vs4}}
+  \bicaption{基于势博弈模型的动态任务分配效果}
+            {Dynamic task assignment based on potential game model}
+  \label{sg:fig:pg}
+\end{figure}
+
+\begin{figure}[!hbtp]
+  \centering
+  \bisubcaptionbox{平衡分配场景分配效果（5vs5）}%
+                  {Performance of balance assignment scenario (5vs5)}%
+                  {\includegraphics[height=8cm]{stochastic_game/HCG5vs5}}
+  \bisubcaptionbox{非平衡场景分配效果（6vs4）}%
+                  {Performance of unbalance assignment scenario (6vs4)}%
+                  {\includegraphics[height=8cm]{stochastic_game/HCG6vs4}}
+  \bicaption{基于HCG模型的动态任务分配效果}
+            {Dynamic task assignment based on HCG model}
+  \label{sg:fig:hcg}
+\end{figure}
+
+图\ref{sg:fig:pg}和图\ref{sg:fig:hcg}分别展示的是使用势博弈模型和HCG模型的动态任务分配结果，图\ref{sg:fig:pg}(a)和图\ref{sg:fig:hcg}(a)展示的是平衡分配场景（5vs5）的分配效果，可以看出所有导弹都被分配到一个目标，且导弹的轨迹相对平滑，说明在此情况下导弹在攻击过程中更改目标的次数不多。而图\ref{sg:fig:pg}(b)和图\ref{sg:fig:hcg}(b)展示的是非平衡分配场景（6vs4）下的分配效果。由图中可以看出，相比平衡分配，在非平衡分配下导弹轨迹更加曲折，说明导弹在中途更换了目标，这表明在飞行过程中导弹态势的变化较大，且对于需要多个导弹攻击的目标，导弹之间相对位置的变化，以及目标的机动可能会导致导弹选择不同的队友进行协同攻击。此外，导弹轨迹在攻击后期往往是较为平滑的，这是因为当接近目标的时候，导弹对于各自目标的优势已经足够明显，而此时更换目标所需的时间和机动能量成本过大，因此此时导弹往往不会再更换分配方案。
+
+以上仿真场景中，导弹与目标的状态都假定是事先已知，且导弹通信网络为全连通网络。为了验证本章提出的动态任务分配系统在非理想场景下的有效性，下面将针对\ref{sg:special_incidence}小节中讨论的两种重分配场景进行仿真验证。
+
+（1）通信网络非连通
+
+为了验证在通信网络非连通场景下的系统有效性，将仿真场景设置为导弹初始位置分为两个独立的集群，集群之间距离大于导弹的通信半径，因此两集群之间在初始时没有通信关系。在攻击过程中，两集群可以各自独立地对目标进行跟踪和分配。
+
+
+图\ref{sg:fig:disconnected}表示的是10vs10场景下的导弹攻击过程。在初始时刻，1-5号导弹和6-10号导弹各形成一个集群，且彼此之间的距离超过了导弹的通信半径，因此这两集群之间不存在通信关系，并且部分目标超出了导弹探测范围。由图\ref{sg:fig:disconnected}(a)也可看出，在初始分配时，6-10号导弹中只有6号选择了9号目标，其余都选择了2号目标，因为其余目标都不在这个集群内导弹的探测范围内。值得注意的是，这里有部分目标，比如10号，处于所有导弹的探测范围外，因此在初始时刻没有导弹选择该目标。
+
+当到了30s的时刻，如图\ref{sg:fig:disconnected}(b)所示，此时随着导弹之间距离的接近，两个集群间开始建立起通信，因此原本冲突的分配得到消解，比如原来集中选择2号目标的几枚导弹现在有了各自不同的目标。与此同时，由于导弹与目标的接近，原本不被任何导弹探测的目标现在也进入了导弹集群的探测范围，因而成为可攻击目标，被导弹选中，此时可发现所有导弹都得到了可行分配。
+
+图\ref{sg:fig:disconnected}(c)展示的是攻击后期的态势图，随着弹目间距离越来越小，导弹的分配方案也趋于稳定，直至如图\ref{sg:fig:disconnected}(d)所示所有导弹完成攻击。
+
+\begin{figure}[!hbtp]
+  \centering
+  \subcaptionbox{初始时刻}{\includegraphics[height=5.5cm]{stochastic_game/HCG两集群0时刻}}
+  \subcaptionbox{集群间建立通信}{\includegraphics[height=5.5cm]{stochastic_game/HCG两集群1500时刻}}
+  \subcaptionbox{攻击过程中后期}{\includegraphics[height=5.5cm]{stochastic_game/HCG两集群4000时刻}}
+  \subcaptionbox{攻击完成时刻}{\includegraphics[height=5.5cm]{stochastic_game/HCG两集群最终}}
+  \bicaption{导弹初始通信网络非连通的动态任务分配效果}
+            {Dynamic task assignment in the scenario with disconnected initial communication network}
+  \label{sg:fig:disconnected}
+\end{figure}
+
+（2）目标数量变化
+
+在第一种非连通网络场景下，已经可以看出动态任务分配系统对于新增目标的响应机制，但为了更加直接地验证目标数量可变的场景下的系统动态响应能力，设置仿真场景中的部分目标初始位于导弹集群的探测范围外，因此事先导弹并不知道这些目标的存在，但随着攻击过程的进行，弹目间距离缩小，原本不被发现的目标将可能被发现，从而触发系统的重分配机制。
+
+图\ref{sg:fig:newtarget}展示的是10vs10场景下出现新增目标的场景。在初始时刻，1-5号目标处于导弹集群的探测范围外，因此导弹初始分配方案如图\ref{sg:fig:newtarget}(a)所示，只在6-10号目标分配。由于导弹的速度远远大于目标，因此随着攻击过程的进行，原本在探测范围外的目标开始可以被导弹集群捕捉到，此时会触发重分配，增加了可选目标的导弹会重新选择目标，如图\ref{sg:fig:newtarget}(b)所示。
+
+由于弹目距离的远近不同，一部分目标会率先被导弹击中，击中后的导弹与目标同时退出分配模型，剩下未完成攻击的导弹和未被击中的目标继续参与分配过程。如图\ref{sg:fig:newtarget}(c)所示，图中已经完成攻击的导弹与目标位置重叠，为了图示清晰不再画出轨迹，而其他还在攻击过程的导弹则对剩余目标重新分配，并继续飞行，直至所有目标均被击中，攻击完成，如图\ref{sg:fig:newtarget}(d)所示。
+
+\begin{figure}[!hbtp]
+  \centering
+  \subcaptionbox{初始时刻}{\includegraphics[height=5.5cm]{stochastic_game/HCG新增目标0时刻}}
+  \subcaptionbox{发现新目标}{\includegraphics[height=5.5cm]{stochastic_game/HCG新增目标2000时刻}}
+  \subcaptionbox{部分完成攻击}{\includegraphics[height=5.5cm]{stochastic_game/HCG新增目标6000时刻}}
+  \subcaptionbox{攻击完成时刻}{\includegraphics[height=5.5cm]{stochastic_game/HCG新增目标最终}}
+  \bicaption{新增目标场景下的动态任务分配效果}
+            {Dynamic task assignment in the scenario with new target appearance}
+  \label{sg:fig:newtarget}
+\end{figure}
+
+
+通过以上仿真实验结果可以看出，本章基于随机博弈模型和任务重分配触发机制设计的动态任务分配系统对于非连通网络和目标数量可变两种非理想场景都具有较好的自适应性和动态响应能力，可以完成在较为复杂场景下的导弹集群动态任务分配。
 
 \section{本章小结}
 \label{reassign:sec:conclusion}
+
+本章针对动态环境下的任务分配问题，基于随机博弈模型，将动态分配问题划分为若干时间窗口下的阶段性博弈模型，在每个博弈阶段使用势博弈或偏好联盟博弈建立任务分配模型求解。针对博弈阶段之间的切换，本章设计了阶段开始时的分配解变异机制和阶段结束时的分配解判别机制。由于实际场景中可能遇到新生事件或各种非理想情况，本文针对导弹通信网络非连通和目标数量变化这两种典型场景，各自分析了系统响应方案，并设计了任务重分配机制。最终本章给出了通过设计仿真场景进行实验，验证了本章设计的动态任务分配系统在非理想场景或新生事件下具有良好的适应能力。
 

@@ -24,12 +24,12 @@ classdef DynamicMissileAndTarget
             
         maxVOfMissile  = 1.5; % 导弹最大速度
         maxVOfTarget = 0.3; % 目标最大速度
-        GOfMissile = 0.5; % 导弹最大加速度G值
+        GOfMissile = 0.05; % 导弹最大加速度G值
         GOfTarget = 0.03; % 目标加速度G值
         
         max_inexcapable_radius = 15; % 最大不可逃逸区半径
         communication_radius = 30; % 通信半径
-        radar_radius = 60; % 弹载雷达探测半径
+        radar_radius = 50; % 弹载雷达探测半径
     end
     
     % 计算得到的常量
@@ -54,8 +54,8 @@ classdef DynamicMissileAndTarget
         %% 随机设置态势参数
         function model = RandomSetSituation(model)
             model.Missiles.p = 10 * rand(model.num_missiles, 2);
-%             model.Missiles.p(model.num_missiles/2+1:model.num_missiles,2) = 40 + 10*rand(model.num_missiles/2, 1);
-            %model.Missiles.p(:,2) = 20 * rand(model.num_missiles, 1);
+%             model.Missiles.p(model.num_missiles/2+1:model.num_missiles,2) = 45 + 10*rand(model.num_missiles/2, 1);
+            model.Missiles.p(:,2) = 20 * rand(model.num_missiles, 1);
             model.Missiles.v = 1 * ones(model.num_missiles, 1);
             model.Missiles.angle = 0.1 * pi * (rand(model.num_missiles, 1)-0.5);
             model.Missiles.alive = true(model.num_missiles,1);
@@ -66,6 +66,8 @@ classdef DynamicMissileAndTarget
             
             model.Targets.p = 20*rand(model.num_targets, 2);
             model.Targets.p(:,1) = 50 + 5*rand(model.num_targets, 1);
+            model.Targets.p(1:model.num_targets/2,1) = 70;
+            
             model.Targets.v = 0.6*ones(model.num_targets, 1);
             model.Targets.angle = 10/180*pi*rand(model.num_targets, 1);
             model.Targets.acc = zeros(model.num_targets, 1);
@@ -80,8 +82,9 @@ classdef DynamicMissileAndTarget
             model.target_require_num_list(index_important_targets) = model.target_require_num_list(index_important_targets) +1;
             
             % 目标价值
-            model.Targets.value = 200*ones(model.num_targets,1);
-            model.Targets.value(index_important_targets) = 2*model.Targets.value(index_important_targets);
+            model.Targets.value = 5000*ones(model.num_targets,1);
+            model.Targets.value = model.target_require_num_list.*model.Targets.value;
+%             model.extend_value = model.Targets.value(model.order_targets);
             
             % 计算矩阵邻接矩阵
             model.Missiles.distance_missiles = DistanceMatrixMissiles(model);
@@ -239,7 +242,11 @@ classdef DynamicMissileAndTarget
                     alpha = acos(max(-1,min(1,dot(aM,b)/(norm(aM)*norm(b)))));  % 方位角[0,pi]
                     aT = [cos(model.Targets.angle(t)),sin(model.Targets.angle(t))]; % 目标方向向量
                     beta = acos(max(-1,min(1,dot(aT,b)/(norm(aT)*norm(b))))); % 进入角[0,pi]
-%                     relative_theta = (model.Missiles.v(m)*sin(alpha) - model.Targets.v(t)*sin(beta))/d;
+%                     betahat = model.Targets.acc(t)/model.Targets.v(t)*model.Time_to_go(m,t);
+%                     lambdahat = model.Targets.v(t)*sin(beta)*model.Time_to_go(m,t)/d;
+%                     
+%                     los = model.Targets.p(t) - model.Missiles.p(m);
+%                     lambda = atan2(los(2),los(1));
                     relative_v = model.Missiles.v(m) - model.Targets.v(t)*cos(beta);
                     TimeToGo(i,j) = d/relative_v*(1+0.5*alpha^2/(2*N-1));
                 end
@@ -389,24 +396,24 @@ classdef DynamicMissileAndTarget
                     % 目标前一时刻位置
                     pre_target_p = model.Targets.p(t,:) - model.Targets.v(t)*model.dT*[cos(model.Targets.angle(t)),sin(model.Targets.angle(t))];
 %                   
-                    pre_R = norm(pre_missiles_p - pre_target_p); % 前一时刻弹目距离
-                    diff_R = (R-pre_R)/model.dT; % 弹目距离变化率
-                    pre_diff_R = model.Missiles.diff_R(m);
-                    model.Missiles.diff_R(m) = diff_R;
+%                     pre_R = norm(pre_missiles_p - pre_target_p); % 前一时刻弹目距离
+%                     diff_R = (R-pre_R)/model.dT; % 弹目距离变化率
+%                     pre_diff_R = model.Missiles.diff_R(m);
+%                     model.Missiles.diff_R(m) = diff_R;
 %                   
 %                     lambda = atan2(b(2),b(1));
 %                     pre_lambda = atan2(pre_target_p(2)-pre_missiles_p(2),pre_target_p(1)-pre_missiles_p(1));
 %                     Qtm = (lambda-pre_lambda)/model.dT;
                     
                     
-                    Vtm = -(b(1)*v(1)+b(2)*v(2))/R;
+                    diff_R = (b(1)*v(1)+b(2)*v(2))/R;
                     Qtm = (b(1)*v(2)-b(2)*v(1))/(R^2);
                     if Qtm<-pi
                         Qtm = Qtm + 2*pi;
                     elseif Qtm>pi
                         Qtm = Qtm - 2*pi;
                     end
-                    acc = N*Vtm*Qtm;
+                    acc = N*(-diff_R)*Qtm;
                     model.Missiles.acc(m) = sign(acc)*min(abs(acc),model.GOfMissile);
 %                     r = model.Missiles.angle(m) + model.Missiles.acc(m)*model.dT;
                     if R<0.05 || diff_R>0% 击落距离30m
@@ -421,12 +428,13 @@ classdef DynamicMissileAndTarget
                             model.Targets.v(t) = 0; % 目标被击中，停止移动
                             model.Targets.alive(t) = 0;
                             model.Missiles.target_set(:,t) = false; % 被击中的目标不再成为可选目标
-                            if sum(assign_plan==t)>1
-                                co_missiles = assign_plan == t;
-                                co_m = co_missiles & model.Missiles.alive;
-                                assign_plan(co_m==1) = 0;
-                                model.reassign_flag = 1;
-                            end
+                            model.reassign_flag = 1;
+%                             if sum(assign_plan==t)>model.
+%                                 co_missiles = assign_plan == t;
+%                                 co_m = co_missiles & model.Missiles.alive;
+%                                 assign_plan(co_m==1) = model.Targets.alive_targets(randi(model.Targets.alive_num));
+%                                 model.reassign_flag = 1;
+%                             end
                             
                                 
                         end

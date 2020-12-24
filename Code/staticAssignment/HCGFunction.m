@@ -1,41 +1,54 @@
-function [FinalAssignList, maxutility, globalutility] = HCGFunction(AgentNum, TaskNum, Adjacent, Task_Value, Max_limit_num, Time_to_go, J_opt, Epis)
+function [FinalAssignList, globalutility, time] = HCGFunction(model, Epis)
 
 %% Parameter Initialisation
+AgentNum = model.num_missiles;
+TargetNum = model.num_targets;
+Adjacent = model.Adjacent;
+
 EvolveNum = zeros(1,AgentNum); % an integer variable to represent how many times partition has evolved
 TimeStamp = zeros(1,AgentNum); % a uniform-random time stamp
 
-AssignList = ones(AgentNum); % Assign List for each agent
+% AssignList = ones(AgentNum); % Assign List for each agent
 % AssignList = randi(TaskNum, AgentNum);
 % AssignList = randi(TaskNum,AgentNum,1)*ones(1,AgentNum);
 
-coAgentNums = zeros(AgentNum, TaskNum+1); % Initial Partition
-coAgentNums(:,1) = AgentNum*ones(AgentNum,1); % Initial numbers distribution of cooperated agents
+coAgentNums = zeros(AgentNum, TargetNum+1); % Initial Partition
+% coAgentNums(:,1) = AgentNum*ones(AgentNum,1); % Initial numbers distribution of cooperated agents
+AssignList = randi(TargetNum, AgentNum, AgentNum);
+
+coAgentNums = zeros(AgentNum, TargetNum+1); % Initial Partition
+% coAgentNums(:,1) = AgentNum*ones(AgentNum,1); % Initial numbers distribution of cooperated agents
+for i=1:AgentNum
+    for j=1:AgentNum
+        coAgentNums(i,AssignList(i,j)) = coAgentNums(i,AssignList(i,j)) + 1;
+    end
+end
 Satisfied = zeros(1,AgentNum); % whether or not the agent is satisfied with the partition
 
 
 %% Decision-making process begins
 T = Epis; 
-
+e = 3;
 globalutility = zeros(1,T);
+tic
 for t = 1:T
-    localutility = zeros(1,AgentNum);
+    localutility = zeros(AgentNum,1);
     for i = 1:AgentNum
         
         best_task = AssignList(i,i); % current task of agent i
 %         curUtility = AgentTaskUtility(TaskCat(bestTask), coAgentNums(i,bestTask), Distance(i,bestTask), Rmax(bestTask), DesiredNum(bestTask), Rmin(bestTask), epi);
-        curUtility = AuxiliaryUtility(best_task, coAgentNums(i,best_task), Task_Value(best_task), Max_limit_num(best_task), Time_to_go(i,best_task), J_opt(i,best_task));
+        curUtility = AuxiliaryUtility(e, i, best_task, coAgentNums(i,best_task), model);
         bestUtility = curUtility;
-        localutility(i) = curUtility;
-        globalutility(t) = sum(localutility);
+        
         % update task of agent i
         if Satisfied(i) == 0
             % choose best task for agent i
-            for j = 1:TaskNum
+            for j = 1:TargetNum
                 if AssignList(i,i) == j
                     continue
                 else
 %                     tmpUti = AgentTaskUtility(j, TaskCat(j), coAgentNums(i,j)+1, Distance(i,j), Rmax(j), DesiredNum(j), Rmin(j), epi);
-                    tmpUti = AuxiliaryUtility(j, coAgentNums(i,j)+1, Task_Value(j), Max_limit_num(j), Time_to_go(i,j), J_opt(i,j));
+                    tmpUti = AuxiliaryUtility(e, i, j, coAgentNums(i,j)+1, model);
                     if tmpUti > bestUtility
                         bestUtility = tmpUti;
                         best_task = j;
@@ -52,40 +65,38 @@ for t = 1:T
                 TimeStamp(i) = rand;
                 
             end
-            Satisfied(i) = 1;
+            Satisfied(i) = Satisfied(i) + 1;
         end
+        localutility(i) = GlobalUtility(model,AssignList(i,:));
     end
     
     [EvolveNum, TimeStamp, coAgentNums, AssignList, Satisfied] = DMutex(Satisfied, Adjacent, EvolveNum, TimeStamp, coAgentNums, AssignList);
-    if sum(Satisfied) == AgentNum
+    
+    globalutility(t) = max(localutility);
+    if sum(Satisfied==20) == AgentNum
+        time = toc
         FinalAssignList = AssignList(1,:)';
         maxutility = globalutility(t);
         globalutility(t+1:T) = maxutility*ones(1,T-t);
         break;
     end
 end
-
-
-
+time = toc
+FinalAssignList = AssignList(1,:)';
 end
 
 
 %% Auxiliary individual utility function
-function [AU] = AuxiliaryUtility(task, coAgentNum, task_value, max_limit_num, time_to_go, j_opt)
+function [AU] = AuxiliaryUtility(e, agent, target, coAgentNum, model)
 
-e = 5;
-rmin = task_value;
-if task == 1
+rmin = model.Targets.value(target);
+if coAgentNum > model.target_require_num_list(target)
     AU = 0;
 else
-    if coAgentNum > max_limit_num
-        AU = 0;
-    else
-        %R = (task_value/desired_num) * exp(-coAgentNum/desired_num+1);
-        R = rmin*log(coAgentNum+e-1)/coAgentNum;
-        cost = time_to_go + j_opt;
-        AU = R - cost;
-    end
+    %R = (task_value/desired_num) * exp(-coAgentNum/desired_num+1);
+    R = rmin*log(coAgentNum+e-1)/coAgentNum;
+    cost = model.Time_to_go(agent,target) + model.Energy_opt(agent,target);
+    AU = max(0,R - cost);
 end
 end
 
@@ -123,4 +134,32 @@ for i = 1:agentnum
 end
 coAgentNums = newconum;
 
+end
+
+%% 全局效用
+function [Ug] = GlobalUtility(model,plan)
+Nt = model.num_targets;
+Ut = zeros(Nt,1);
+flag = 1;
+for j=1:Nt
+    part_missiles = find(plan == j);
+    num_missiles = length(part_missiles);
+    if num_missiles > model.target_require_num_list(j)
+        flag = 0;
+    end
+    if num_missiles == 0
+        Ut(j) = 0;
+    else
+        time_max = sum(model.Time_to_go(part_missiles,j));
+        J_sum = sum(model.Energy_opt(part_missiles,j));
+        cost = time_max + J_sum;
+        Ut(j) = max(0,model.Targets.value(j)/model.target_require_num_list(j)*num_missiles - cost);
+    end
+    
+end
+if flag == 0
+    Ug = 0;
+else
+    Ug = sum(Ut);
+end
 end

@@ -1,5 +1,5 @@
 % 带有Lagrange乘子法的SAP算法
-function assign_plan = SAPLagrangeFunction(model,Epis,initial_plan)
+function [Ug,assign_plan] = SAPLagrangeFunction(model,Epis,initial_plan)
 % 输入： model:模型
 %        Epis:迭代次数
 % 输出： assign_plan：分配方案
@@ -10,17 +10,20 @@ ProbDist = ones(AgentNum, TargetNum);%智能体选择任务概率分布表存储
 assign_plan = initial_plan;%randi(model.num_targets,model.num_missiles,1);%分配任务表
 
 if AgentNum == 1
+    alive_target = model.Targets.alive_targets;
+    Ug = max(model.Targets.value(alive_target));
     assign_plan = 1;
     return
 end
 if TargetNum == 1
+    alive_target = model.Targets.alive_targets;
+    Ug = max(model.Targets.value(alive_target));
     assign_plan = ones(AgentNum,1);
     return
 end
 %% 迭代更新
 T = Epis;%总迭代步数
-GlobalUtility = zeros(1,T);
-lambda = 300;
+lambda = max(model.Targets.value);
 
 sap_satisfied = zeros(AgentNum,1);
 ex_satisfied = zeros(AgentNum,1);
@@ -29,6 +32,7 @@ ex_satisfied = zeros(AgentNum,1);
 %     GlobalUtility(1) = GlobalUtility(1) + TargetUtility(1, j, model, assign_plan, lambda);
 % end
 attack_flag = MissileCanChangeTarget(model);
+Ug = 0;
 for k = 2:T
     %for i = 1:AgentNum
         
@@ -79,7 +83,7 @@ for k = 2:T
             cp = cp + ProbDist(i,j);
             if e <= cp
                 if j==assign_plan(i)
-                    sap_satisfied(i) = 1;
+                    sap_satisfied(i) = sap_satisfied(i) + 1;
                 else
                     sap_satisfied(i) = 0;
                 end
@@ -122,21 +126,9 @@ for k = 2:T
        end
    end
     
-    
-    lagrange_multipler = 0;
-    for p=1:TargetNum
-        part_missiles = find(assign_plan==p);
-        num_missiles = length(part_missiles);
-        lagrange_multipler = lagrange_multipler + min(model.target_require_num_list(p)-num_missiles,0);
-    end
-    %计算总效用
-%     for j = 1:AgentNum
-%         s = assign_plan(j);
-%         GlobalUtility(k) = GlobalUtility(k) + TargetUtility(s, model, assign_plan, lambda);
-%         GlobalUtility(k) = GlobalUtility(k) - lagrange_multipler;
-%     end
+   Ug = GlobalUtility(model,assign_plan);
 %     
-    if (sum(sap_satisfied) == AgentNum)&&(sum(ex_satisfied)==AgentNum)
+    if (sum(sap_satisfied>20) == AgentNum)&&(sum(ex_satisfied)==AgentNum)
 %         MaxGlobalUtility = GlobalUtility(k);
 %         GlobalUtility(k+1:T) = MaxGlobalUtility*ones(1,T-k);
         break
@@ -183,4 +175,33 @@ Assign(agent) = 0;
 target = assign_plan(agent);
 U = TargetUtility(agent,target,model,assign_plan,lambda)...
     -TargetUtility(agent,target,model,Assign,lambda);
+end
+
+%% 分配结果效用
+function [Ug] = GlobalUtility(model,plan)
+Nt = model.Targets.alive_num;
+Ut = zeros(Nt,1);
+flag = 1;
+for j=1:Nt
+    part_missiles = find(plan == j);
+    num_missiles = length(part_missiles);
+    if num_missiles > model.target_require_num_list(j) - model.Targets.num_attacked(j)
+        flag = 0;
+        break
+    end
+    if num_missiles == 0
+        Ut(j) = 0;
+    else
+        time_max = sum(model.Time_to_go(part_missiles,j));
+        J_sum = sum(model.Energy_opt(part_missiles,j));
+        cost = time_max + J_sum;
+        Ut(j) = max(0,model.Targets.value(j)*num_missiles/model.target_require_num_list(j) - cost);
+    end
+    
+end
+if flag == 0
+    Ug = 0;
+else
+    Ug = sum(Ut);
+end
 end

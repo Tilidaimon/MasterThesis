@@ -1,0 +1,19 @@
+missileplan0=5  4  8  6  3  1  3  7  4  1  5  6
+Change at 4500
+currentPlan=4   2   8   4   6   3   6  10   5   1   9   7
+Change at 4800
+currentPlan=8   1   2   5   6   3   6   4   4  10   9   7
+Change at 5100
+currentPlan=6   7   2   4   6   3   8   5   4  10   1   9
+Target 7 has been hit 1 of 1 times by Missile 2 
+Target 2 has been hit 1 of 1 times by Missile 3 
+Target 5 has been hit 1 of 1 times by Missile 8 
+Target 6 has been hit 1 of 2 times by Missile 1 
+Target 3 has been hit 1 of 1 times by Missile 6 
+Target 4 has been hit 1 of 2 times by Missile 9 
+Target 10 has been hit 1 of 1 times by Missile 10 
+Target 1 has been hit 1 of 1 times by Missile 11 
+Target 8 has been hit 1 of 1 times by Missile 7 
+Target 9 has been hit 1 of 1 times by Missile 12 
+Target 6 has been hit 2 of 2 times by Missile 5 
+Target 4 has been hit 2 of 2 times by Missile 4 

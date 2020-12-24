@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999991 (TeX Live 2019) (preloaded format=xelatex 2020.2.27)  12 DEC 2020 21:23
+This is XeTeX, Version 3.14159265-2.6-0.999991 (TeX Live 2019) (preloaded format=xelatex 2020.2.27)  24 DEC 2020 21:52
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1820,13 +1820,12 @@ Package biblatex Info: Automatic encoding selection.
 \openout3 = `main.bcf'.
 
 Package biblatex Info: Trying to load bibliographic data...
-Package biblatex Info: ... file 'main.bbl' not found.
-
-No file main.bbl.
+Package biblatex Info: ... file 'main.bbl' found.
+ (./main.bbl)
 Package biblatex Info: Reference section=0 on input line 15.
 Package biblatex Info: Reference segment=0 on input line 15.
 \c@lstlisting=\count583
-(/usr/local/texlive/2019/texmf-dist/tex/latex/translator/translator-basic-dictionary-English.dict
+ (/usr/local/texlive/2019/texmf-dist/tex/latex/translator/translator-basic-dictionary-English.dict
 Dictionary: translator-basic-dictionary, Language: English 
 ) (/usr/local/texlive/2019/texmf-dist/tex/latex/siunitx/siunitx-abbreviations.cfg
 File: siunitx-abbreviations.cfg 2017/11/26 v2.7k siunitx: Abbreviated units
@@ -1889,27 +1888,22 @@ LaTeX Font Info:    Font shape `TU/SourceCodePro(1)/m/n' will be
 
 ] [3] [4
 
-] [5
-
-
-] [6
-
 ]
-File: scans/copyright.pdf Graphic file (type pdf)
-<use scans/copyright.pdf>
-File: scans/copyright.pdf Graphic file (type pdf)
-<use scans/copyright.pdf>
-File: scans/copyright.pdf Graphic file (type pdf)
-<use scans/copyright.pdf, page 1>
-File: scans/copyright.pdf Graphic file (type pdf)
-<use scans/copyright.pdf, page 1>
-File: scans/copyright.pdf Graphic file (type pdf)
-<use scans/copyright.pdf, page 1>
-File: scans/copyright.pdf Graphic file (type pdf)
-<use scans/copyright.pdf, page 1>
-File: scans/copyright.pdf Graphic file (type pdf)
-<use scans/copyright.pdf, page 1>
- [7] [8
+File: scans/copyrightAndOriginal.pdf Graphic file (type pdf)
+<use scans/copyrightAndOriginal.pdf>
+File: scans/copyrightAndOriginal.pdf Graphic file (type pdf)
+<use scans/copyrightAndOriginal.pdf>
+File: scans/copyrightAndOriginal.pdf Graphic file (type pdf)
+<use scans/copyrightAndOriginal.pdf, page 1>
+File: scans/copyrightAndOriginal.pdf Graphic file (type pdf)
+<use scans/copyrightAndOriginal.pdf, page 1>
+File: scans/copyrightAndOriginal.pdf Graphic file (type pdf)
+<use scans/copyrightAndOriginal.pdf, page 1>
+File: scans/copyrightAndOriginal.pdf Graphic file (type pdf)
+<use scans/copyrightAndOriginal.pdf, page 1>
+File: scans/copyrightAndOriginal.pdf Graphic file (type pdf)
+<use scans/copyrightAndOriginal.pdf, page 1>
+ [5] [6
 
 ]
 \c@pagesLTS.Alph.1.local.count=\count585
@@ -1970,18 +1964,21 @@ Missing character: There is no ​ in font [XITS-Regular.otf]/OT:script=latn;lan
 \c@pagesLTS.current.local.arabic=\count592
  (./contents/intro.tex
 第一章
-) (./contents/model.tex [1
+[1
 
-] [2
-
-]
+] [2] [3] [4] [5]
+File: figures/论文结构.eps Graphic file (type eps)
+<figures/论文结构.eps>
+ [6] [7]) (./contents/model.tex [8]
 第二章
 File: figures/model.eps Graphic file (type eps)
 <figures/model.eps>
-[3] [4] [5] [6] [7] [8] [9]
+[9
+
+] [10] [11] [12] [13] [14] [15]
 File: figures/半径模型.eps Graphic file (type eps)
 <figures/半径模型.eps>
- [10]) (./contents/potential_game.tex [11] [12
+ [16]) (./contents/potential_game.tex [17] [18
 
 ]
 第三章
@@ -1991,15 +1988,15 @@ Underfull \hbox (badness 10000) in paragraph at lines 40--41
 []\TU/STSong(0)/m/n/12.045 设 一 个 博 弈 模 型 中 的 智 能 体 效 用 函 数 为
  []
 
-[13] [14]
+[19] [20]
 Package hyperref Info: bookmark level for unknown proposition defaults to 0 on input line 102.
 Package hyperref Info: bookmark level for unknown proof defaults to 0 on input line 107.
- [15]
+ [21]
 Underfull \hbox (badness 5652) in paragraph at lines 155--156
 []\TU/STSong(0)/m/n/12.045 只 需 证 明 全 局 效 用 函 数 $[][][][]$ 与 式  |（[]\TU/XITS(0)/m/n/12.045 3–9[]\TU/STSong(0)/m/n/12.045 ）|  定 义 的 智 能 体 效 用 函 数
  []
 
-[16] [17] [18] [19] [20]
+[22] [23] [24] [25] [26]
 LaTeX Font Info:    Font shape `TU/XITSMath-Regular(2)/m/n' will be
 (Font)              scaled to size 7.00075pt on input line 330.
 LaTeX Font Info:    Font shape `TU/XITSMath-Regular(2)/m/n' will be
@@ -2016,96 +2013,187 @@ LaTeX Font Info:    Font shape `TU/SourceCodePro(0)/m/n' will be
 (Font)              scaled to size 11.29218pt on input line 332.
 LaTeX Font Info:    Font shape `TU/SourceCodePro(0)/m/n' will be
 (Font)              scaled to size 9.88065pt on input line 332.
- [21] [22] [23] [24]) (./contents/hedonic_game.tex [25] [26]
+ [27] [28] [29] [30] [31] [32]
+File: potential_game/BalanceBox.eps Graphic file (type eps)
+<potential_game/BalanceBox.eps>
+
+Overfull \hbox (18.30351pt too wide) in paragraph at lines 563--566
+ [][] 
+ []
+
+File: potential_game/BalanceBoxTime.eps Graphic file (type eps)
+<potential_game/BalanceBoxTime.eps>
+
+Overfull \hbox (17.76154pt too wide) in paragraph at lines 607--610
+ [][] 
+ []
+
+[33] [34] [35]
+Underfull \hbox (badness 5939) in paragraph at lines 659--660
+[]\TU/STSong(0)/bx/n/12.045 由 图[]\TU/XITS(0)/m/n/12.045 3–2[]\TU/STSong(0)/bx/n/12.045 和 表[]\TU/XITS(0)/m/n/12.045 3–2[]\TU/STSong(0)/bx/n/12.045 中 的 时 间 数 据 可 看 出，|  由 于 分 布 式 架 构 的 作 用，| \TU/XITS(0)/m/n/12.045 JSFP\TU/STSong(0)/bx/n/12.045 、|
+ []
+
+[36]
+Underfull \hbox (badness 1264) in paragraph at lines 670--671
+\TU/STSong(0)/bx/n/12.045 型 下 的 三 种 算 法 在 大 多 数 优 化 中 均 能 够 达 到 集 中 式 算 法 最 好 效 果 的 \TU/XITS(0)/m/n/12.045 98% \TU/STSong(0)/bx/n/12.045 以
+ []
+
+
+Underfull \hbox (badness 2343) in paragraph at lines 670--671
+\TU/STSong(0)/bx/n/12.045 上，|  其 中 \TU/XITS(0)/m/n/12.045 JSFP \TU/STSong(0)/bx/n/12.045 和 \TU/XITS(0)/m/n/12.045 SAP \TU/STSong(0)/bx/n/12.045 算 法 在 一 些 场 景 下 优 化 效 果 比 \TU/XITS(0)/m/n/12.045 PSO \TU/STSong(0)/bx/n/12.045 算 法 更 好，|  但
+ []
+
+[37]
+File: potential_game/BoxM55T10-50.eps Graphic file (type eps)
+<potential_game/BoxM55T10-50.eps>
+
+Overfull \hbox (17.21956pt too wide) in paragraph at lines 676--679
+ [][] 
+ []
+
+File: potential_game/BoxM55T10-50Time.eps Graphic file (type eps)
+<potential_game/BoxM55T10-50Time.eps>
+
+Overfull \hbox (17.21956pt too wide) in paragraph at lines 722--725
+ [][] 
+ []
+
+[38] [39]) (./contents/hedonic_game.tex [40]
 第四章
-[27
+[41
 
 ]
 File: figures/联盟划分.eps Graphic file (type eps)
 <figures/联盟划分.eps>
- [28]
+ [42]
 Package hyperref Info: bookmark level for unknown theorem defaults to 0 on input line 97.
- [29]
+ [43]
 File: figures/taskreward.eps Graphic file (type eps)
 <figures/taskreward.eps>
 File: figures/agentreward.eps Graphic file (type eps)
 <figures/agentreward.eps>
- [30] [31] [32] [33] [34] [35] [36]) (./contents/stochastic_game.tex [37] [38]
-第五章
-[39
+ [44] [45] [46] [47] [48] [49] [50] [51] [52]
+File: hedonic_game/BoxUnbalanceV1.eps Graphic file (type eps)
+<hedonic_game/BoxUnbalanceV1.eps>
 
-] [40] [41]
-File: stochastic_game/undetectable_collision.eps Graphic file (type eps)
-<stochastic_game/undetectable_collision.eps>
- [42]
-File: stochastic_game/collision_resolution.eps Graphic file (type eps)
-<stochastic_game/collision_resolution.eps>
- [43]
-LaTeX Font Info:    Font shape `TU/XITSMath-Regular(2)/m/n' will be
-(Font)              scaled to size 9.0347pt on input line 125.
-LaTeX Font Info:    Font shape `TU/XITSMath-Regular(2)/m/n' will be
-(Font)              scaled to size 6.00064pt on input line 125.
-LaTeX Font Info:    Font shape `TU/XITSMath-Regular(3)/m/n' will be
-(Font)              scaled to size 9.03276pt on input line 125.
-LaTeX Font Info:    Font shape `TU/XITSMath-Regular(3)/m/n' will be
-(Font)              scaled to size 5.99936pt on input line 125.
-LaTeX Font Info:    Font shape `TU/SourceCodePro(1)/m/n' will be
-(Font)              scaled to size 8.46912pt on input line 125.
-LaTeX Font Info:    Font shape `TU/SourceCodePro(1)/m/n' will be
-(Font)              scaled to size 5.625pt on input line 125.
-File: stochastic_game/framework.eps Graphic file (type eps)
-<stochastic_game/framework.eps>
-
-Overfull \hbox (14.24483pt too wide) in paragraph at lines 135--138
+Overfull \hbox (26.43309pt too wide) in paragraph at lines 442--445
  [][] 
  []
 
-[44] [45]) (./contents/summary.tex [46]
+File: hedonic_game/BoxUnbalanceTimeV1.eps Graphic file (type eps)
+<hedonic_game/BoxUnbalanceTimeV1.eps>
+
+Overfull \hbox (25.89111pt too wide) in paragraph at lines 487--490
+ [][] 
+ []
+
+[53] [54]
+File: hedonic_game/BoxUnbalanceBmaxV2.eps Graphic file (type eps)
+<hedonic_game/BoxUnbalanceBmaxV2.eps>
+
+Overfull \hbox (26.97507pt too wide) in paragraph at lines 548--551
+ [][] 
+ []
+
+File: hedonic_game/JSFP_zeros.eps Graphic file (type eps)
+<hedonic_game/JSFP_zeros.eps>
+[55] [56]
+File: hedonic_game/BoxUnbalanceBmaxTimeV2.eps Graphic file (type eps)
+<hedonic_game/BoxUnbalanceBmaxTimeV2.eps>
+
+Overfull \hbox (26.43309pt too wide) in paragraph at lines 571--574
+ [][] 
+ []
+
+[57]) (./contents/stochastic_game.tex [58] [59] [60]
+第五章
+[61
+
+] [62] [63] [64]
+File: stochastic_game/undetectable_collision.eps Graphic file (type eps)
+<stochastic_game/undetectable_collision.eps>
+File: stochastic_game/collision_resolution.eps Graphic file (type eps)
+<stochastic_game/collision_resolution.eps>
+ [65]
+LaTeX Font Info:    Font shape `TU/XITSMath-Regular(2)/m/n' will be
+(Font)              scaled to size 9.0347pt on input line 133.
+LaTeX Font Info:    Font shape `TU/XITSMath-Regular(2)/m/n' will be
+(Font)              scaled to size 6.00064pt on input line 133.
+LaTeX Font Info:    Font shape `TU/XITSMath-Regular(3)/m/n' will be
+(Font)              scaled to size 9.03276pt on input line 133.
+LaTeX Font Info:    Font shape `TU/XITSMath-Regular(3)/m/n' will be
+(Font)              scaled to size 5.99936pt on input line 133.
+LaTeX Font Info:    Font shape `TU/SourceCodePro(1)/m/n' will be
+(Font)              scaled to size 8.46912pt on input line 133.
+LaTeX Font Info:    Font shape `TU/SourceCodePro(1)/m/n' will be
+(Font)              scaled to size 5.625pt on input line 133.
+ [66]
+File: stochastic_game/framework.eps Graphic file (type eps)
+<stochastic_game/framework.eps>
+
+Overfull \hbox (14.24483pt too wide) in paragraph at lines 147--150
+ [][] 
+ []
+
+[67]
+File: stochastic_game/SAP5vs5.eps Graphic file (type eps)
+<stochastic_game/SAP5vs5.eps>
+File: stochastic_game/SAP6vs4.eps Graphic file (type eps)
+<stochastic_game/SAP6vs4.eps>
+File: stochastic_game/HCG5vs5.eps Graphic file (type eps)
+<stochastic_game/HCG5vs5.eps>
+File: stochastic_game/HCG6vs4.eps Graphic file (type eps)
+<stochastic_game/HCG6vs4.eps>
+ [68] [69] [70]
+File: stochastic_game/HCG两集群0时刻.eps Graphic file (type eps)
+<stochastic_game/HCG两集群0时刻.eps>
+File: stochastic_game/HCG两集群1500时刻.eps Graphic file (type eps)
+<stochastic_game/HCG两集群1500时刻.eps>
+File: stochastic_game/HCG两集群4000时刻.eps Graphic file (type eps)
+<stochastic_game/HCG两集群4000时刻.eps>
+File: stochastic_game/HCG两集群最终.eps Graphic file (type eps)
+<stochastic_game/HCG两集群最终.eps>
+ [71] [72]
+File: stochastic_game/HCG新增目标0时刻.eps Graphic file (type eps)
+<stochastic_game/HCG新增目标0时刻.eps>
+File: stochastic_game/HCG新增目标2000时刻.eps Graphic file (type eps)
+<stochastic_game/HCG新增目标2000时刻.eps>
+File: stochastic_game/HCG新增目标6000时刻.eps Graphic file (type eps)
+<stochastic_game/HCG新增目标6000时刻.eps>
+File: stochastic_game/HCG新增目标最终.eps Graphic file (type eps)
+<stochastic_game/HCG新增目标最终.eps>
+ [73]) (./contents/summary.tex [74]
 第六章
-) (./contents/app_maxwell_equations.tex [47
+[75
 
-] [48
+]) [76] [77
 
-]
-附录 A
-) (./contents/app_flow_chart.tex [49] [50
 
-]
-附录 B
-(./figures/flow_chart.tex)) [51] [52
+] [78] [79] [80] (./contents/acknowledgements.tex [81] [82
 
 ]
-
-LaTeX Warning: Empty bibliography on input line 68.
-
-(./contents/acknowledgements.tex
 
 LaTeX Font Warning: Font shape `TU/XITS(0)/m/sc' undefined
 (Font)              using `TU/XITS(0)/m/n' instead on input line 18.
 
-) (./contents/publications.tex [53
+) (./contents/publications.tex [83
 
+] [84
 
-] [54
+]) (./contents/achievements.tex [85
 
-]) (./contents/achievements.tex [55
-
-] [56
-
-]) (./contents/resume.tex [57
-
-] [58
+] [86
 
 ]) (./contents/english_digest.tex) 
 AED: pageslts setting LastPage 
-[59
+[87
 
 ]
 \tf@thm=\write10
 \openout10 = `main.thm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 86.
-Package atveryend Info: Executing hook `AfterLastShipout' on input line 86.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 83.
+Package atveryend Info: Executing hook `AfterLastShipout' on input line 83.
 \c@pagesLTS.arabic.1.local.count=\count593
  
 AED: pageslts setting VeryLastPage via AfterLastShipout 
@@ -2117,10 +2205,10 @@ Package pageslts Info: Total number of pages is odd.
 
 
 (./main.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 86.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 86.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 83.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 83.
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 28084CE932705294053BC03D5DC6A106.
+(rerunfilecheck)             Checksum: C65147CCE61728E5584A531EF55CD783.
 
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
@@ -2130,12 +2218,12 @@ Package logreq Info: Writing requests to 'main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 58091 strings out of 492916
- 1179490 string characters out of 6133345
- 1795069 words of memory out of 5000000
- 61200 multiletter control sequences out of 15000+600000
- 541921 words of font info for 215 fonts, out of 8000000 for 9000
+ 58358 strings out of 492916
+ 1189664 string characters out of 6133345
+ 1817373 words of memory out of 5000000
+ 61457 multiletter control sequences out of 15000+600000
+ 541857 words of font info for 207 fonts, out of 8000000 for 9000
  1349 hyphenation exceptions out of 8191
- 71i,20n,120p,1140b,2766s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 71i,20n,120p,1163b,6848s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on main.pdf (85 pages).
+Output written on main.pdf (111 pages).

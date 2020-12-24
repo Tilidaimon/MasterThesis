@@ -439,10 +439,10 @@ for j=1:Nt
     if num_missiles == 0
         Ut(j) = 0;
     else
-        time_max = max(model.Time_to_go(part_missiles,j));
+        time_max = sum(model.Time_to_go(part_missiles,j));
         J_sum = sum(model.Energy_opt(part_missiles,j));
         cost = time_max + J_sum;
-        Ut(j) = max(0,model.Targets.value(j) - cost);
+        Ut(j) = max(0,model.Targets.value(j)*num_missiles/model.target_require_num_list(j) - cost);
     end
     
 end

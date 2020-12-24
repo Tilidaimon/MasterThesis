@@ -1,17 +1,28 @@
 \boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
 \addvspace {10.0pt}
+\contentsline {figure}{\numberline {1--1}{\ignorespaces 论文章节结构安排}}{7}{figure.caption.16}% 
 \addvspace {10.0pt}
-\contentsline {figure}{\numberline {2--1}{\ignorespaces 弹目相对运动模型}}{3}{figure.caption.18}% 
-\contentsline {figure}{\numberline {2--2}{\ignorespaces 导弹探测与通信示意图}}{10}{figure.caption.19}% 
+\contentsline {figure}{\numberline {2--1}{\ignorespaces 弹目相对运动模型}}{9}{figure.caption.17}% 
+\contentsline {figure}{\numberline {2--2}{\ignorespaces 导弹探测与通信示意图}}{16}{figure.caption.18}% 
 \addvspace {10.0pt}
+\contentsline {figure}{\numberline {3--1}{\ignorespaces 平衡指派场景下算法优化效果对比}}{34}{figure.caption.23}% 
+\contentsline {figure}{\numberline {3--2}{\ignorespaces 平衡指派场景下算法运行时间对比}}{35}{figure.caption.25}% 
+\contentsline {figure}{\numberline {3--3}{\ignorespaces 固定导弹数量为55非平衡指派场景下算法优化效果对比}}{38}{figure.caption.27}% 
+\contentsline {figure}{\numberline {3--4}{\ignorespaces 固定导弹数量为55的非平衡指派场景下算法运行时间对比}}{39}{figure.caption.29}% 
 \addvspace {10.0pt}
-\contentsline {figure}{\numberline {4--1}{\ignorespaces 联盟划分}}{28}{figure.caption.24}% 
-\contentsline {figure}{\numberline {4--2}{\ignorespaces HCG模型的回报函数\relax }}{31}{figure.caption.25}% 
+\contentsline {figure}{\numberline {4--1}{\ignorespaces 联盟划分}}{42}{figure.caption.31}% 
+\contentsline {figure}{\numberline {4--2}{\ignorespaces HCG模型的回报函数\relax }}{45}{figure.caption.32}% 
+\contentsline {figure}{\numberline {4--3}{\ignorespaces 目标数量为10的非平衡指派场景下算法优化效果对比}}{53}{figure.caption.36}% 
+\contentsline {figure}{\numberline {4--4}{\ignorespaces 目标数量为10，不同导弹数量场景下算法运行时间对比}}{54}{figure.caption.38}% 
+\contentsline {figure}{\numberline {4--5}{\ignorespaces 20vs10场景的不同$b_{\text {max}}$条件下算法优化效果对比}}{56}{figure.caption.40}% 
+\contentsline {figure}{\numberline {4--6}{\ignorespaces 不同$b_{\text {max}}$条件下JSFP算法收敛到不可行解比例变化图}}{56}{figure.caption.41}% 
+\contentsline {figure}{\numberline {4--7}{\ignorespaces 20vs10场景的不同$b_{\text {max}}$条件下算法运行时间对比}}{57}{figure.caption.42}% 
 \addvspace {10.0pt}
-\contentsline {figure}{\numberline {5--1}{\ignorespaces 不可规避冲突}}{43}{figure.caption.29}% 
-\contentsline {figure}{\numberline {5--2}{\ignorespaces 非连通场景下分配冲突消解示意图}}{43}{figure.caption.30}% 
-\contentsline {figure}{\numberline {5--3}{\ignorespaces 导弹任务分配系统框架示意图}}{45}{figure.caption.31}% 
+\contentsline {figure}{\numberline {5--1}{\ignorespaces 不可规避冲突}}{65}{figure.caption.45}% 
+\contentsline {figure}{\numberline {5--2}{\ignorespaces 非连通场景下分配冲突消解示意图}}{66}{figure.caption.46}% 
+\contentsline {figure}{\numberline {5--3}{\ignorespaces 导弹任务分配系统框架示意图}}{67}{figure.caption.47}% 
+\contentsline {figure}{\numberline {5--4}{\ignorespaces 基于势博弈模型的动态任务分配效果\relax }}{69}{figure.caption.48}% 
+\contentsline {figure}{\numberline {5--5}{\ignorespaces 基于HCG模型的动态任务分配效果\relax }}{70}{figure.caption.49}% 
+\contentsline {figure}{\numberline {5--6}{\ignorespaces 导弹初始通信网络非连通的动态任务分配效果\relax }}{72}{figure.caption.50}% 
+\contentsline {figure}{\numberline {5--7}{\ignorespaces 新增目标场景下的动态任务分配效果\relax }}{73}{figure.caption.51}% 
 \addvspace {10.0pt}
-\addvspace {10.0pt}
-\addvspace {10.0pt}
-\contentsline {figure}{\numberline {B--1}{\ignorespaces 绘制流程图效果\relax }}{51}{figure.caption.32}% 
